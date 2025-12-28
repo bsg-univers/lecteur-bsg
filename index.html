@@ -100,10 +100,10 @@ function showPlaylistsBySeason(season) {
 
 function sharePlaylist(event, encodedPid) {
     event.stopPropagation();
-    const pid = decodeURIComponent(encodedPid);
+
     const url = new URL(window.location.origin + window.location.pathname);
-    url.searchParams.set('playlistId', pid);
-    
+    url.searchParams.set('playlistId', encodedPid); // ON GARDE ENCODÉ
+
     const textToCopy = url.toString();
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -118,6 +118,7 @@ function sharePlaylist(event, encodedPid) {
         showToast();
     }
 }
+
 
 function showToast() {
     const t = document.getElementById("toast");
