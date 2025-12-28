@@ -385,58 +385,58 @@ const filtered = allPlaylists.filter(p => p.season === season);
 const div = document.getElementById('episodes_list');
 
 div.innerHTML = `<h2>Playlists — ${season}</h2>` + filtered.map(p => {
-// On remplace les apostrophes par leur code HTML pour éviter de casser le onclick
-const safeId = String(p.id).replace(/'/g, "\\'"); 
-// Nettoyage de l'ID pour qu'il ne casse pas le HTML
-const safeId = String(p.id).replace(/'/g, "&apos;"); 
+        // On remplace les apostrophes par leur code HTML pour éviter de casser le onclick
+        const safeId = String(p.id).replace(/'/g, "\\'"); 
+        // Nettoyage de l'ID pour qu'il ne casse pas le HTML
+        const safeId = String(p.id).replace(/'/g, "&apos;"); 
 
 return `<div class="episode-item" onclick="loadEpisodes('${safeId}')">
-          <span class="episode-title"><strong>${p.name}</strong></span>
-          <button class="btn-share" onclick="sharePlaylist(event, '${safeId}')">🔗</button>
-      </div>`;
+           <span class="episode-title"><strong>${p.name}</strong></span>
+           <button class="btn-share" onclick="sharePlaylist(event, '${safeId}')">🔗</button>
+       </div>`;
 }).join('');
 }
 
 function sharePlaylist(event, pid) {
 event.stopPropagation();
 
-// On crée l'URL propre de ton site GitHub
-const baseUrl = window.location.origin + window.location.pathname;
-const url = new URL(baseUrl);
-
-// set() gère automatiquement l'encodage des apostrophes, espaces et majuscules
-// On reconstruit l'URL sans accumuler les anciens paramètres
-const url = new URL(window.location.origin + window.location.pathname);
+    // On crée l'URL propre de ton site GitHub
+    const baseUrl = window.location.origin + window.location.pathname;
+    const url = new URL(baseUrl);
+    
+    // set() gère automatiquement l'encodage des apostrophes, espaces et majuscules
+    // On reconstruit l'URL sans accumuler les anciens paramètres
+    const url = new URL(window.location.origin + window.location.pathname);
 url.searchParams.set('playlistId', pid);
 
-const finalUrl = url.toString();
-const textToCopy = url.toString();
+    const finalUrl = url.toString();
+    const textToCopy = url.toString();
 
-// Utilisation de l'API de presse-papier
-// Méthode de copie moderne avec secours pour mobile
+    // Utilisation de l'API de presse-papier
+    // Méthode de copie moderne avec secours pour mobile
 if (navigator.clipboard && navigator.clipboard.writeText) {
-navigator.clipboard.writeText(finalUrl).then(() => {
-showToast();
-}).catch(err => {
-console.error("Erreur de copie :", err);
-});
-navigator.clipboard.writeText(textToCopy).then(showToast);
+        navigator.clipboard.writeText(finalUrl).then(() => {
+            showToast();
+        }).catch(err => {
+            console.error("Erreur de copie :", err);
+        });
+        navigator.clipboard.writeText(textToCopy).then(showToast);
 } else {
-// Méthode de secours si navigator.clipboard n'est pas dispo
+        // Méthode de secours si navigator.clipboard n'est pas dispo
 const textArea = document.createElement("textarea");
-textArea.value = finalUrl;
-textArea.value = textToCopy;
+        textArea.value = finalUrl;
+        textArea.value = textToCopy;
 document.body.appendChild(textArea);
 textArea.select();
-document.execCommand("copy");
-try {
-document.execCommand('copy');
-showToast();
-} catch (err) {
-console.error('Erreur de copie manuelle', err);
-}
+        document.execCommand("copy");
+        try {
+            document.execCommand('copy');
+            showToast();
+        } catch (err) {
+            console.error('Erreur de copie manuelle', err);
+        }
 document.body.removeChild(textArea);
-showToast();
+        showToast();
 }
 }
 
@@ -447,24 +447,24 @@ setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 300
 }
 
 async function loadEpisodes(pid) {
-// On décode l'ID au cas où il contiendrait des codes comme %20 ou %27
-const cleanId = decodeURIComponent(pid);
-
+    // On décode l'ID au cas où il contiendrait des codes comme %20 ou %27
+    const cleanId = decodeURIComponent(pid);
+    
 const listDiv = document.getElementById('episodes_list');
 listDiv.innerHTML = '<div class="loader">Plongée...</div>';
-episodes = await callApi(`action=getEpisodes&playlistId=${pid}`);
+    episodes = await callApi(`action=getEpisodes&playlistId=${pid}`);
 
-episodes = await callApi(`action=getEpisodes&playlistId=${encodeURIComponent(cleanId)}`);
-
-if (!episodes || episodes.length === 0) {
-listDiv.innerHTML = '<p>Aucun épisode trouvé.</p>';
-return;
-}
+    episodes = await callApi(`action=getEpisodes&playlistId=${encodeURIComponent(cleanId)}`);
+    
+    if (!episodes || episodes.length === 0) {
+        listDiv.innerHTML = '<p>Aucun épisode trouvé.</p>';
+        return;
+    }
 
 listDiv.innerHTML = `<h3>Épisodes</h3>` + episodes.map((e, i) => `
-      <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
-          <span class="episode-title">${e.title}</span>
-      </div>`).join('');
+       <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
+           <span class="episode-title">${e.title}</span>
+       </div>`).join('');
 play(0);
 }
 
