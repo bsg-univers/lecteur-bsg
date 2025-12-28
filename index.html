@@ -339,121 +339,87 @@ font-style:italic;
 
 <script>
 // --- CONFIGURATION ---
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmGuRBpCuZp-wrX2DfMbb7i1LgnjmY_gbv2GKxHO9BwaIQ1OeBlynP1zFYmuFPm4PdAQ/exec"; // METS TON URL ICI
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmGuRBpCuZp-wrX2DfMbb7i1LgnjmY_gbv2GKxHO9BwaIQ1OeBlynP1zFYmuFPm4PdAQ/exec"; 
 let episodes = [];
 let current = 0;
 let allPlaylists = [];
+let nextUrlCache = null; // Cache pour l'enchaînement fluide
 
 // --- LOGIQUE API ---
 async function callApi(params) {
-const url = `${SCRIPT_URL}?${params}`;
-const response = await fetch(url);
-return await response.json();
+    const url = `${SCRIPT_URL}?${params}`;
+    const response = await fetch(url);
+    return await response.json();
 }
 
 async function loadPlaylists() {
-const urlParams = new URLSearchParams(window.location.search);
-// On récupère l'ID et on remplace les "+" par des espaces pour la comparaison
-const initialPlaylistId = urlParams.get('playlistId') ? decodeURIComponent(urlParams.get('playlistId').replace(/\+/g, ' ')) : null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialPlaylistId = urlParams.get('playlistId') ? decodeURIComponent(urlParams.get('playlistId').replace(/\+/g, ' ')) : null;
 
-allPlaylists = await callApi("action=getPlaylists");
-allPlaylists = allPlaylists.filter(p => p.public);
+    allPlaylists = await callApi("action=getPlaylists");
+    allPlaylists = allPlaylists.filter(p => p.public);
 
-const seasons = [...new Set(allPlaylists.map(p => p.season))].sort().reverse();
-const div = document.getElementById('seasons_grid');
-div.innerHTML = seasons.map(s => `<div class="season-item" onclick="showPlaylistsBySeason('${s}')">${s}</div>`).join('');
+    const seasons = [...new Set(allPlaylists.map(p => p.season))].sort().reverse();
+    const div = document.getElementById('seasons_grid');
+    div.innerHTML = seasons.map(s => `<div class="season-item" onclick="showPlaylistsBySeason('${s}')">${s}</div>`).join('');
 
-if (initialPlaylistId) {
-// On cherche la playlist pour connaître sa saison
-const sharedPlaylist = allPlaylists.find(p => String(p.id).trim() === initialPlaylistId.trim());
-if (sharedPlaylist) {
-// 1. On affiche d'abord la saison pour que l'interface soit cohérente
-showPlaylistsBySeason(sharedPlaylist.season);
-// 2. Puis on charge les épisodes (cela remplacera la liste de la saison)
-loadEpisodes(sharedPlaylist.id);
-} else {
-showPlaylistsBySeason(seasons[0]);
-}
-} else {
-showPlaylistsBySeason(seasons[0]);
-}
+    if (initialPlaylistId) {
+        const sharedPlaylist = allPlaylists.find(p => String(p.id).trim().toLowerCase() === initialPlaylistId.trim().toLowerCase());
+        if (sharedPlaylist) {
+            showPlaylistsBySeason(sharedPlaylist.season);
+            loadEpisodes(sharedPlaylist.id);
+        } else {
+            showPlaylistsBySeason(seasons[0]);
+        }
+    } else {
+        showPlaylistsBySeason(seasons[0]);
+    }
 }
 
 function showPlaylistsBySeason(season) {
-selectedSeason = season;
-const filtered = allPlaylists.filter(p => p.season === season);
-const div = document.getElementById('episodes_list');
+    const filtered = allPlaylists.filter(p => p.season === season);
+    const div = document.getElementById('episodes_list');
 
-div.innerHTML = `<h2>Playlists — ${season}</h2>` + filtered.map(p => {
-        // On remplace les apostrophes par leur code HTML pour éviter de casser le onclick
-        const safeId = String(p.id).replace(/'/g, "\\'"); 
-        // Nettoyage de l'ID pour qu'il ne casse pas le HTML
-        const safeId = String(p.id).replace(/'/g, "&apos;"); 
-
-return `<div class="episode-item" onclick="loadEpisodes('${safeId}')">
-           <span class="episode-title"><strong>${p.name}</strong></span>
-           <button class="btn-share" onclick="sharePlaylist(event, '${safeId}')">🔗</button>
-       </div>`;
-}).join('');
+    div.innerHTML = `<h2>Playlists — ${season}</h2>` + filtered.map(p => {
+        // Protection des apostrophes pour le HTML
+        const safeIdForAttribute = String(p.id).replace(/'/g, "&apos;");
+        return `<div class="episode-item" onclick="loadEpisodes('${safeIdForAttribute}')">
+            <span class="episode-title"><strong>${p.name}</strong></span>
+            <button class="btn-share" onclick="sharePlaylist(event, '${safeIdForAttribute}')">🔗</button>
+        </div>`;
+    }).join('');
 }
 
 function sharePlaylist(event, pid) {
-event.stopPropagation();
-
-    // On crée l'URL propre de ton site GitHub
-    const baseUrl = window.location.origin + window.location.pathname;
-    const url = new URL(baseUrl);
-    
-    // set() gère automatiquement l'encodage des apostrophes, espaces et majuscules
-    // On reconstruit l'URL sans accumuler les anciens paramètres
+    event.stopPropagation();
     const url = new URL(window.location.origin + window.location.pathname);
-url.searchParams.set('playlistId', pid);
-
-    const finalUrl = url.toString();
+    url.searchParams.set('playlistId', pid);
     const textToCopy = url.toString();
 
-    // Utilisation de l'API de presse-papier
-    // Méthode de copie moderne avec secours pour mobile
-if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(finalUrl).then(() => {
-            showToast();
-        }).catch(err => {
-            console.error("Erreur de copie :", err);
-        });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(textToCopy).then(showToast);
-} else {
-        // Méthode de secours si navigator.clipboard n'est pas dispo
-const textArea = document.createElement("textarea");
-        textArea.value = finalUrl;
+    } else {
+        const textArea = document.createElement("textarea");
         textArea.value = textToCopy;
-document.body.appendChild(textArea);
-textArea.select();
-        document.execCommand("copy");
-        try {
-            document.execCommand('copy');
-            showToast();
-        } catch (err) {
-            console.error('Erreur de copie manuelle', err);
-        }
-document.body.removeChild(textArea);
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
         showToast();
-}
+    }
 }
 
 function showToast() {
-const toast = document.getElementById("toast");
-toast.className = "show";
-setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+    const toast = document.getElementById("toast");
+    toast.className = "show";
+    setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
 }
 
 async function loadEpisodes(pid) {
-    // On décode l'ID au cas où il contiendrait des codes comme %20 ou %27
     const cleanId = decodeURIComponent(pid);
+    const listDiv = document.getElementById('episodes_list');
+    listDiv.innerHTML = '<div class="loader">Plongée...</div>';
     
-const listDiv = document.getElementById('episodes_list');
-listDiv.innerHTML = '<div class="loader">Plongée...</div>';
-    episodes = await callApi(`action=getEpisodes&playlistId=${pid}`);
-
     episodes = await callApi(`action=getEpisodes&playlistId=${encodeURIComponent(cleanId)}`);
     
     if (!episodes || episodes.length === 0) {
@@ -461,47 +427,81 @@ listDiv.innerHTML = '<div class="loader">Plongée...</div>';
         return;
     }
 
-listDiv.innerHTML = `<h3>Épisodes</h3>` + episodes.map((e, i) => `
-       <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
-           <span class="episode-title">${e.title}</span>
-       </div>`).join('');
-play(0);
+    listDiv.innerHTML = `<h3>Épisodes</h3>` + episodes.map((e, i) => `
+        <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
+            <span class="play-arrow">▶</span>
+            <span class="episode-title">${e.title}</span>
+        </div>`).join('');
+    
+    play(0);
 }
 
 async function play(i) {
-current = i;
-const audio = document.getElementById('player');
-const titleDisplay = document.getElementById('now-playing-title');
+    current = i;
+    nextUrlCache = null; 
+    const audio = document.getElementById('player');
+    const titleDisplay = document.getElementById('now-playing-title');
 
-// Visuel
-document.querySelectorAll('.list-item-ep').forEach(el => el.classList.remove('current'));
-document.getElementById(`ep-${i}`)?.classList.add('current');
-titleDisplay.innerText = "Chargement : " + episodes[i].title;
+    document.querySelectorAll('.list-item-ep').forEach(el => el.classList.remove('current'));
+    const currentEl = document.getElementById(`ep-${i}`);
+    if (currentEl) currentEl.classList.add('current');
+    
+    titleDisplay.innerText = "⌛ Connexion... " + episodes[i].title;
 
-// Récupération audio
-const audioUrl = await callApi(`action=getAudio&guid=${episodes[i].guid}`);
-if (audioUrl) {
-audio.src = audioUrl;
-audio.play();
-updateMediaSession(episodes[i].title);
-}
+    try {
+        const audioUrl = await callApi(`action=getAudio&guid=${episodes[i].guid}`);
+        if (audioUrl) {
+            audio.src = audioUrl;
+            titleDisplay.innerText = episodes[i].title;
+            await audio.play();
+            updateMediaSession(episodes[i].title);
+
+            // PRÉ-CHARGEMENT DU SUIVANT
+            if (i + 1 < episodes.length) {
+                callApi(`action=getAudio&guid=${episodes[i+1].guid}`).then(url => {
+                    nextUrlCache = url;
+                });
+            }
+        }
+    } catch (err) {
+        titleDisplay.innerText = "⚠️ Erreur de lecture";
+    }
 }
 
 function updateMediaSession(title) {
-if ('mediaSession' in navigator) {
-navigator.mediaSession.metadata = new MediaMetadata({
-title: title,
-artist: "Baleine sous gravillon",
-artwork: [{ src: 'https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg', sizes: '400x400', type: 'image/jpeg' }]
-});
-
-navigator.mediaSession.setActionHandler('nexttrack', () => { if(current+1 < episodes.length) play(current+1); });
-navigator.mediaSession.setActionHandler('previoustrack', () => { if(current-1 >= 0) play(current-1); });
-}
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: title,
+            artist: "Baleine sous gravillon",
+            artwork: [{ src: 'https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg', sizes: '400x400', type: 'image/jpeg' }]
+        });
+        navigator.mediaSession.setActionHandler('nexttrack', () => { if(current+1 < episodes.length) play(current+1); });
+        navigator.mediaSession.setActionHandler('previoustrack', () => { if(current-1 >= 0) play(current-1); });
+    }
 }
 
 document.getElementById('player').onended = () => {
-if (current + 1 < episodes.length) play(current + 1);
+    if (current + 1 < episodes.length) {
+        if (nextUrlCache) {
+            current++;
+            const audio = document.getElementById('player');
+            audio.src = nextUrlCache;
+            document.getElementById('now-playing-title').innerText = episodes[current].title;
+            document.querySelectorAll('.list-item-ep').forEach(el => el.classList.remove('current'));
+            document.getElementById(`ep-${current}`)?.classList.add('current');
+            audio.play();
+            updateMediaSession(episodes[current].title);
+            
+            // Pré-charger le suivant (i+2)
+            if (current + 1 < episodes.length) {
+                callApi(`action=getAudio&guid=${episodes[current+1].guid}`).then(url => {
+                    nextUrlCache = url;
+                });
+            }
+        } else {
+            play(current + 1);
+        }
+    }
 };
 
 loadPlaylists();
