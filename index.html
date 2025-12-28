@@ -352,28 +352,96 @@ async function callApi(params) {
 }
 
 async function loadPlaylists() {
+    const urlParams = new URLSearchParams(window.location.search);
+    // On récupère l'ID et on remplace les "+" par des espaces pour la comparaison
+    const initialPlaylistId = urlParams.get('playlistId') ? decodeURIComponent(urlParams.get('playlistId').replace(/\+/g, ' ')) : null;
+    
     allPlaylists = await callApi("action=getPlaylists");
     allPlaylists = allPlaylists.filter(p => p.public);
+    
     const seasons = [...new Set(allPlaylists.map(p => p.season))].sort().reverse();
     const div = document.getElementById('seasons_grid');
     div.innerHTML = seasons.map(s => `<div class="season-item" onclick="showPlaylistsBySeason('${s}')">${s}</div>`).join('');
-    showPlaylistsBySeason(seasons[0]);
+
+    if (initialPlaylistId) {
+        // On cherche la playlist pour connaître sa saison
+        const sharedPlaylist = allPlaylists.find(p => String(p.id).trim() === initialPlaylistId.trim());
+        if (sharedPlaylist) {
+            // 1. On affiche d'abord la saison pour que l'interface soit cohérente
+            showPlaylistsBySeason(sharedPlaylist.season);
+            // 2. Puis on charge les épisodes (cela remplacera la liste de la saison)
+            loadEpisodes(sharedPlaylist.id);
+        } else {
+            showPlaylistsBySeason(seasons[0]);
+        }
+    } else {
+        showPlaylistsBySeason(seasons[0]);
+    }
 }
 
 function showPlaylistsBySeason(season) {
+    selectedSeason = season;
     const filtered = allPlaylists.filter(p => p.season === season);
     const div = document.getElementById('episodes_list');
-    div.innerHTML = `<h2>Playlists — ${season}</h2>` + filtered.map(p => `
-        <div class="episode-item" onclick="loadEpisodes('${p.id}')">
+    
+    div.innerHTML = `<h2>Playlists — ${season}</h2>` + filtered.map(p => {
+        // Nettoyage de l'ID pour qu'il ne casse pas le HTML
+        const safeId = String(p.id).replace(/'/g, "&apos;"); 
+        
+        return `<div class="episode-item" onclick="loadEpisodes('${safeId}')">
             <span class="episode-title"><strong>${p.name}</strong></span>
-        </div>`).join('');
+            <button class="btn-share" onclick="sharePlaylist(event, '${safeId}')">🔗</button>
+        </div>`;
+    }).join('');
 }
 
+function sharePlaylist(event, pid) {
+    event.stopPropagation();
+    
+    // On reconstruit l'URL sans accumuler les anciens paramètres
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set('playlistId', pid);
+    
+    const textToCopy = url.toString();
+
+    // Méthode de copie moderne avec secours pour mobile
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy).then(showToast);
+    } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast();
+        } catch (err) {
+            console.error('Erreur de copie manuelle', err);
+        }
+        document.body.removeChild(textArea);
+    }
+}
+
+function showToast() {
+    const toast = document.getElementById("toast");
+    toast.className = "show";
+    setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+}
+    
 async function loadEpisodes(pid) {
+    // On décode l'ID au cas où il contiendrait des codes comme %20 ou %27
+    const cleanId = decodeURIComponent(pid);
+    
     const listDiv = document.getElementById('episodes_list');
     listDiv.innerHTML = '<div class="loader">Plongée...</div>';
-    episodes = await callApi(`action=getEpisodes&playlistId=${pid}`);
     
+    episodes = await callApi(`action=getEpisodes&playlistId=${encodeURIComponent(cleanId)}`);
+    
+    if (!episodes || episodes.length === 0) {
+        listDiv.innerHTML = '<p>Aucun épisode trouvé.</p>';
+        return;
+    }
+
     listDiv.innerHTML = `<h3>Épisodes</h3>` + episodes.map((e, i) => `
         <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
             <span class="episode-title">${e.title}</span>
@@ -419,5 +487,6 @@ document.getElementById('player').onended = () => {
 
 loadPlaylists();
 </script>
+    <div id="toast">Lien copié !</div>
 </body>
 </html>
