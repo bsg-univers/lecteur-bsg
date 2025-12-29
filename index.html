@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baleine sous gravillon – Player</title>
-    
+    <title>Baleine sous gravillon – Lecteur</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Baleine sous gravillon","short_name":"BSG Lecteur","start_url":"/macros/s/AKfycbwAJ3a-xjePv5omMVcLodsJp7HM1_v6jRxOU0X3v8m814ZiRftIQ6iNQgcmekiDpn-jWw/exec","display":"standalone","background_color":"#0b0e14","theme_color":"#f3c300","icons":[{"src":"https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg","sizes":"400x400","type":"image/jpeg"}]}'>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0b0e14">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Baleine sous gravillon">
+<meta property="og:image" content="https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg">
 <link rel="manifest" href="manifest.json">
     <style>
 * {
@@ -97,9 +100,10 @@ header {
 /* lien image */
 .site-image-link{
   display:inline-block;
-  width:82px;
-  height:82px;
-  border-radius:18px;
+  margin-right:10px;
+  width:52px;
+  height:52px;
+  border-radius:5px;
   overflow:hidden;
   background:#000;
   box-shadow:
@@ -132,7 +136,7 @@ header {
 
 h2,h3{
   color:var(--primary);
-  font-size:1.1rem;
+  font-size:1rem;
   letter-spacing:1px;
   text-transform:uppercase;
   margin:32px 0 18px;
@@ -153,7 +157,7 @@ h2,h3{
 .season-item{
   padding: 16px 12px; /* Plus grande zone de clic */
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1rem;
   border-radius:14px;
   text-align:center;
   cursor:pointer;
@@ -217,7 +221,7 @@ h2,h3{
 .episode-title{
   flex-grow:1;
   margin-right:14px;
-  font-size:1.1rem;
+  font-size:1rem;;
 }
 
 /* bouton partage */
@@ -324,7 +328,21 @@ audio{
 <body>
 
 <header>
-    <img src="https://baleinesousgravillon.com/wp-content/uploads/2023/08/logo-accueil3Plan-de-travail-2-copie-3@2x-1.png" alt="Logo" class="logo-main">
+<a href="https://baleinesousgravillon.com/" target="_blank" title="Aller sur le site officiel">
+    <img src="https://baleinesousgravillon.com/wp-content/uploads/2023/08/logo-accueil3Plan-de-travail-2-copie-3@2x-1.png" alt="Logo" class="logo-main"><br>
+</a>
+<a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Aller sur le site officiel">
+    <img src="https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg" alt="Lien Site">
+</a>
+<a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Aller sur le site officiel">
+    <img src="https://image.ausha.co/A7P2IR07j1IuiB6cAAY9LjKIEcrbr4dPsgqobQHP_400x400.jpeg" alt="Lien Site">
+</a>
+<a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Aller sur le site officiel">
+    <img src="https://image.ausha.co/CBnPjfz7mxzBMJg4Fc3OGIHETweeY5jv4GH5JdU0_400x400.jpeg" alt="Lien Site">
+</a>
+<a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Aller sur le site officiel">
+    <img src="https://image.ausha.co/0xC11gNAqCw0Flp5qCUhuWM9kJI3p8Lw6J3lLm5w_400x400.jpeg" alt="Lien Site">
+</a>
 </header>
 
 <div class="container">
@@ -444,6 +462,7 @@ async function loadEpisodes(pid, isEncoded = false) {
     listDiv.innerHTML = `<h3>Épisodes</h3>` + episodes.map((e, i) => `
         <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
             <span class="episode-title">${e.title}</span>
+            <span style="color:var(--primary); font-size: 0.8em;">▶</span>
         </div>`).join('');
     play(0);
 }
