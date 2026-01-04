@@ -47,7 +47,6 @@
 body::before{
   content:"";
   position:fixed;
-  top:-1px;  /* Décalage anti-aliasing */
   left:-1px; /* Décalage anti-aliasing */
   right:0;
   bottom:0;
@@ -170,67 +169,80 @@ h2,h3{
 }
 
 .season-item {
-  position: relative;
-  padding: 20px 15px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: rgba(255,255,255,0.9);
-  text-align: center;
-  cursor: pointer;
-  z-index: 1;
-  overflow: hidden;
+    position: relative;
+    padding: 20px 15px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    cursor: pointer;
+    z-index: 1;
+    overflow: hidden;
 
-    /* Supprime le rectangle bleu sur mobile */
-  -webkit-tap-highlight-color: transparent;
-  
-  /* Supprime le contour de sélection au focus (clavier/accessibilité) */
-  outline: none;
+    /* Suppression des défauts tactiles */
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+
+    /* Forme "Galet" irrégulière */
+    border-radius: 60% 40% 70% 30% / 40% 50% 60% 40%;
+
+    /* Look Abyss Glass */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(243, 195, 0, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    /* Ombre et lueur */
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.3),
+        inset 0 0 15px rgba(243, 195, 0, 0.05);
+
+    /* --- OPTIMISATIONS ANTI-GLITCH --- */
+    will-change: transform; /* Prépare le navigateur à l'animation */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0); /* Force l'accélération matérielle */
     
-  /* Forme "Galet" irrégulière */
-  border-radius: 60% 40% 70% 30% / 40% 50% 60% 40%;
-  
-  /* Look Abyss Glass */
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(243, 195, 0, 0.2);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  
-  /* Ombre douce et lueur interne */
-  box-shadow: 
-    0 10px 20px rgba(0,0,0,0.3),
-    inset 0 0 15px rgba(243, 195, 0, 0.05);
-
-  /* Animation de flottaison */
-  animation: float 6s ease-in-out infinite;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Animation et Transition */
+    animation: float 6s ease-in-out infinite;
+    transition: 
+        transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        background 0.3s,
+        border-color 0.3s,
+        box-shadow 0.3s;
 }
 
-/* On décale l'animation pour chaque bouton pour un effet naturel */
+/* On varie les formes et les rythmes pour un effet organique */
 .season-item:nth-child(even) {
-  animation-duration: 7s;
-  border-radius: 40% 60% 35% 65% / 50% 40% 60% 50%;
+    animation-duration: 7s;
+    animation-delay: 1s;
+    border-radius: 40% 60% 35% 65% / 50% 40% 60% 50%;
 }
 
+/* Animation simplifiée (sans rotation pour éviter le flou du texte) */
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
+    0%, 100% {
+        transform: translateY(0) translateZ(0);
+    }
+    50% {
+        transform: translateY(-10px) translateZ(0);
+    }
 }
 
+/* État Hover (Survol) */
 .season-item:hover {
-  background: var(--primary);
-  color: #0b0e14;
-  transform: scale(1.1) rotate(-2deg);
-  border-color: var(--primary);
-  box-shadow: 0 15px 30px rgba(243, 195, 0, 0.3);
-  animation-play-state: paused; /* S'arrête quand on le survole */
+    background: var(--primary);
+    color: #0b0e14;
+    border-color: var(--primary);
+    box-shadow: 0 15px 30px rgba(243, 195, 0, 0.4);
+    transform: scale(1.08) translateY(-5px) translateZ(0);
+    animation-play-state: paused; /* Stoppe le flottement au survol */
 }
 
-.season-item:hover::after {
-  left: 120%;
-}
-
+/* État Active (Clic) */
 .season-item:active {
-  transform: scale(0.95);
+    transform: scale(0.95) translateZ(0);
+    transition: transform 0.1s;
 }
 
 /* ===================== */
@@ -276,7 +288,6 @@ h2,h3{
 }
 
 /* bouton partage */
-/* bouton partage */
 .btn-share {
   flex-shrink: 0; /* Empeche le cercle de s'écraser */
   background: transparent;
@@ -291,10 +302,10 @@ h2,h3{
   cursor: pointer;
   transition: all .3s ease;
   animation: pulse-border 12s infinite ease-in-out;
-      /* Supprime le rectangle bleu sur mobile */
+/* Supprime le rectangle bleu sur mobile */
   -webkit-tap-highlight-color: transparent;
   
-  /* Supprime le contour de sélection au focus (clavier/accessibilité) */
+/* Supprime le contour de sélection au focus (clavier/accessibilité) */
   outline: none;
 }
 
@@ -316,6 +327,9 @@ h2,h3{
     bottom: 0;
     left: 0;
     right: 0;
+
+    -webkit-transform: translateZ(0); /* Force le rendu sur une couche isolée */
+    transform: translateZ(0);
 
     /* Effet Abyss Glass cohérent */
     background: rgba(11, 14, 20, 0.95);
