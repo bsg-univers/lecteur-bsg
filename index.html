@@ -240,9 +240,17 @@ h2,h3{
 }
 
 /* État Active (Clic) */
-.season-item:active {
-    transform: scale(0.95) translateZ(0);
-    transition: transform 0.1s;
+.season-item.active, 
+.season-item[style*="border-color: var(--primary)"] { 
+    animation: none !important; /* Stoppe le flottement immédiatement */
+    transform: none !important;  /* Annule toute transformation (scale, rotate) */
+    cursor: default;             /* Indique que cliquer à nouveau n'est pas nécessaire */
+}
+
+.season-item.active:hover,
+.season-item[style*="border-color: var(--primary)"]:hover {
+    transform: none !important;  /* Empêche le bouton de bouger même au survol */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3); /* Garde l'ombre initiale */
 }
 
 /* ===================== */
