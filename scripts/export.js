@@ -13,20 +13,22 @@ const doc = new GoogleSpreadsheet(process.env.GSHEET_ID, serviceAccountAuth);
 async function run() {
   await doc.loadInfo();
 
-  /* ---------- PLAYLISTS ---------- */
-  // Onglet "Playlists"
-  const playlistsSheet = doc.sheetsByTitle["Playlists"];
-  const playlistsRows = await playlistsSheet.getRows();
+/* ---------- PLAYLISTS ---------- */
+const playlistsSheet = doc.sheetsByTitle["Playlists"];
+const playlistsRows = await playlistsSheet.getRows();
 
-  const playlists = playlistsRows.map(r => ({
-    // On utilise r.get('Nom Exact') pour éviter les erreurs avec les colonnes vides ou doublées
-    id: r.get("PlaylistID"), 
-    name: r.get("PlaylistID"), 
-    description: r.get("Description") || "",
-    public: r.get("Public") === "TRUE" || r.get("Public") === true,
-    season: r.get("Saison") || "Saison inconnue", // L'en-tête est bien "Saison"
-    image: r.get("Image") || ""
-  }));
+const playlists = playlistsRows.map(r => ({
+  // "PlaylistID" récupère maintenant sans erreur la colonne A
+  id: r.get("PlaylistID"), 
+  
+  // "TitreAffichage" récupère votre nouveau nom de colonne B
+  name: r.get("TitreAffichage"), 
+  
+  description: r.get("Description") || "",
+  public: r.get("Public") === "TRUE" || r.get("Public") === true,
+  season: r.get("Saison") || "Saison inconnue",
+  image: r.get("Image") || ""
+}));
 
   /* ---------- EPISODES ---------- */
   // Onglet "Episodes"
