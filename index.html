@@ -164,26 +164,16 @@ h2,h3{
 
 .grid-list {
   display: grid;
-  /* Force 2 colonnes sur mobile, auto-fill sur desktop */
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 15px; 
-  padding: 15px;
-  perspective: 1000px;
-}
-
-/* Ajustement pour tablettes et ordinateurs */
-@media (min-width: 600px) {
-  .grid-list {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 25px;
-  }
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 20px;
+  perspective: 1000px; /* Pour un effet de profondeur */
 }
 
 .season-item {
   position: relative;
-  /* Taille réduite pour le mobile */
-  padding: 18px 10px;
-  font-weight: 600;
+  padding: 20px 15px;
+  font-weight: 700;
+  font-size: 0.95rem;
   font-size: 0.85rem; /* Texte légèrement plus petit */
   color: rgba(255, 255, 255, 0.9);
   text-align: center;
