@@ -55,7 +55,31 @@ body::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
+/* Container pour l'image qui flotte au-dessus du lecteur */
+.player-image-wrapper {
+    display: flex;
+    justify-content: center;
+    height: 0; /* Important pour ne pas pousser le lecteur vers le bas */
+}
 
+#player-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+    background: #0b0e14;
+    transform: translateY(-50px); /* Fait remonter l'image au-dessus du lecteur */
+    display: none; /* Caché par défaut */
+    z-index: 1001;
+}
+
+/* On ajoute un peu d'espace en haut du titre pour ne pas qu'il touche l'image */
+.now-playing {
+    margin-top: 35px; 
+}
+        
 /* ===================== */
 /*      FOND GLOBAL      */
 /* ===================== */
@@ -463,8 +487,11 @@ audio {
 </div>
 
 <div class="player-container">
+    <div class="player-image-wrapper">
+        <img id="player-img" src="" alt="Thumbnail">
+    </div>
     <div id="now-playing-title" class="now-playing">Sélectionnez une aventure...</div>
-    <audio id="player" style="border-radius: 15px;" controls playsinline preload="auto"></audio>
+    <audio id="player" controls playsinline preload="auto"></audio>
 </div>
 
 <script>
@@ -612,7 +639,7 @@ async function loadEpisodes(pid, encoded = false) {
 async function play(i) {
     current = i;
 
-    // 1. Mise à jour immédiate de l’UI
+    // 1. Mise à jour immédiate de l’UI (sélection dans la liste)
     document.querySelectorAll('.list-item-ep')
         .forEach(el => el.classList.remove('current'));
     document.getElementById(`ep-${i}`)?.classList.add('current');
@@ -629,11 +656,23 @@ async function play(i) {
             return;
         }
 
+        // --- GESTION DE L'IMAGE DE L'ÉPISODE ---
+        const playerImg = document.getElementById('player-img');
+        if (playerImg) {
+            if (episode.image && episode.image.trim() !== "") {
+                playerImg.src = episode.image;
+                playerImg.style.display = "block";
+            } else {
+                // On cache l'image si elle n'est pas renseignée dans le tableau
+                playerImg.style.display = "none";
+            }
+        }
+
         // 2. Chargement de l’audio (direct depuis le JSON)
         audio.src = episode.audio;
         audio.load();
 
-        // 3. Media Session
+        // 3. Media Session (Contrôles du téléphone / écran de verrouillage)
         updateMediaSession(episode.title);
 
         // 4. Lecture
