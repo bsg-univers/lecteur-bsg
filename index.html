@@ -55,45 +55,6 @@ body::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
-/* Container pour l'image qui flotte au-dessus du lecteur */
-.player-image-wrapper {
-    display: flex;
-    justify-content: center;
-    height: 0; /* Important pour ne pas pousser le lecteur vers le bas */
-}
-
-/* Animation de la bordure dorée */
-@keyframes borderPulse {
-    0%, 100% { border-color: rgba(243, 195, 0, 0.3); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-    50% { border-color: rgba(243, 195, 0, 0.8); box-shadow: 0 -5px 25px rgba(243, 195, 0, 0.3); }
-}
-
-#player-img {
-    width: 160px;
-    height: 160px;
-    border-radius: 10px;
-    object-fit: cover;
-    background: #0b0e14;
-    
-    /* On la positionne pour qu'elle "chevauche" la nouvelle ligne */
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -75px); 
-    
-    border: 2px solid rgba(243, 195, 0, 0.3);
-    animation: borderPulse 10s ease-in-out infinite;
-    
-    display: none;
-    z-index: 1001;
-}
-
-.now-playing {
-    position: relative;
-    margin-top: 70px; /* Espace pour laisser l'image respirer */
-    padding-top: 15px; /* Espace entre la nouvelle ligne et le texte */
-    text-align: center;
-}
-
         
 /* ===================== */
 /*      FOND GLOBAL      */
@@ -108,7 +69,7 @@ body{
   font-size:1.1rem;
   color:#eaeaea;
   margin:0;
-  padding-bottom:160px;
+  padding-bottom:220px;
 
   min-height:100vh;
 
@@ -369,56 +330,71 @@ h2,h3{
   color:#111;
 }
 
-/* ===================== */
-/* PLAYER UNIFIÉ      */
-/* ===================== */
+/* --- LE CONTENEUR (Baisse de la ligne) --- */
 .player-container {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-
-    -webkit-transform: translateZ(0); /* Force le rendu sur une couche isolée */
-    transform: translateZ(0);
-
-    /* Effet Abyss Glass cohérent */
-    background: rgba(11, 14, 20, 0.95);
+    z-index: 1000;
+    background: rgba(11, 14, 20, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-
-    /* Forme "Galet" uniquement sur le haut pour rester collé en bas */
-    /* On crée une ondulation organique sur la bordure supérieure */
-    border-radius: 70px 70px 0 0 / 25px 25px 0 0;
     
-    padding: 20px 30px 25px;
-    
-    /* Bordure dorée fine comme les boutons */
+    /* On garde la courbe, mais on réduit le padding-top pour la baisser */
+    border-radius: 60px 60px 0 0 / 25px 25px 0 0;
     border-top: 1px solid rgba(243, 195, 0, 0.3);
     
-    /* Lueur interne et ombre profonde */
-    box-shadow: 
-        0 -15px 40px rgba(0,0,0,0.8),
-        inset 0 2px 15px rgba(243, 195, 0, 0.1);
+    /* Réduction drastique du padding pour rapprocher la ligne du texte */
+    padding: 10px 20px 20px; 
+    box-shadow: 0 -15px 40px rgba(0,0,0,0.8);
     
-    z-index: 1000;
-    
-    /* Animation très subtile pour rappeler la flottaison des boutons */
     animation: playerSubtleWave 10s ease-in-out infinite;
 }
 
-@keyframes playerSubtleWave {
-    0%, 100% { border-top-color: rgba(243, 195, 0, 0.3); }
-    50% { border-top-color: rgba(243, 195, 0, 0.6); }
+    @keyframes borderPulse {
+    0%, 100% { 
+        border-color: rgba(243, 195, 0, 0.3); 
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.5); 
+    }
+    50% { 
+        border-color: rgba(243, 195, 0, 0.8); 
+        box-shadow: 0 -5px 25px rgba(243, 195, 0, 0.3); 
+    }
+}
+        
+/* --- L'IMAGE (Commence à l'intérieur mais dépasse) --- */
+#player-img {
+    width: 160px; 
+    height: 160px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #0b0e14;
+    border: 2px solid rgba(243, 195, 0, 0.3);
+    
+    position: absolute;
+    left: 50%;
+    /* On baisse un peu l'image pour qu'elle soit plus proche du titre */
+    /* -85px permet de laisser la moitié de l'image dans le container */
+    transform: translate(-100px, -110px); 
+    
+    animation: borderPulse 10s ease-in-out infinite;
+    display: none;
+    z-index: 1001;
 }
 
+/* --- LE TITRE (Juste sous la ligne) --- */
 .now-playing {
     text-align: center;
     font-size: 0.9rem;
     font-weight: 700;
     color: var(--primary);
-    margin-bottom: 14px;
+    
+    /* Marge réduite pour être collé à la bordure du haut */
+    margin-top: 55px; 
+    margin-bottom: 12px;
+    
     text-shadow: 0 0 15px rgba(243, 195, 0, 0.4);
-    /* Pour éviter que le titre ne casse la forme */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -426,11 +402,8 @@ h2,h3{
 
 audio {
     width: 100%;
-    height: 40px;
-    border-radius: 50px; /* Style pilule pour le lecteur */
-    /* Filtre pour rendre le lecteur natif plus élégant sur fond noir */
+    height: 35px;
     filter: invert(100%) hue-rotate(180deg) brightness(1.5) contrast(0.8);
-    opacity: 0.9;
 }
 
 /* ===================== */
