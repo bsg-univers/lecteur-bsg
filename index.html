@@ -315,12 +315,22 @@ h2,h3{
   justify-content: center;
   cursor: pointer;
   transition: all .3s ease;
-  animation: pulse-border 25s infinite ease-in-out;
-/* Supprime le rectangle bleu sur mobile */
+  animation: pulse-border 15s infinite ease-in-out;
+      /* Supprime le rectangle bleu sur mobile */
   -webkit-tap-highlight-color: transparent;
   
-/* Supprime le contour de sélection au focus (clavier/accessibilité) */
+  /* Supprime le contour de sélection au focus (clavier/accessibilité) */
   outline: none;
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(243, 195, 0, 0.3); box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
+  50% { border-color: rgba(243, 195, 0, 0.8); box-shadow: 0 0 15px rgba(243, 195, 0, 0.4); }
+}
+
+.btn-share:hover{
+  background:var(--primary);
+  color:#111;
 }
 
 /* --- LE CONTENEUR (Ligne courbe) --- */
