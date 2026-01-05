@@ -70,14 +70,19 @@ body::before{
     border: 1px solid var(--primary);
     box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
     background: #0b0e14;
-    transform: translateY(-50px); /* Fait remonter l'image au-dessus du lecteur */
-    display: none; /* Caché par défaut */
+    /* On passe de -50px à -60px pour compenser la taille */
+    transform: translateY(-60px); 
+    display: none;
     z-index: 1001;
 }
 
-/* On ajoute un peu d'espace en haut du titre pour ne pas qu'il touche l'image */
+/* Ajustement de la zone de texte sous l'image */
 .now-playing {
-    margin-top: 35px; 
+    /* On augmente la marge du haut pour laisser de la place à l'image de 90px */
+    margin-top: 45px; 
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: var(--primary);
 }
         
 /* ===================== */
