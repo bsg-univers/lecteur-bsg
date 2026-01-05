@@ -1,0 +1,33 @@
+name: Sheets to JSON
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install google-spreadsheet
+
+      - name: Export sheets
+        env:
+          GSHEET_ID: ${{ secrets.GSHEET_ID }}
+          GSERVICE_EMAIL: ${{ secrets.GSERVICE_EMAIL }}
+          GSERVICE_KEY: ${{ secrets.GSERVICE_KEY }}
+        run: node scripts/export.js
+
+      - name: Commit JSON
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/*.json
+          git commit -m "Update data from Google Sheets" || exit 0
+          git push
