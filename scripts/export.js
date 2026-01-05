@@ -28,11 +28,12 @@ const episodesSheet = doc.sheetsByTitle["Episodes"];
 const episodesRows = await episodesSheet.getRows();
 
 const episodes = episodesRows.map(r => ({
+  order: Number(r.EpisodeID),
   playlistId: r.PlaylistID,
-  order: Number(r.Order),
   title: r.Title,
-  guid: r.Guid,
   audio: r.AudioURL || "",
+  order: Number(r.Order),
+  guid: r.Guid,
   description: r.Description || "",
   image: r.Image || ""
 }));
