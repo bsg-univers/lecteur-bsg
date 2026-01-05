@@ -159,90 +159,104 @@ h2,h3{
 }
 
 /* ===================== */
-/* SAISONS RELOADED    */
+/* SAISONS – FLUIDE & ORGANIQUE */
 /* ===================== */
+
 .grid-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 20px;
-  perspective: 1000px; /* Pour un effet de profondeur */
 }
 
+/* --- Bouton --- */
 .season-item {
   position: relative;
   padding: 20px 15px;
   font-weight: 700;
   font-size: 0.95rem;
-  color: rgba(255,255,255,0.9);
   text-align: center;
   cursor: pointer;
-  z-index: 1;
-  overflow: hidden;
+  color: rgba(255,255,255,0.9);
 
-    /* Supprime le rectangle bleu sur mobile */
   -webkit-tap-highlight-color: transparent;
-  
-  /* Supprime le contour de sélection au focus (clavier/accessibilité) */
   outline: none;
-    
-  /* Forme "Galet" irrégulière */
-  border-radius: 60% 40% 70% 30% / 40% 50% 60% 40%;
-  
-  /* Look Abyss Glass */
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(243, 195, 0, 0.2);
+
+  /* Forme organique */
+  border-radius: 58% 42% 65% 35% / 45% 55% 45% 55%;
+
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(243,195,0,0.2);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  
-  /* Ombre douce et lueur interne */
-  box-shadow: 
-    0 10px 20px rgba(0,0,0,0.3),
-    inset 0 0 15px rgba(243, 195, 0, 0.05);
 
-  /* Animation de flottaison */
-  animation: float 15s ease-in-out infinite;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.35),
+    inset 0 0 12px rgba(243,195,0,0.04);
+
+  /* Stabilité GPU */
+  will-change: transform;
+  transform: translate3d(0,0,0);
+
+  /* Animation douce */
+  animation: floatSoft var(--float-time) ease-in-out infinite;
+
+  /* Transitions ciblées */
+  transition:
+    transform 0.35s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
 }
 
-/* On décale l'animation pour chaque bouton pour un effet naturel */
-.season-item:nth-child(even) {
-  animation-duration: 7s;
-  border-radius: 40% 60% 35% 65% / 50% 40% 60% 50%;
+/* --- Mouvement doux, sans rotation --- */
+@keyframes floatSoft {
+  0%, 100% {
+    transform: translate3d(var(--x), 0px, 0);
+  }
+  50% {
+    transform: translate3d(var(--x), var(--y), 0);
+  }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
+/* --- Désynchronisation naturelle --- */
+.season-item:nth-child(3n) {
+  --x: -3px;
+  --y: -6px;
+  --float-time: 14s;
 }
 
+.season-item:nth-child(3n+1) {
+  --x: 2px;
+  --y: -10px;
+  --float-time: 18s;
+}
+
+.season-item:nth-child(3n+2) {
+  --x: -1px;
+  --y: -8px;
+  --float-time: 16s;
+}
+
+/* --- Hover : calme et net --- */
 .season-item:hover {
   background: var(--primary);
   color: #0b0e14;
-  transform: scale(1.1) rotate(-2deg);
   border-color: var(--primary);
-  box-shadow: 0 15px 30px rgba(243, 195, 0, 0.3);
-  animation-play-state: paused; /* S'arrête quand on le survole */
+  box-shadow: 0 14px 28px rgba(243,195,0,0.35);
+  transform: translate3d(0, -4px, 0) scale(1.05);
+  animation-play-state: paused;
 }
 
-.season-item:hover::after {
-  left: 120%;
-}
-        
-/* État Active (Clic) */
-.season-item.active, 
-.season-item[style*="border-color: var(--primary)"] { 
-    background: var(--primary);
-    box-shadow: 0 15px 30px rgba(243, 195, 0, 0.4);
-    color: #0b0e14;
-    animation: none !important; /* Stoppe le flottement immédiatement */
-    transform: none !important;  /* Annule toute transformation (scale, rotate) */
-    cursor: default;             /* Indique que cliquer à nouveau n'est pas nécessaire */
-}
-
-.season-item.active:hover,
-.season-item[style*="border-color: var(--primary)"]:hover {
-    transform: none !important;  /* Empêche le bouton de bouger même au survol */
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3); /* Garde l'ombre initiale */
+/* --- État actif (aucun mouvement) --- */
+.season-item.active,
+.season-item[style*="border-color: var(--primary)"] {
+  background: var(--primary);
+  color: #0b0e14;
+  box-shadow: 0 12px 25px rgba(243,195,0,0.35);
+  animation: none !important;
+  transform: none !important;
+  cursor: default;
 }
 
 /* ===================== */
@@ -379,7 +393,7 @@ h2,h3{
 /* --- LE LECTEUR AUDIO (Espace avec le titre) --- */
 audio {
     width: 100%;
-    height: 35px;
+    height: 40px;
     filter: invert(100%) hue-rotate(180deg) brightness(1.5) contrast(0.9);
     border-radius: 15px;
     margin-bottom: 5px; /* Petit espace en bas */
