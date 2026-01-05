@@ -69,17 +69,18 @@ body::before{
 }
 
 #player-img {
-    width: 120px;   /* Image plus large */
+    width: 120px;
     height: 120px;
-    border-radius: 15px;
+    border-radius: 10px;
     object-fit: cover;
-    border: 2px solid rgba(243, 195, 0, 0.3); /* Bordure initiale */
     background: #0b0e14;
     
-    /* On remonte l'image de 80px pour qu'elle flotte bien au-dessus */
-    transform: translateY(-80px); 
+    /* On la positionne pour qu'elle "chevauche" la nouvelle ligne */
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -75px); 
     
-    /* Application de l'animation */
+    border: 2px solid rgba(243, 195, 0, 0.3);
     animation: borderPulse 10s ease-in-out infinite;
     
     display: none;
@@ -87,11 +88,24 @@ body::before{
 }
 
 .now-playing {
-    /* On augmente encore la marge car l'image est plus grande */
-    margin-top: 55px; 
-    font-size: 1rem;
-    text-shadow: 0 0 10px rgba(243, 195, 0, 0.3);
-}  
+    position: relative;
+    margin-top: 70px; /* Espace pour laisser l'image respirer */
+    padding-top: 15px; /* Espace entre la nouvelle ligne et le texte */
+    text-align: center;
+}
+
+/* La nouvelle ligne lumineuse animée */
+.now-playing::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 100%; /* La ligne ne fait pas toute la largeur pour plus d'élégance */
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    box-shadow: 0 0 15px var(--primary);
+    animation: borderPulse 10s ease-in-out infinite;
+}
         
 /* ===================== */
 /*      FOND GLOBAL      */
@@ -375,6 +389,8 @@ h2,h3{
     bottom: 0;
     left: 0;
     right: 0;
+    border-top: none; /* On retire l'ancienne ligne du haut */
+    padding-top: 0;
 
     -webkit-transform: translateZ(0); /* Force le rendu sur une couche isolée */
     transform: translateZ(0);
