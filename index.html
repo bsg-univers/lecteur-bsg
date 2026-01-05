@@ -320,6 +320,29 @@ h2,h3{
   outline: none;
 }
 
+        /* Animation de la bordure de l'IMAGE (Pulsation dorée) */
+@keyframes borderPulse {
+    0%, 100% { 
+        border-color: rgba(243, 195, 0, 0.3); 
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.5); 
+    }
+    50% { 
+        border-color: rgba(243, 195, 0, 0.9); 
+        box-shadow: 0 0 25px rgba(243, 195, 0, 0.4); 
+    }
+}
+
+/* Animation de la ligne du LECTEUR (Ondulation de couleur) */
+@keyframes playerSubtleWave {
+    0%, 100% { 
+        border-top-color: rgba(243, 195, 0, 0.3); 
+    }
+    50% { 
+        border-top-color: rgba(243, 195, 0, 0.7); 
+        box-shadow: 0 -10px 30px rgba(243, 195, 0, 0.1);
+    }
+}
+        
 @keyframes pulse-border {
   0%, 100% { border-color: rgba(243, 195, 0, 0.3); box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
   50% { border-color: rgba(243, 195, 0, 0.8); box-shadow: 0 0 15px rgba(243, 195, 0, 0.4); }
@@ -351,7 +374,7 @@ h2,h3{
 
 /* --- L'IMAGE (Dépasse de 80% vers le haut) --- */
 #player-img {
-    width: 140px; /* Un peu plus petit pour libérer de l'espace sur mobile */
+    width: 140px; 
     height: 140px;
     border-radius: 10px;
     object-fit: cover;
@@ -360,10 +383,10 @@ h2,h3{
     
     position: absolute;
     left: 50%;
-    /* -112px correspond à 80% de 140px. L'image est propulsée vers le haut */
-    transform: translate(-50%, -112px); 
+    /* -126px propulse l'image à 90% en dehors du container */
+    transform: translate(-50%, -126px); 
     
-    animation: borderPulse 10s ease-in-out infinite;
+    animation: borderPulse 6s ease-in-out infinite;
     display: none;
     z-index: 1001;
 }
