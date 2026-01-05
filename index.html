@@ -62,28 +62,36 @@ body::before{
     height: 0; /* Important pour ne pas pousser le lecteur vers le bas */
 }
 
+/* Animation de la bordure dorée */
+@keyframes borderPulse {
+    0%, 100% { border-color: rgba(243, 195, 0, 0.3); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+    50% { border-color: rgba(243, 195, 0, 0.8); box-shadow: 0 -5px 25px rgba(243, 195, 0, 0.3); }
+}
+
 #player-img {
-    width: 90px;
-    height: 90px;
-    border-radius: 10px;
+    width: 120px;   /* Image plus large */
+    height: 120px;
+    border-radius: 15px;
     object-fit: cover;
-    border: 1px solid var(--primary);
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+    border: 2px solid rgba(243, 195, 0, 0.3); /* Bordure initiale */
     background: #0b0e14;
-    /* On passe de -50px à -60px pour compenser la taille */
-    transform: translateY(-60px); 
+    
+    /* On remonte l'image de 80px pour qu'elle flotte bien au-dessus */
+    transform: translateY(-80px); 
+    
+    /* Application de l'animation */
+    animation: borderPulse 10s ease-in-out infinite;
+    
     display: none;
     z-index: 1001;
 }
 
-/* Ajustement de la zone de texte sous l'image */
 .now-playing {
-    /* On augmente la marge du haut pour laisser de la place à l'image de 90px */
-    margin-top: 45px; 
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: var(--primary);
-}
+    /* On augmente encore la marge car l'image est plus grande */
+    margin-top: 55px; 
+    font-size: 1rem;
+    text-shadow: 0 0 10px rgba(243, 195, 0, 0.3);
+}  
         
 /* ===================== */
 /*      FOND GLOBAL      */
@@ -665,10 +673,10 @@ async function play(i) {
         const playerImg = document.getElementById('player-img');
         if (playerImg) {
             if (episode.image && episode.image.trim() !== "") {
+                playerImg.style.display = "none"; // On cache le temps du chargement
                 playerImg.src = episode.image;
-                playerImg.style.display = "block";
+                playerImg.onload = () => { playerImg.style.display = "block"; };
             } else {
-                // On cache l'image si elle n'est pas renseignée dans le tableau
                 playerImg.style.display = "none";
             }
         }
