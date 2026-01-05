@@ -495,11 +495,11 @@ if ('mediaSession' in navigator) {
     });
 }
 
-// --- API ---
-async function callApi(params) {
-    const response = await fetch(`${SCRIPT_URL}?${params}`);
-    return await response.json();
+async function loadJSON(file) {
+  const res = await fetch(`data/${file}`);
+  return await res.json();
 }
+
 
 // --- PLAYLISTS ---
 async function loadPlaylists() {
@@ -508,7 +508,7 @@ async function loadPlaylists() {
         ? decodeURIComponent(urlParams.get('playlistId').replace(/\+/g, ' '))
         : null;
 
-    allPlaylists = (await callApi("action=getPlaylists")).filter(p => p.public);
+    allPlaylists = (await loadJSON("playlists.json")).filter(p => p.public);
 
     const seasons = [...new Set(allPlaylists.map(p => p.season))].sort().reverse();
     const grid = document.getElementById('seasons_grid');
@@ -566,64 +566,96 @@ function showToast() {
 
 // --- ÉPISODES ---
 async function loadEpisodes(pid, encoded = false) {
-    const cleanId = encoded ? decodeURIComponent(escape(atob(pid))) : pid;
+    const cleanId = encoded
+        ? decodeURIComponent(escape(atob(pid)))
+        : pid;
+
     const div = document.getElementById('episodes_list');
-
     div.innerHTML = '<div class="loader">Plongée...</div>';
-    episodes = await callApi(`action=getEpisodes&playlistId=${encodeURIComponent(cleanId)}`);
 
-    if (!episodes || !episodes.length) {
-        div.innerHTML = '<p>Aucun épisode trouvé.</p>';
-        return;
+    try {
+        // Charger le JSON statique
+        const res = await fetch('data/episodes.json');
+        const allEpisodes = await res.json();
+
+        // Filtrer + trier
+        episodes = allEpisodes
+            .filter(e => e.playlistId === cleanId)
+            .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        if (!episodes.length) {
+            div.innerHTML = '<p>Aucun épisode trouvé.</p>';
+            return;
+        }
+
+        // Affichage
+        div.innerHTML =
+            `<h3>Épisodes</h3>` +
+            episodes.map((e, i) => `
+                <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
+                    <span class="episode-title">${e.title}</span>
+                    <span style="color:var(--primary); font-size:0.8em;">▶</span>
+                </div>
+            `).join('');
+
+        // Lecture automatique du premier épisode
+        play(0);
+
+    } catch (err) {
+        console.error('Erreur chargement episodes.json', err);
+        div.innerHTML = '<p>Erreur de chargement des épisodes.</p>';
     }
-
-    div.innerHTML = `<h3>Épisodes</h3>` + episodes.map((e, i) => `
-        <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
-            <span class="episode-title">${e.title}</span>
-            <span style="color:var(--primary); font-size:0.8em;">▶</span>
-        </div>
-    `).join('');
-
-    play(0);
 }
+
 
 // --- LECTURE OPTIMISÉE ---
 async function play(i) {
     current = i;
 
-    // 1. UI Update immédiate
-    document.querySelectorAll('.list-item-ep').forEach(el => el.classList.remove('current'));
+    // 1. Mise à jour immédiate de l’UI
+    document.querySelectorAll('.list-item-ep')
+        .forEach(el => el.classList.remove('current'));
     document.getElementById(`ep-${i}`)?.classList.add('current');
+
     titleDisplay.innerText = "Plongée en cours...";
 
     try {
-        // 2. Récupérer l'URL
-        const audioUrl = await callApi(`action=getAudio&guid=${episodes[i].guid}`);
-        if (!audioUrl) return;
+        const episode = episodes[i];
 
-        // 3. Charger et préparer la session
-        audio.src = audioUrl;
-        audio.load(); // Force le chargement
-        
-        updateMediaSession(episodes[i].title);
-
-        // 4. Lancer la lecture
-        // On utilise un bloc .play() propre
-        const playPromise = audio.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                titleDisplay.innerText = episodes[i].title;
-            }).catch(error => {
-                console.log("Lecture bloquée :", error);
-                // Si bloqué, on affiche un bouton "Play" géant ou un message
-                titleDisplay.innerText = "Cliquez sur Play pour continuer";
-            });
+        // Sécurité minimale
+        if (!episode || !episode.audio) {
+            console.error("Épisode ou audio manquant", episode);
+            titleDisplay.innerText = "Audio indisponible";
+            return;
         }
+
+        // 2. Chargement de l’audio (direct depuis le JSON)
+        audio.src = episode.audio;
+        audio.load();
+
+        // 3. Media Session
+        updateMediaSession(episode.title);
+
+        // 4. Lecture
+        const playPromise = audio.play();
+
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => {
+                    titleDisplay.innerText = episode.title;
+                })
+                .catch(err => {
+                    console.log("Lecture bloquée par le navigateur", err);
+                    titleDisplay.innerText = "Cliquez sur ▶ pour lancer la lecture";
+                });
+        }
+
     } catch (err) {
-        console.error("Erreur API :", err);
+        console.error("Erreur lecture épisode", err);
+        titleDisplay.innerText = "Erreur de lecture";
     }
 }
+
 
 // --- MEDIA SESSION METADATA ---
 function updateMediaSession(title) {
