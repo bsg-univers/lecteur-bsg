@@ -94,18 +94,6 @@ body::before{
     text-align: center;
 }
 
-/* La nouvelle ligne lumineuse animée */
-.now-playing::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 10%;
-    width: 100%; /* La ligne ne fait pas toute la largeur pour plus d'élégance */
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--primary), transparent);
-    box-shadow: 0 0 15px var(--primary);
-    animation: borderPulse 10s ease-in-out infinite;
-}
         
 /* ===================== */
 /*      FOND GLOBAL      */
@@ -389,8 +377,6 @@ h2,h3{
     bottom: 0;
     left: 0;
     right: 0;
-    border-top: none; /* On retire l'ancienne ligne du haut */
-    padding-top: 0;
 
     -webkit-transform: translateZ(0); /* Force le rendu sur une couche isolée */
     transform: translateZ(0);
