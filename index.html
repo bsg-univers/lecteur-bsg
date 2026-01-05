@@ -204,18 +204,19 @@ h2,h3{
     transform: translateZ(0); /* Force l'accélération matérielle */
     
     /* Animation et Transition */
-    animation: float 6s ease-in-out infinite;
-    transition: 
-        transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-        background 0.3s,
-        border-color 0.3s,
-        box-shadow 0.3s;
+   animation: float 15s ease-in-out infinite;
+
+    transition:
+        transform 0.6s ease,
+        background 0.6s ease,
+        border-color 0.6s ease,
+        box-shadow 0.6s ease;
 }
 
 /* On varie les formes et les rythmes pour un effet organique */
 .season-item:nth-child(even) {
-    animation-duration: 7s;
-    animation-delay: 1s;
+    animation-duration: 17s;
+    animation-delay: 3s;
     border-radius: 40% 60% 35% 65% / 50% 40% 60% 50%;
 }
 
@@ -225,19 +226,21 @@ h2,h3{
         transform: translateY(0) translateZ(0);
     }
     50% {
-        transform: translateY(-10px) translateZ(0);
+        transform: translateY(-4px) translateZ(0);
     }
 }
 
+
 /* État Hover (Survol) */
 .season-item:hover {
-    background: var(--primary);
+    background: rgba(243, 195, 0, 0.85);
     color: #0b0e14;
-    border-color: var(--primary);
-    box-shadow: 0 15px 30px rgba(243, 195, 0, 0.4);
-    transform: scale(1.08) translateY(-5px) translateZ(0);
-    animation-play-state: paused; /* Stoppe le flottement au survol */
+    border-color: rgba(243,195,0,0.9);
+    box-shadow: 0 12px 24px rgba(243, 195, 0, 0.25);
+    transform: scale(1.04) translateY(-2px);
+    animation-play-state: paused;
 }
+
 
 /* État Active (Clic) */
 .season-item.active, 
@@ -312,7 +315,7 @@ h2,h3{
   justify-content: center;
   cursor: pointer;
   transition: all .3s ease;
-  animation: pulse-border 12s infinite ease-in-out;
+  animation: pulse-border 25s infinite ease-in-out;
 /* Supprime le rectangle bleu sur mobile */
   -webkit-tap-highlight-color: transparent;
   
@@ -338,7 +341,7 @@ h2,h3{
     box-shadow: 0 -15px 40px rgba(0,0,0,0.9);
     
     /* Animation un peu plus rapide (12s) et plus visible */
-    animation: playerSubtleWave 15s ease-in-out infinite;
+    animation: playerSubtleWave 25s ease-in-out infinite;
 }
 
 /* --- L'IMAGE (Positionnée à 90% dehors) --- */
@@ -355,7 +358,7 @@ h2,h3{
     transform: translate(-50%, -126px); 
     
     /* Pulsation renforcée */
-    animation: borderPulse 12s ease-in-out infinite;
+    animation: borderPulse 25s ease-in-out infinite;
     display: none;
     z-index: 1001;
 }
@@ -389,23 +392,25 @@ audio {
 /* --- ANIMATIONS RENFORCÉES (Visibles) --- */
 @keyframes borderPulse {
     0%, 100% { 
-        border-color: rgba(243, 195, 0, 0.3); 
-        box-shadow: 0 -5px 15px rgba(0,0,0,0.5); 
+        border-color: rgba(243, 195, 0, 0.35); 
+        box-shadow: 0 0 12px rgba(243, 195, 0, 0.08);
     }
     50% { 
-        border-color: rgba(243, 195, 0, 0.9); /* Doré bien visible au pic */
-        box-shadow: 0 0 25px rgba(243, 195, 0, 0.4); /* Halo plus large */
+        border-color: rgba(243, 195, 0, 0.55);
+        box-shadow: 0 0 18px rgba(243, 195, 0, 0.18);
     }
 }
 
+
 @keyframes playerSubtleWave {
     0%, 100% { 
-        border-top-color: rgba(243, 195, 0, 0.2); 
+        border-top-color: rgba(243, 195, 0, 0.25); 
     }
     50% { 
-        border-top-color: rgba(243, 195, 0, 0.8); /* La ligne s'éclaire nettement */
+        border-top-color: rgba(243, 195, 0, 0.45); 
     }
 }
+
 /* ===================== */
 /*       TOAST           */
 /* ===================== */
