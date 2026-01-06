@@ -359,15 +359,22 @@ h2,h3{
     0 5px 15px rgba(0,0,0,0.35);
 }
 
-.episode-title{
-  flex-grow:1;
-  margin-right:14px;
-  font-size:1rem;;
+.episode-title {
+  flex: 1;              /* Prend tout l'espace disponible à gauche */
+  margin-right: 15px;   /* ZONE DE SÉCURITÉ : Le texte s'arrêtera à 40px du bouton */
+  font-size: 1rem;
+  text-align: left;
+  
+  /* Optionnel : si le titre est trop long, il mettra "..." au lieu de déformer la ligne */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* bouton partage */
 .btn-share {
-  flex-shrink: 0; /* Empeche le cercle de s'écraser */
+  margin-left: auto;    /* Pousse le bouton au bout de la ligne à droite */
+  flex-shrink: 0;       /* EMPÊCHE le bouton de s'écraser si le titre est long */
   background: transparent;
   border: 1px solid rgba(243,195,0,0.6);
   color: var(--primary);
@@ -376,7 +383,7 @@ h2,h3{
   border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   cursor: pointer;
   transition: all .3s ease;
   animation: pulse-border 12s infinite ease-in-out;
