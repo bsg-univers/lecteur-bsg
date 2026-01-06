@@ -249,6 +249,22 @@ h2,h3{
 /* ===================== */
 /*      ÉPISODES         */
 /* ===================== */
+/* Style des liens dans la description */
+.playlist-description-content a {
+    color: var(--primary); /* Utilise ton jaune doré */
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s;
+}
+
+.playlist-description-content a:hover {
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+/* Optionnel : Si tu préfères un bleu très doux à la place du jaune */
+/* .playlist-description-content a { color: #82b1ff; } */
+        
 .playlist-description-container {
     margin: 20px 0;
     padding: 18px;
@@ -691,6 +707,12 @@ async function loadEpisodes(pid, encoded = false) {
             `).join('');
 
         div.innerHTML = html;
+// --- AJOUT ICI : Correction des liens ---
+        const descLinks = div.querySelectorAll('.playlist-description-content a');
+        descLinks.forEach(link => {
+            link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'noopener noreferrer'); // Sécurité
+        });        
 
         // Lecture auto du premier épisode
         play(0);
