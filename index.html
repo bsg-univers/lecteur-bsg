@@ -266,7 +266,7 @@ h2,h3{
 /* .playlist-description-content a { color: #82b1ff; } */
         
 /* --- Bloc Description Harmonisé --- */
-/* --- Bloc Description Subtil (Effet Immersion) --- */
+/* --- Bloc Description Subtil (Version fluide sans saut) --- */
 .playlist-description-container {
     margin: 20px 0;
     padding: 18px 20px;
@@ -274,64 +274,57 @@ h2,h3{
     cursor: pointer;
     overflow: hidden;
     position: relative;
-    max-height: 120px;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Suppression totale des bordures */
-    border: none !important;
-    outline: none;
-
-    /* Fond ultra-subtil pour laisser passer les gradients du body */
-    background: rgba(255, 255, 255, 0.02);
     
-    /* Effet de verre : floute légèrement ce qu'il y a derrière */
+    /* On utilise une valeur de max-height plus proche de la réalité pour fluidifier */
+    max-height: 125px; 
+    transition: max-height 0.5s ease-in-out, background 0.3s ease;
+
+    border: none !important;
+    background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-
-    /* Ombre très diffuse et douce (moins découpée) */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
-    /* Supprime le contour bleu mobile */
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Au survol : on l'illumine très légèrement */
 .playlist-description-container:hover {
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.04);
 }
 
+/* État déplié */
 .playlist-description-container.expanded {
-    max-height: 2000px;
-    /* Quand c'est ouvert, on stabilise le fond pour la lecture */
+    max-height: 2000px; /* Valeur haute pour laisser passer tout le texte */
     background: rgba(255, 255, 255, 0.04);
 }
 
 .playlist-description-content {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: rgba(234, 234, 234, 0.8); /* Texte un peu moins blanc pour les yeux */
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    color: rgba(234, 234, 234, 0.8);
+    transition: all 0.3s ease;
+    
+    /* On force l'affichage complet, c'est le conteneur parent qui tronque proprement */
+    display: block; 
     overflow: hidden;
 }
 
-.playlist-description-container.expanded .playlist-description-content {
-    display: block;
-    -webkit-line-clamp: unset;
+/* On ne change plus le display du contenu au clic pour éviter le "saut" de pixels */
+.playlist-description-container:not(.expanded) .playlist-description-content {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
-/* Dégradé de fermeture plus naturel (fond fondu) */
+/* Dégradé de fermeture */
 .playlist-description-container:not(.expanded)::after {
     content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 70px;
-    /* On utilise l'opacité 0 pour finir sur le fond du site */
-    background: linear-gradient(transparent, rgba(11, 14, 20, 0.8));
+    height: 60px;
+    background: linear-gradient(transparent, rgba(11, 14, 20, 0.85));
+    pointer-events: none; /* Important pour ne pas bloquer le clic */
 }
 
 .read-more-hint {
@@ -346,7 +339,7 @@ h2,h3{
 }
 
 .playlist-description-container.expanded .read-more-hint {
-    display: none; /* Cache le texte quand c'est ouvert */
+    display: none;
 }
         
 .episode-item{
