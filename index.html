@@ -323,27 +323,26 @@ h2,h3{
     display: none;
 }
         
-.episode-item {
-  margin-bottom: 10px;
-  padding: 16px 20px;
-  border-radius: 16px;
+/* ===================== */
+/*      ÉPISODES         */
+/* ===================== */
+.episode-item{
+  margin-bottom:10px;
+  padding:16px 20px;
+  border-radius:16px;
 
-  display: flex;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 
-  justify-content: flex-start; /* FORCE le contenu à commencer au début (à gauche) */
-  width: 100%;              /* Prend toute la largeur du conteneur */
-  
-  cursor: pointer;
-  transition: all .25s ease;
+  cursor:pointer;
+  border-left:0 solid var(--primary);
+  transition:all .25s ease;
+        /* Supprime le rectangle bleu sur mobile */
   -webkit-tap-highlight-color: transparent;
+  
+  /* Supprime le contour de sélection au focus (clavier/accessibilité) */
   outline: none;
-}
-
-.episode-title {
-  flex: 1;             /* Le titre prend tout l'espace libre à gauche */
-  text-align: left;    /* Aligne le texte du titre à gauche */
-  margin-right: 20px;
-  font-size: 1rem;
 }
 
 .episode-item:hover{
@@ -368,7 +367,6 @@ h2,h3{
 
 /* bouton partage */
 .btn-share {
-  margin-left: auto;
   flex-shrink: 0; /* Empeche le cercle de s'écraser */
   background: transparent;
   border: 1px solid rgba(243,195,0,0.6);
@@ -381,7 +379,7 @@ h2,h3{
   justify-content: center;
   cursor: pointer;
   transition: all .3s ease;
-  animation: pulse-border 15s infinite ease-in-out;
+  animation: pulse-border 12s infinite ease-in-out;
       /* Supprime le rectangle bleu sur mobile */
   -webkit-tap-highlight-color: transparent;
   
