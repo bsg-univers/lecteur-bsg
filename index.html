@@ -249,6 +249,62 @@ h2,h3{
 /* ===================== */
 /*      ÉPISODES         */
 /* ===================== */
+.playlist-description-container {
+    margin: 20px 0;
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    border: 1px solid rgba(243, 195, 0, 0.15);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    max-height: 120px; /* Hauteur fermée */
+    transition: max-height 0.5s ease;
+}
+
+.playlist-description-container.expanded {
+    max-height: 2000px; /* Hauteur ouverte */
+}
+
+.playlist-description-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #ccc;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.playlist-description-container.expanded .playlist-description-content {
+    display: block;
+    -webkit-line-clamp: unset;
+}
+
+/* Le dégradé de flou */
+.playlist-description-container:not(.expanded)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(transparent, #0b0e14);
+}
+
+.read-more-hint {
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 10px;
+    display: block;
+}
+
+.playlist-description-container.expanded .read-more-hint {
+    display: none; /* Cache le texte quand c'est ouvert */
+}
+        
 .episode-item{
   margin-bottom:10px;
   padding:16px 20px;
