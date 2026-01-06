@@ -328,9 +328,10 @@ h2,h3{
   padding: 16px 20px;
   border-radius: 16px;
 
-  display: flex;
+  /* On force l'affichage en ligne */
+  display: flex; 
   align-items: center;
-  /* Modification ici : on assure que le contenu prend toute la largeur */
+  /* On s'assure que le conteneur utilise toute la largeur disponible */
   justify-content: space-between; 
   width: 100%; 
 
@@ -341,12 +342,13 @@ h2,h3{
   outline: none;
 }
 
-/* Assurez-vous aussi que le titre prend l'espace restant pour pousser le bouton */
 .episode-title {
-  flex: 1; /* Prend tout l'espace disponible à gauche */
-  margin-right: 14px;
+  /* Force le titre à occuper tout l'espace vide à gauche */
+  flex-grow: 1; 
+  text-align: left;
+  margin-right: 20px;
   font-size: 1rem;
-  text-align: left; /* Aligne bien le texte à gauche */
+  font-weight: 700;
 }
 
 .episode-item:hover{
