@@ -13,28 +13,15 @@ const doc = new GoogleSpreadsheet(process.env.GSHEET_ID, serviceAccountAuth);
 async function run() {
   await doc.loadInfo();
 
-/* ---------- PLAYLISTS ---------- */
-const playlistsSheet = doc.sheetsByTitle["Playlists"];
-const playlistsRows = await playlistsSheet.getRows();
+  /* ---------- 1. RÉCUPÉRATION DES DONNÉES BRUTES ---------- */
+  const playlistsSheet = doc.sheetsByTitle["Playlists"];
+  const playlistsRows = await playlistsSheet.getRows();
 
-const playlists = playlistsRows.map(r => ({
-  // "PlaylistID" récupère maintenant sans erreur la colonne A
-  id: r.get("PlaylistID"), 
-  
-  // "TitreAffichage" récupère votre nouveau nom de colonne B
-  name: r.get("TitreAffichage"), 
-  
-  description: r.get("Description") || "",
-  public: r.get("Public") === "TRUE" || r.get("Public") === true,
-  season: r.get("Saison") || "Saison inconnue",
-  image: r.get("Image") || ""
-}));
-
-  /* ---------- EPISODES ---------- */
-  // Onglet "Episodes"
   const episodesSheet = doc.sheetsByTitle["Episodes"];
   const episodesRows = await episodesSheet.getRows();
 
+  /* ---------- 2. TRAITEMENT DES ÉPISODES ---------- */
+  // On traite les épisodes en premier pour pouvoir piocher dedans plus tard
   const episodes = episodesRows.map(r => ({
     episodeId: r.get("EpisodeID"),
     playlistId: r.get("PlaylistID"),
@@ -42,16 +29,38 @@ const playlists = playlistsRows.map(r => ({
     audio: r.get("AudioURL") || "",
     order: Number(r.get("Order")) || 0,
     guid: r.get("Guid"),
-    description: r.get("Description") || "",
+    // On peut garder ou enlever la description ici selon tes besoins
+    // description: r.get("Description") || "", 
     image: r.get("Image") || ""
   }));
 
-  // Création du dossier data si inexistant et écriture des fichiers
+  /* ---------- 3. TRAITEMENT DES PLAYLISTS (Recherche croisée) ---------- */
+  const playlists = playlistsRows.map(r => {
+    const pId = r.get("PlaylistID");
+
+    // MAGIE : On cherche le premier épisode correspondant à cette playlist 
+    // pour récupérer sa description (Colonne G de l'onglet Episodes)
+    const firstEpMatch = episodesRows.find(epRow => epRow.get("PlaylistID") === pId);
+    const descriptionFromEpisode = firstEpMatch ? firstEpMatch.get("Description") : "";
+
+    return {
+      id: pId,
+      name: r.get("TitreAffichage"),
+      // On utilise la description trouvée dans l'onglet Episodes
+      description: descriptionFromEpisode || r.get("Description") || "",
+      public: r.get("Public") === "TRUE" || r.get("Public") === true,
+      season: r.get("Saison") || "Saison inconnue",
+      image: r.get("Image") || (firstEpMatch ? firstEpMatch.get("Image") : "")
+    };
+  });
+
+  /* ---------- 4. ÉCRITURE DES FICHIERS ---------- */
   if (!fs.existsSync("data")) fs.mkdirSync("data", { recursive: true });
+  
   fs.writeFileSync("data/playlists.json", JSON.stringify(playlists, null, 2));
   fs.writeFileSync("data/episodes.json", JSON.stringify(episodes, null, 2));
   
-  console.log("Les fichiers JSON ont été mis à jour avec succès dans le dossier data/ !");
+  console.log("Les fichiers JSON ont été mis à jour avec succès ! La description a été transférée vers playlists.json.");
 }
 
 run().catch(err => {
