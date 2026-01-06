@@ -265,62 +265,63 @@ h2,h3{
 /* Optionnel : Si tu préfères un bleu très doux à la place du jaune */
 /* .playlist-description-content a { color: #82b1ff; } */
         
-/* --- Bloc Description Harmonisé --- */
+/* --- Bloc Description Ultra-Léger --- */
 .playlist-description-container {
-    margin: 20px 0;
-    padding: 18px 20px;
-    border-radius: 16px;
+    margin: 15px 0 25px 0;
+    padding: 10px 14px; /* Réduit pour plus de discrétion */
+    border-radius: 12px;
     cursor: pointer;
     overflow: hidden;
     position: relative;
     
-    /* FIX: On utilise une hauteur fixe stricte pour l'état fermé */
-    height: 130px; 
-    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
+    height: 110px; /* Légèrement plus court */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-    border: none !important;
-    background: var(--glass-soft);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    /* On retire le fond blanc pour une simple lueur très fine */
+    background: rgba(255, 255, 255, 0.02); 
+    border-left: 2px solid rgba(243, 195, 0, 0.2) !important; /* Juste un filet à gauche */
+    
+    /* On supprime l'ombre portée noire qui faisait "tache" */
+    box-shadow: none; 
+    
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     -webkit-tap-highlight-color: transparent;
 }
 
 .playlist-description-container.expanded {
-    /* FIX: On utilise une valeur de hauteur suffisante ou auto via JS */
     height: auto; 
-    min-height: 130px;
-    background: rgba(255, 255, 255, 0.05);
+    min-height: 110px;
+    background: rgba(255, 255, 255, 0.04);
+    border-left: 2px solid var(--primary) !important; /* S'illumine quand on l'ouvre */
 }
 
 .playlist-description-content {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: rgba(234, 234, 234, 0.75);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    /* On rend le texte un peu plus gris/transparent pour moins trancher */
+    color: rgba(234, 234, 234, 0.6); 
 }
 
-/* On ne force le retrait du texte que si NON étendu */
-.playlist-description-container:not(.expanded) .playlist-description-content {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
+/* Gradient de lecture plus fondu */
 .playlist-description-container:not(.expanded)::after {
     content: "";
     position: absolute;
-    bottom: 0; left: 0; width: 100%; height: 60px;
-    background: linear-gradient(transparent, #0b0e14);
+    bottom: 0; left: 0; width: 100%; height: 50px;
+    /* On utilise l'opacité 0 vers la couleur de votre fond body */
+    background: linear-gradient(to bottom, rgba(11, 14, 20, 0), #0b0e14);
     pointer-events: none;
 }
 
 .read-more-hint {
-    color: var(--primary); font-size: 0.72rem; font-weight: bold;
-    text-transform: uppercase; margin-top: 12px; display: block; letter-spacing: 1.5px;
-}
-.playlist-description-container.expanded .read-more-hint {
-    display: none;
+    color: var(--primary); 
+    font-size: 0.65rem; 
+    font-weight: bold;
+    text-transform: uppercase; 
+    margin-top: 8px; 
+    display: block; 
+    letter-spacing: 1.2px;
+    opacity: 0.8;
 }
         
 /* ===================== */
