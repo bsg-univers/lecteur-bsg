@@ -323,23 +323,30 @@ h2,h3{
     display: none;
 }
         
-.episode-item{
-  margin-bottom:10px;
-  padding:16px 20px;
-  border-radius:16px;
+.episode-item {
+  margin-bottom: 10px;
+  padding: 16px 20px;
+  border-radius: 16px;
 
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  display: flex;
+  align-items: center;
+  /* Modification ici : on assure que le contenu prend toute la largeur */
+  justify-content: space-between; 
+  width: 100%; 
 
-  cursor:pointer;
-  border-left:0 solid var(--primary);
-  transition:all .25s ease;
-        /* Supprime le rectangle bleu sur mobile */
+  cursor: pointer;
+  border-left: 0 solid var(--primary);
+  transition: all .25s ease;
   -webkit-tap-highlight-color: transparent;
-  
-  /* Supprime le contour de sélection au focus (clavier/accessibilité) */
   outline: none;
+}
+
+/* Assurez-vous aussi que le titre prend l'espace restant pour pousser le bouton */
+.episode-title {
+  flex: 1; /* Prend tout l'espace disponible à gauche */
+  margin-right: 14px;
+  font-size: 1rem;
+  text-align: left; /* Aligne bien le texte à gauche */
 }
 
 .episode-item:hover{
@@ -485,30 +492,29 @@ audio {
 /* ===================== */
 /*       TOAST           */
 /* ===================== */
-#toast{
-  opacity:0;
-  pointer-events:none;
+#toast {
+  opacity: 0;
+  pointer-events: none;
 
-  min-width:200px;
-  background:var(--primary);
-  color:#111;
-  text-align:center;
-  border-radius:30px;
-  padding:12px 18px;
+  min-width: 200px;
+  background: var(--primary);
+  color: #111;
+  text-align: center;
+  border-radius: 30px;
+  padding: 12px 18px;
 
-  position:fixed;
-  left:50%;
-  bottom:120px;
-  transform:translate(-50%, 12px);
+  position: fixed;
+  left: 50%;
+  /* MODIFICATION ICI : on le remonte pour passer au-dessus de l'image */
+  bottom: 260px; 
+  /* On augmente aussi le z-index pour être sûr qu'il soit au premier plan */
+  z-index: 2000; 
 
-  font-weight:700;
-  font-size:.8em;
-
-  box-shadow:0 10px 30px rgba(0,0,0,0.8);
-
-  transition:
-    opacity .35s ease,
-    transform .35s ease;
+  transform: translate(-50%, 12px);
+  font-weight: 700;
+  font-size: .8em;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  transition: opacity .35s ease, transform .35s ease;
 }
 
 #toast.show{
