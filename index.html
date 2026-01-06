@@ -583,21 +583,27 @@ function showToast() {
 
 // --- ÉPISODES ---
 async function loadEpisodes(pid, encoded = false) {
-    const cleanId = encoded
-        ? decodeURIComponent(escape(atob(pid)))
+    // Décodage de l'ID si provenant d'un lien de partage
+    const cleanId = encoded 
+        ? decodeURIComponent(escape(atob(pid))) 
         : pid;
 
     const div = document.getElementById('episodes_list');
     div.innerHTML = '<div class="loader">Plongée...</div>';
 
     try {
-        // Charger le JSON statique
+        // 1. Récupérer la description de la playlist depuis la mémoire
+        // (allPlaylists a été rempli au chargement de la page via playlists.json)
+        const currentPl = allPlaylists.find(p => String(p.id).trim() === cleanId.trim());
+        const playlistDesc = currentPl ? currentPl.description : "";
+
+        // 2. Charger les épisodes depuis le fichier JSON statique
         const res = await fetch('data/episodes.json');
         const allEpisodes = await res.json();
 
-        // Filtrer + trier
+        // Filtrer et trier
         episodes = allEpisodes
-            .filter(e => e.playlistId === cleanId)
+            .filter(e => String(e.playlistId).trim() === cleanId.trim())
             .sort((a, b) => (a.order || 0) - (b.order || 0));
 
         if (!episodes.length) {
@@ -605,9 +611,22 @@ async function loadEpisodes(pid, encoded = false) {
             return;
         }
 
-        // Affichage
-        div.innerHTML =
-            `<h3>Épisodes</h3>` +
+        // 3. Construction du HTML
+        let html = `<h2>${cleanId}</h2>`;
+
+        // Affichage de la description avec l'effet "Lire la suite"
+        if (playlistDesc && playlistDesc.trim() !== "") {
+            html += `
+            <div class="playlist-description-container" id="desc-container" onclick="this.classList.toggle('expanded')">
+                <div class="playlist-description-content">
+                    ${playlistDesc}
+                </div>
+                <span class="read-more-hint">Lire la suite...</span>
+            </div>`;
+        }
+
+        // Liste des épisodes (votre code existant)
+        html += `<h3>Épisodes</h3>` +
             episodes.map((e, i) => `
                 <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
                     <span class="episode-title">${e.title}</span>
@@ -615,11 +634,13 @@ async function loadEpisodes(pid, encoded = false) {
                 </div>
             `).join('');
 
-        // Lecture automatique du premier épisode
+        div.innerHTML = html;
+
+        // Lecture auto du premier épisode
         play(0);
 
     } catch (err) {
-        console.error('Erreur chargement episodes.json', err);
+        console.error('Erreur chargement episodes', err);
         div.innerHTML = '<p>Erreur de chargement des épisodes.</p>';
     }
 }
