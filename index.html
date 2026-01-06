@@ -266,39 +266,42 @@ h2,h3{
 /* .playlist-description-content a { color: #82b1ff; } */
         
 /* --- Bloc Description Harmonisé --- */
+/* --- Bloc Description avec effet "Épisode Courant" (Ombre sans bordure) --- */
 .playlist-description-container {
     margin: 20px 0;
-    padding: 16px 20px; /* Même padding que les épisodes */
-    border-radius: 16px; /* Même arrondi que les épisodes */
+    padding: 16px 20px;
+    border-radius: 16px;
     cursor: pointer;
     overflow: hidden;
     position: relative;
     max-height: 120px;
     transition: all 0.5s ease;
-    
-    /* Effet visuel identique à l'épisode au repos (légère transparence) */
-    background: rgba(255, 255, 255, 0.03); 
-    border: 1px solid rgba(255, 255, 255, 0.05); /* Bordure fine grise */
-    
-    /* Suppression du rectangle bleu mobile */
+
+    /* Suppression de toute bordure visible */
+    border: none;
+    border-left: 0 !important;
+
+    /* L'effet de l'épisode courant : Fond sombre + Ombre portée */
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+
+    /* Anti-reflet bleu mobile */
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Effet Hover identique à .episode-item:hover */
+/* Effet au survol pour rester interactif */
 .playlist-description-container:hover {
-    background: linear-gradient(160deg, 
-        rgba(255, 255, 255, 0.08), 
-        rgba(255, 255, 255, 0.02));
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
 .playlist-description-container.expanded {
     max-height: 2000px;
-    background: rgba(255, 255, 255, 0.06); /* Un peu plus clair quand ouvert */
 }
 
 .playlist-description-content {
     font-size: 0.95rem;
-    line-height: 1.6; /* Un peu plus d'air pour la lecture */
+    line-height: 1.6;
     color: #ccc;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -311,7 +314,7 @@ h2,h3{
     -webkit-line-clamp: unset;
 }
 
-/* Le dégradé de flou (fond fondu) */
+/* Le flou de transition en bas (plus doux sur fond noir) */
 .playlist-description-container:not(.expanded)::after {
     content: "";
     position: absolute;
@@ -319,7 +322,7 @@ h2,h3{
     left: 0;
     width: 100%;
     height: 60px;
-    background: linear-gradient(transparent, #0b0e14);
+    background: linear-gradient(transparent, rgba(11, 14, 20, 0.95));
 }
 
 .read-more-hint {
