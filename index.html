@@ -266,7 +266,6 @@ h2,h3{
 /* .playlist-description-content a { color: #82b1ff; } */
         
 /* --- Bloc Description Harmonisé --- */
-/* --- Bloc Description Subtil (Version fluide sans saut) --- */
 .playlist-description-container {
     margin: 20px 0;
     padding: 18px 20px;
@@ -275,69 +274,51 @@ h2,h3{
     overflow: hidden;
     position: relative;
     
-    /* On utilise une valeur de max-height plus proche de la réalité pour fluidifier */
-    max-height: 125px; 
-    transition: max-height 0.5s ease-in-out, background 0.3s ease;
+    /* FIX: On utilise une hauteur fixe stricte pour l'état fermé */
+    height: 125px; 
+    transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
 
     border: none !important;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: var(--glass-soft);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     -webkit-tap-highlight-color: transparent;
 }
 
-.playlist-description-container:hover {
-    background: rgba(255, 255, 255, 0.04);
-}
-
-/* État déplié */
 .playlist-description-container.expanded {
-    max-height: 2000px; /* Valeur haute pour laisser passer tout le texte */
-    background: rgba(255, 255, 255, 0.04);
+    /* FIX: On utilise une valeur de hauteur suffisante ou auto via JS */
+    height: auto; 
+    min-height: 125px;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .playlist-description-content {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: rgba(234, 234, 234, 0.8);
-    transition: all 0.3s ease;
-    
-    /* On force l'affichage complet, c'est le conteneur parent qui tronque proprement */
-    display: block; 
-    overflow: hidden;
+    color: rgba(234, 234, 234, 0.75);
 }
 
-/* On ne change plus le display du contenu au clic pour éviter le "saut" de pixels */
+/* On ne force le retrait du texte que si NON étendu */
 .playlist-description-container:not(.expanded) .playlist-description-content {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Dégradé de fermeture */
 .playlist-description-container:not(.expanded)::after {
     content: "";
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background: linear-gradient(transparent, rgba(11, 14, 20, 0.85));
-    pointer-events: none; /* Important pour ne pas bloquer le clic */
+    bottom: 0; left: 0; width: 100%; height: 60px;
+    background: linear-gradient(transparent, #0b0e14);
+    pointer-events: none;
 }
 
 .read-more-hint {
-    color: var(--primary);
-    font-size: 0.72rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-top: 12px;
-    display: block;
-    letter-spacing: 1.5px;
-    opacity: 0.8;
+    color: var(--primary); font-size: 0.72rem; font-weight: bold;
+    text-transform: uppercase; margin-top: 12px; display: block; letter-spacing: 1.5px;
 }
-
 .playlist-description-container.expanded .read-more-hint {
     display: none;
 }
