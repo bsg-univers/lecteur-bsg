@@ -328,27 +328,22 @@ h2,h3{
   padding: 16px 20px;
   border-radius: 16px;
 
-  /* On force l'affichage en ligne */
-  display: flex; 
-  align-items: center;
-  /* On s'assure que le conteneur utilise toute la largeur disponible */
-  justify-content: space-between; 
-  width: 100%; 
-
+  display: flex;
+  align-items: center;      /* Garde le texte aligné verticalement avec le bouton */
+  justify-content: flex-start; /* FORCE le contenu à commencer au début (à gauche) */
+  width: 100%;              /* Prend toute la largeur du conteneur */
+  
   cursor: pointer;
-  border-left: 0 solid var(--primary);
   transition: all .25s ease;
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
 
 .episode-title {
-  /* Force le titre à occuper tout l'espace vide à gauche */
-  flex-grow: 1; 
-  text-align: left;
+  flex: 1;             /* Le titre prend tout l'espace libre à gauche */
+  text-align: left;    /* Aligne le texte du titre à gauche */
   margin-right: 20px;
   font-size: 1rem;
-  font-weight: 700;
 }
 
 .episode-item:hover{
@@ -373,6 +368,7 @@ h2,h3{
 
 /* bouton partage */
 .btn-share {
+  margin-left: auto;
   flex-shrink: 0; /* Empeche le cercle de s'écraser */
   background: transparent;
   border: 1px solid rgba(243,195,0,0.6);
