@@ -263,34 +263,35 @@ h2,h3{
 }
 
 /* Optionnel : Si tu préfères un bleu très doux à la place du jaune */
-/* .playlist-description-content a { color: #82b1ff; } */
         
 /* --- Bloc Description Ultra-Léger --- */
 .playlist-description-container {
-    margin: 15px 0 25px 0;
-    padding: 10px 14px; /* Réduit pour plus de discrétion */
-    border-radius: 12px;
+    margin: 20px 0;
+    padding: 18px 20px;
+    border-radius: 16px;
     cursor: pointer;
     overflow: hidden;
     position: relative;
-    
-    height: 110px; /* Légèrement plus court */
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 130px;
+    transition: all 0.5s ease;
 
-    /* On retire le fond blanc pour une simple lueur très fine */
-    background: rgba(255, 255, 255, 0.01); 
-    
-    box-shadow: none;
-    
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    -webkit-tap-highlight-color: transparent;
+    /* On enlève tout fond sombre */
+    background: rgba(255, 255, 255, 0.03);
+    border: none !important;
+    border-left: 2px solid rgba(70, 130, 180, 0.3) !important; /* Bordure bleu acier */
+
+    /* LA SOLUTION : Un masque de transparence au lieu d'une couleur noire */
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
 }
 
 .playlist-description-container.expanded {
-    height: auto; 
-    min-height: 110px;
-    background: rgba(255, 255, 255, 0.04);
+    height: auto;
+    min-height: 130px;
+    /* On retire le masque quand c'est ouvert pour tout voir */
+    -webkit-mask-image: none;
+    mask-image: none;
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .playlist-description-content {
@@ -298,25 +299,6 @@ h2,h3{
     line-height: 1.5;
     /* On rend le texte un peu plus gris/transparent pour moins trancher */
     color: rgba(234, 234, 234, 0.6); 
-}
-
-.playlist-description-container:not(.expanded)::after {
-    content: "";
-    position: absolute;
-    bottom: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 80px; /* Plus grand pour un fondu plus doux */
-    
-    /* Dégradé vers un bleu-vert très sombre et transparent */
-    background: linear-gradient(
-        to bottom, 
-        rgba(4, 37, 30, 0) 0%,      /* Vert abysse totalement transparent */
-        rgba(5, 27, 26, 0.7) 60%,   /* Transition douce */
-        rgba(11, 14, 20, 0.95) 100% /* Fusion finale avec le fond sombre */
-    );
-    
-    pointer-events: none;
 }
 
 .read-more-hint {
