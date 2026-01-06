@@ -279,10 +279,9 @@ h2,h3{
 
     /* On retire le fond blanc pour une simple lueur très fine */
     background: rgba(255, 255, 255, 0.02); 
-    border-left: 2px solid rgba(243, 195, 0, 0.2) !important; /* Juste un filet à gauche */
     
-    /* On supprime l'ombre portée noire qui faisait "tache" */
-    box-shadow: none; 
+    box-shadow:
+      0 5px 15px rgba(0,0,0,0.35);
     
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -293,7 +292,6 @@ h2,h3{
     height: auto; 
     min-height: 110px;
     background: rgba(255, 255, 255, 0.04);
-    border-left: 2px solid var(--primary) !important; /* S'illumine quand on l'ouvre */
 }
 
 .playlist-description-content {
