@@ -274,6 +274,15 @@ h2,h3{
     position: relative;
     height: 130px;
     transition: all 0.5s ease;
+    /* Supprime le rectangle bleu au clic sur mobile (Chrome/Safari/Android) */
+    -webkit-tap-highlight-color: transparent;
+    
+    /* Supprime la bordure de sélection (focus) sur certains navigateurs */
+    outline: none;
+    
+    /* Empêche la sélection accidentelle du texte pendant le clic */
+    -webkit-user-select: none;
+    user-select: none;
 
     /* On enlève tout fond sombre */
     background: rgba(255, 255, 255, 0.03);
