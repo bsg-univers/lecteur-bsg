@@ -360,15 +360,15 @@ h2,h3{
 }
 
 .episode-title {
-  flex: 1;              /* Prend tout l'espace disponible à gauche */
-  margin-right: 30px;   /* ZONE DE SÉCURITÉ : Le texte s'arrêtera à 40px du bouton */
+  flex: 1;              /* Prend l'espace disponible */
+  margin-right: 25px;   /* Espace minimal entre la fin du texte et le bouton */
   font-size: 1rem;
   text-align: left;
   
-  /* Optionnel : si le titre est trop long, il mettra "..." au lieu de déformer la ligne */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Permet au texte de passer à la ligne suivante */
+  white-space: normal;  
+  word-wrap: break-word; 
+  line-height: 1.4;
 }
 
 /* bouton partage */
