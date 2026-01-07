@@ -63,7 +63,13 @@ body::before{
 html, body{
   min-height:100%;
 }
-
+        
+html {
+  scroll-behavior: smooth;
+  /* Empêche les rebonds élastiques excessifs sur iOS */
+  overscroll-behavior-y: none; 
+}
+        
 body{
   font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   font-size:1.1rem;
@@ -82,6 +88,8 @@ body{
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center center;
+  -webkit-overflow-scrolling: touch; /* Force le scroll "inertiel" sur vieux iOS */
+  overflow-x: hidden; /* Évite les glissements latéraux parasites */
 }
 
 /* ===================== */
@@ -105,7 +113,7 @@ header {
 }
 
 .logo-main {
-  max-width: 120px; /* Réduit de 200px à 120px */
+  max-width: 130px; /* Réduit de 200px à 130px */
   margin-bottom: 12px;
   filter: 
     drop-shadow(0 0 10px rgba(243,195,0,0.2))
@@ -189,17 +197,16 @@ h2,h3{
   outline: none;
 
   /* Look Verre Poli */
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(40, 45, 55, 0.8); 
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  will-change: transform;
 
   /* Ombre très douce pour éviter l'aspect lourd */
   box-shadow: 
     0 8px 15px rgba(0, 0, 0, 0.2),
     inset 0 0 10px rgba(255, 255, 255, 0.05);
 
-  transition: all 0.6s ease-in-out;
+  transition: all 0.3s ease-in-out;
   animation: float-organic 7s ease-in-out infinite;
 }
 
