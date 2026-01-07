@@ -268,7 +268,7 @@ h2,h3{
     
     position: fixed;
     /* On fixe l'ancrage en bas */
-    bottom: 115px; 
+    bottom: 105px; 
     left: 50%;
     
     /* L'état initial : centré horizontalement */
@@ -293,7 +293,7 @@ h2,h3{
     
     /* On calcule le déplacement pour simuler le centrage écran */
     /* On remonte l'image de la moitié de l'écran moins sa position initiale */
-    transform: translate(-50%, calc(-50vh + 150px)) scale(2.5) !important;
+    transform: translate(-50%, calc(-50vh + 150px)) scale(2.2) !important;
     
     /* On adapte le scale selon la taille de l'écran via les media queries si besoin, 
        mais 2.5 est une bonne base mobile */
@@ -309,7 +309,7 @@ h2,h3{
 /* Sur les écrans plus larges (Ordinateur) */
 @media (min-width: 768px) {
     #player-img.zoomed {
-        transform: translate(-50%, calc(-50vh + 150px)) scale(4) !important;
+        transform: translate(-50%, calc(-50vh + 150px)) scale(3) !important;
     }
 }
 
