@@ -707,7 +707,7 @@ function showPlaylistsBySeason(season) {
     const list = allPlaylists.filter(p => p.season === season);
     const div = document.getElementById('episodes_list');
 
-    div.innerHTML = `<h2>Playlists — ${season}</h2>` + list.map(p => {
+    div.innerHTML = `<h2>Séries — ${season}</h2>` + list.map(p => {
         const encoded = btoa(unescape(encodeURIComponent(p.id)));
         return `
         <div class="episode-item" onclick="loadEpisodes('${encoded}', true)">
@@ -717,13 +717,38 @@ function showPlaylistsBySeason(season) {
     }).join('');
 }
 
-// --- PARTAGE ---
-function sharePlaylist(e, encodedPid) {
+// --- PARTAGE NATIF + COPIE ---
+async function sharePlaylist(e, encodedPid) {
     e.stopPropagation();
     const pid = decodeURIComponent(escape(atob(encodedPid)));
     const url = new URL(location.origin + location.pathname);
     url.searchParams.set('playlistId', pid);
-    navigator.clipboard.writeText(url.toString()).then(showToast);
+    const shareUrl = url.toString();
+
+    // Données à partager
+    const shareData = {
+        title: 'Baleine sous gravillon',
+        text: `Écoutez cette playlist : ${pid}`,
+        url: shareUrl
+    };
+
+    try {
+        // On vérifie si le navigateur supporte le partage natif (Mobile)
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            // Sinon (Ordinateur), on copie juste le lien
+            await navigator.clipboard.writeText(shareUrl);
+            showToast();
+        }
+    } catch (err) {
+        // Si l'utilisateur annule le partage natif, on peut quand même copier le lien en secours
+        await navigator.clipboard.writeText(shareUrl);
+        // On n'affiche le toast que si ce n'est pas une simple annulation
+        if (err.name !== 'AbortError') {
+            showToast();
+        }
+    }
 }
 
 function showToast() {
@@ -770,7 +795,7 @@ const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
 let html = `
 <div class="playlist-header-container">
     <h2>${cleanId}</h2>
-    <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette playlist">🔗</button>
+    <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">🔗</button>
 </div>`;
 
         // Affichage de la description avec l'effet "Lire la suite"
@@ -949,6 +974,6 @@ document.addEventListener('click', function(e) {
 });
 </script>
     <img id="player-img" src="" alt="Thumbnail">
-    <div id="toast">Lien copié !</div>
+    <div id="toast">Lien de la série copié !</div>
 </body>
 </html>
