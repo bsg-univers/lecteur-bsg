@@ -261,26 +261,31 @@ h2,h3{
 /* État agrandi de l'image du lecteur */
 /* État agrandi de l'image du lecteur - CORRIGÉ */
 #player-img.zoomed {
-    position: fixed !important; /* Priorité absolue */
+    /* On utilise fixed pour se caler sur l'écran et non sur le player */
+    position: fixed !important;
+    
+    /* On force le placement au centre exact */
     top: 50% !important;
     left: 50% !important;
-    /* Le translate repositionne le centre de l'image au centre de l'écran */
-    transform: translate(-50%, -50%) scale(1) !important; 
+    bottom: auto !important; /* Annule les contraintes du bas */
     
-    width: 85vw !important;  
-    height: 85vw !important; 
-    max-width: 500px !important; 
+    /* Le translate à -50%/-50% est crucial pour le centrage */
+    transform: translate(-50%, -50%) scale(1) !important;
+    
+    width: 90vw !important;
+    height: 90vw !important;
+    max-width: 500px !important;
     max-height: 500px !important;
     
-    z-index: 9999 !important; /* Pour passer au-dessus du header et du player */
-    border-radius: 20px;
+    /* Un z-index très élevé pour passer devant tout */
+    z-index: 10000 !important; 
     
-    /* Ombre portée + fond assombri total */
-    box-shadow: 0 0 50px rgba(0,0,0,0.8), 0 0 0 2000px rgba(11, 14, 20, 0.9);
+    /* Effet d'obscurité autour */
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.9) !important;
     
-    cursor: zoom-out;
-    display: block !important;
+    border-radius: 15px;
     object-fit: cover;
+    cursor: zoom-out;
 }
 
 /* Animation d'ouverture */
@@ -950,6 +955,37 @@ loadPlaylists();
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(err => console.log("Erreur SW", err));
 }
+// --- COPIEZ ET COLLEZ CE BLOC ICI ---
+
+// Gestion du zoom sur l'image de l'épisode
+document.getElementById('player-img').addEventListener('click', function(e) {
+    e.stopPropagation(); 
+    this.classList.toggle('zoomed');
+    
+    const playerContainer = document.querySelector('.player-container');
+    
+    if (this.classList.contains('zoomed')) {
+        document.body.style.overflow = 'hidden'; // Bloque le scroll de la page
+        // On donne la priorité maximale au conteneur pour que l'image sorte du lot
+        if (playerContainer) playerContainer.style.zIndex = "10001";
+    } else {
+        document.body.style.overflow = ''; // Libère le scroll
+        if (playerContainer) playerContainer.style.zIndex = "1000";
+    }
+});
+
+// Fermer l'image si on clique ailleurs sur l'écran
+window.addEventListener('click', function(e) {
+    const img = document.getElementById('player-img');
+    if (img.classList.contains('zoomed') && e.target !== img) {
+        img.classList.remove('zoomed');
+        document.body.style.overflow = '';
+        const playerContainer = document.querySelector('.player-container');
+        if (playerContainer) playerContainer.style.zIndex = "1000";
+    }
+});
+
+// --- FIN DU BLOC ---
 </script>
 
     <div id="toast">Lien copié !</div>
