@@ -495,25 +495,6 @@ h2,h3{
     animation: playerSubtleWave 15s ease-in-out infinite;
 }
 
-/* --- L'IMAGE (Positionnée à 90% dehors) --- */
-#player-img {
-    width: 140px; 
-    height: 140px;
-    border-radius: 12px;
-    object-fit: cover;
-    background: #0b0e14;
-    border: 1px solid rgba(243, 195, 0, 0.4);
-    
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -118px); 
-    
-    /* Pulsation renforcée */
-    animation: borderPulse 18s ease-in-out infinite;
-    display: none;
-    z-index: 1001;
-}
-
 /* --- LE TITRE (Espace rétabli) --- */
 .now-playing {
     text-align: center;
@@ -933,18 +914,19 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(err => console.log("Erreur SW", err));
 }
     
-// Gestion du zoom simplifiée
-const pImg = document.getElementById('player-img');
+// Gestion du zoom robuste
+document.addEventListener('click', function(e) {
+    const pImg = document.getElementById('player-img');
+    if (!pImg) return;
 
-pImg.addEventListener('click', function(e) {
-    e.stopPropagation();
-    this.classList.toggle('zoomed');
-    document.body.style.overflow = this.classList.contains('zoomed') ? 'hidden' : '';
-});
-
-// Fermer au clic ailleurs
-window.addEventListener('click', function(e) {
-    if (pImg.classList.contains('zoomed') && e.target !== pImg) {
+    // Si on clique sur l'image
+    if (e.target === pImg) {
+        e.stopPropagation();
+        pImg.classList.toggle('zoomed');
+        document.body.style.overflow = pImg.classList.contains('zoomed') ? 'hidden' : '';
+    } 
+    // Si on clique ailleurs alors que c'est zoomé
+    else if (pImg.classList.contains('zoomed')) {
         pImg.classList.remove('zoomed');
         document.body.style.overflow = '';
     }
