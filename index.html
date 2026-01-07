@@ -257,6 +257,13 @@ h2,h3{
 /* ===================== */
 /*      ÉPISODES         */
 /* ===================== */
+        
+.player-image-wrapper {
+    position: relative;
+    /* On s'assure que le wrapper ne bloque pas l'image qui sort */
+    overflow: visible !important; 
+    z-index: 1001;
+}
 
 /* État agrandi de l'image du lecteur */
 /* État agrandi de l'image du lecteur - CORRIGÉ */
@@ -638,27 +645,6 @@ audio {
 </div>
 
 <script>
-
-// --- FONCTION ZOOM IMAGE ---
-document.getElementById('player-img').addEventListener('click', function() {
-    this.classList.toggle('zoomed');
-    
-    // Empêcher le défilement de la page quand l'image est agrandie
-    if (this.classList.contains('zoomed')) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = '';
-    }
-});
-
-// Refermer l'image si on clique n'importe où ailleurs (optionnel mais pratique)
-window.addEventListener('click', function(e) {
-    const img = document.getElementById('player-img');
-    if (img.classList.contains('zoomed') && e.target !== img) {
-        img.classList.remove('zoomed');
-        document.body.style.overflow = '';
-    }
-});
     
 // --- CONFIGURATION ---
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoj1HRP-nYuZW5YHoaNXLw64iLvbcK9Q-Wxj5hN6CgPNqNt6vXlrV9qfqBcyBRzRiH0A/exec";
@@ -860,6 +846,7 @@ async function play(i) {
         const playerImg = document.getElementById('player-img');
         if (playerImg) {
             playerImg.classList.remove('zoomed');
+            document.body.style.overflow = '';
             if (episode.image && episode.image.trim() !== "") {
                 playerImg.style.display = "none"; // On cache le temps du chargement
                 playerImg.src = episode.image;
