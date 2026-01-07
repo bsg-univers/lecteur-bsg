@@ -257,41 +257,40 @@ h2,h3{
 /* ===================== */
 /*      ÉPISODES         */
 /* ===================== */
-        
-.player-image-wrapper {
-    position: relative;
-    /* On s'assure que le wrapper ne bloque pas l'image qui sort */
-    overflow: visible !important; 
-    z-index: 1001;
+
+#player-img {
+    width: 140px;
+    height: 140px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #0b0e14;
+    border: 1px solid rgba(243, 195, 0, 0.4);
+    
+    /* Positionnement absolu par rapport à la fenêtre */
+    position: fixed;
+    bottom: 55px; /* Ajusté pour flotter au-dessus de la barre */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    display: none;
+    z-index: 2000; /* Devant le lecteur */
+    cursor: zoom-in;
+    transition: all 0.3s ease;
 }
 
-/* État agrandi de l'image du lecteur */
-/* État agrandi de l'image du lecteur - CORRIGÉ */
 #player-img.zoomed {
-    /* On utilise fixed pour se caler sur l'écran et non sur le player */
     position: fixed !important;
-    
-    /* On force le placement au centre exact */
     top: 50% !important;
     left: 50% !important;
-    bottom: auto !important; /* Annule les contraintes du bas */
-    
-    /* Le translate à -50%/-50% est crucial pour le centrage */
+    bottom: auto !important;
     transform: translate(-50%, -50%) scale(1) !important;
-    
     width: 90vw !important;
     height: 90vw !important;
     max-width: 500px !important;
     max-height: 500px !important;
-    
-    /* Un z-index très élevé pour passer devant tout */
-    z-index: 10000 !important; 
-    
-    /* Effet d'obscurité autour */
+    z-index: 10000 !important;
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.9) !important;
-    
     border-radius: 15px;
-    object-fit: cover;
     cursor: zoom-out;
 }
 
@@ -299,12 +298,6 @@ h2,h3{
 @keyframes zoomIn {
     from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
     to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-}
-
-/* On change le curseur sur l'image normale pour indiquer qu'on peut cliquer */
-#player-img {
-    cursor: zoom-in;
-    transition: transform 0.2s ease;
 }
         
 /* Conteneur spécial pour le titre H2 et son bouton de partage */
@@ -637,9 +630,6 @@ audio {
 </div>
 
 <div class="player-container">
-    <div class="player-image-wrapper">
-        <img id="player-img" src="" alt="Thumbnail">
-    </div>
     <div id="now-playing-title" class="now-playing">Sélectionnez une aventure...</div>
     <audio id="player" style="border-radius: 15px;" controls playsinline preload="auto"></audio>
 </div>
@@ -942,39 +932,25 @@ loadPlaylists();
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(err => console.log("Erreur SW", err));
 }
-// --- COPIEZ ET COLLEZ CE BLOC ICI ---
+    
+// Gestion du zoom simplifiée
+const pImg = document.getElementById('player-img');
 
-// Gestion du zoom sur l'image de l'épisode
-document.getElementById('player-img').addEventListener('click', function(e) {
-    e.stopPropagation(); 
+pImg.addEventListener('click', function(e) {
+    e.stopPropagation();
     this.classList.toggle('zoomed');
-    
-    const playerContainer = document.querySelector('.player-container');
-    
-    if (this.classList.contains('zoomed')) {
-        document.body.style.overflow = 'hidden'; // Bloque le scroll de la page
-        // On donne la priorité maximale au conteneur pour que l'image sorte du lot
-        if (playerContainer) playerContainer.style.zIndex = "10001";
-    } else {
-        document.body.style.overflow = ''; // Libère le scroll
-        if (playerContainer) playerContainer.style.zIndex = "1000";
-    }
+    document.body.style.overflow = this.classList.contains('zoomed') ? 'hidden' : '';
 });
 
-// Fermer l'image si on clique ailleurs sur l'écran
+// Fermer au clic ailleurs
 window.addEventListener('click', function(e) {
-    const img = document.getElementById('player-img');
-    if (img.classList.contains('zoomed') && e.target !== img) {
-        img.classList.remove('zoomed');
+    if (pImg.classList.contains('zoomed') && e.target !== pImg) {
+        pImg.classList.remove('zoomed');
         document.body.style.overflow = '';
-        const playerContainer = document.querySelector('.player-container');
-        if (playerContainer) playerContainer.style.zIndex = "1000";
     }
 });
-
-// --- FIN DU BLOC ---
 </script>
-
+    <img id="player-img" src="" alt="Thumbnail">
     <div id="toast">Lien copié !</div>
 </body>
 </html>
