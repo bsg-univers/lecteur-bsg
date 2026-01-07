@@ -257,6 +257,30 @@ h2,h3{
 /* ===================== */
 /*      ÉPISODES         */
 /* ===================== */
+
+/* Conteneur spécial pour le titre H2 et son bouton de partage */
+.playlist-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 32px 0 18px;
+    padding-left: 14px;
+    border-left: 3px solid var(--primary);
+}
+
+/* On réinitialise les marges du H2 car le conteneur gère l'espacement maintenant */
+.playlist-header-container h2 {
+    margin: 0;
+    padding-left: 0;
+    border-left: none;
+    flex: 1;
+}
+
+/* Style spécifique pour le bouton de partage en haut de page */
+.playlist-header-container .btn-share {
+    margin-left: 15px;
+}
+        
 /* Style des liens dans la description */
 .playlist-description-content a {
     color: var(--primary); /* Utilise ton jaune doré */
@@ -699,7 +723,15 @@ async function loadEpisodes(pid, encoded = false) {
         }
 
         // 3. Construction du HTML
-        let html = `<h2>${cleanId}</h2>`;
+        // On prépare l'ID encodé pour le bouton de partage
+const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
+
+// On crée une ligne avec le titre à gauche et le bouton à droite
+let html = `
+<div class="playlist-header-container">
+    <h2>${cleanId}</h2>
+    <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette playlist">🔗</button>
+</div>`;
 
         // Affichage de la description avec l'effet "Lire la suite"
         if (playlistDesc && playlistDesc.trim() !== "") {
