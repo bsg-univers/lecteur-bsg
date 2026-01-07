@@ -90,24 +90,31 @@ body{
 /* Réinitialisation globale */
 
 header {
-  position: relative; /* Priorité d'affichage */
-  z-index: 10;        /* Priorité d'affichage */
+  position: relative;
+  z-index: 10;
   width: 100%;
   text-align: center;
-  padding: 32px 20px;
+  padding: 15px 20px; /* Réduit de 32px à 15px */
+  /* Dégradé plus léger et transparent */
   background: linear-gradient(to bottom, 
-    rgba(0,0,0,0.85) 0%, 
-    rgba(0,0,0,0.85) 5%, 
-    rgba(0,0,0,0.55) 90%);
-  box-shadow: 0 5px 90px rgba(0,0,0,0.8);
+    rgba(11, 14, 20, 0.7) 0%, 
+    rgba(11, 14, 20, 0.4) 100%);
+  backdrop-filter: blur(8px); /* Ajoute un flou artistique derrière le header */
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
-.logo-main{
-  max-width:200px;
-  margin-bottom:16px;
-  filter:
-    drop-shadow(0 0 14px rgba(243,195,0,0.25))
-    drop-shadow(0 0 40px rgba(243,195,0,0.08));
+.logo-main {
+  max-width: 120px; /* Réduit de 200px à 120px */
+  margin-bottom: 12px;
+  filter: 
+    drop-shadow(0 0 10px rgba(243,195,0,0.2))
+    drop-shadow(0 0 30px rgba(243,195,0,0.05));
+  transition: transform 0.3s ease;
+}
+
+.logo-main:hover {
+  transform: scale(1.05); /* Petit effet au survol */
 }
 
 /* lien image */
