@@ -266,32 +266,51 @@ h2,h3{
     background: #0b0e14;
     border: 1px solid rgba(243, 195, 0, 0.4);
     
-    /* Positionnement absolu par rapport à la fenêtre */
     position: fixed;
-    bottom: 100px; /* Ajusté pour flotter au-dessus de la barre */
+    /* On fixe l'ancrage en bas */
+    bottom: 115px; 
     left: 50%;
-    transform: translateX(-50%);
+    
+    /* L'état initial : centré horizontalement */
+    transform: translate(-50%, 0) scale(1);
     
     display: none;
-    z-index: 2000; /* Devant le lecteur */
+    z-index: 2000; 
     cursor: zoom-in;
-    transition: all 0.3s ease;
+    
+    /* Animation ultra-douce */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.4s ease, 
+                border-radius 0.4s ease;
+    
+    touch-action: manipulation;
+    -webkit-user-drag: none;
 }
 
 #player-img.zoomed {
+    display: block !important;
     position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    bottom: auto !important;
-    transform: translate(-50%, -50%) scale(1) !important;
-    width: 90vw !important;
-    height: 90vw !important;
-    max-width: 500px !important;
-    max-height: 500px !important;
+    
+    /* On calcule le déplacement pour simuler le centrage écran */
+    /* On remonte l'image de la moitié de l'écran moins sa position initiale */
+    transform: translate(-50%, calc(-50vh + 150px)) scale(2.5) !important;
+    
+    /* On adapte le scale selon la taille de l'écran via les media queries si besoin, 
+       mais 2.5 est une bonne base mobile */
+    width: 140px;
+    height: 140px;
+    
     z-index: 10000 !important;
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.9) !important;
     border-radius: 15px;
     cursor: zoom-out;
+}
+
+/* Sur les écrans plus larges (Ordinateur) */
+@media (min-width: 768px) {
+    #player-img.zoomed {
+        transform: translate(-50%, calc(-50vh + 150px)) scale(4) !important;
+    }
 }
 
 /* Animation d'ouverture */
@@ -917,16 +936,13 @@ if ('serviceWorker' in navigator) {
 // Gestion du zoom robuste
 document.addEventListener('click', function(e) {
     const pImg = document.getElementById('player-img');
-    if (!pImg) return;
+    if (!pImg || e.target.closest('.btn-share')) return; // ignore si clic sur bouton partage
 
-    // Si on clique sur l'image
     if (e.target === pImg) {
         e.stopPropagation();
         pImg.classList.toggle('zoomed');
         document.body.style.overflow = pImg.classList.contains('zoomed') ? 'hidden' : '';
-    } 
-    // Si on clique ailleurs alors que c'est zoomé
-    else if (pImg.classList.contains('zoomed')) {
+    } else if (pImg.classList.contains('zoomed')) {
         pImg.classList.remove('zoomed');
         document.body.style.overflow = '';
     }
