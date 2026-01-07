@@ -259,20 +259,28 @@ h2,h3{
 /* ===================== */
 
 /* État agrandi de l'image du lecteur */
+/* État agrandi de l'image du lecteur - CORRIGÉ */
 #player-img.zoomed {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Centrage parfait */
-    width: 90vw;  /* 90% de la largeur de l'écran */
-    height: 90vw; /* Garde le format carré */
-    max-width: 500px; /* Limite sur tablette/ordi */
-    max-height: 500px;
-    z-index: 3000; /* Passe par-dessus tout */
+    position: fixed !important; /* Priorité absolue */
+    top: 50% !important;
+    left: 50% !important;
+    /* Le translate repositionne le centre de l'image au centre de l'écran */
+    transform: translate(-50%, -50%) scale(1) !important; 
+    
+    width: 85vw !important;  
+    height: 85vw !important; 
+    max-width: 500px !important; 
+    max-height: 500px !important;
+    
+    z-index: 9999 !important; /* Pour passer au-dessus du header et du player */
     border-radius: 20px;
-    box-shadow: 0 0 100px rgba(0,0,0,0.9), 0 0 0 1000px rgba(11, 14, 20, 0.9); /* Ombre géante pour assombrir le fond */
+    
+    /* Ombre portée + fond assombri total */
+    box-shadow: 0 0 50px rgba(0,0,0,0.8), 0 0 0 2000px rgba(11, 14, 20, 0.9);
+    
     cursor: zoom-out;
-    animation: zoomIn 0.3s ease-out forwards;
+    display: block !important;
+    object-fit: cover;
 }
 
 /* Animation d'ouverture */
