@@ -113,46 +113,45 @@ header {
     transition: transform 0.3s ease;
 }
 
-/* Le dock par défaut (quand on choisit une saison) */
+/* Le dock "languette" qui sort du haut */
 .nav-dock {
     position: sticky;
-    top: 10px;
+    top: 0; /* Collé tout en haut */
     z-index: 3000;
     width: fit-content; 
-    margin: 0 auto 20px auto;
+    margin: 0 auto 30px auto;
     display: flex;
-    gap: 12px;
-    padding: 10px 14px;
-    background: rgba(15, 18, 25, 0.98);
-    border-radius: 22px;
-    border: 1px solid rgba(234, 189, 6, 0.4);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+    gap: 15px;
+    padding: 8px 20px 12px; /* Plus de padding en bas qu'en haut */
+    background: rgba(15, 18, 25, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    /* On arrondit seulement les coins du bas */
+    border-radius: 0 0 25px 25px; 
+    
+    /* Bordure seulement sur les côtés et le bas */
+    border: 1px solid rgba(234, 189, 6, 0.3);
+    border-top: none; 
+    
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     transition: all 0.4s ease;
 }
 
-/* LA CLASSE MAGIQUE : Le dock redevient normal et reste en haut de la page */
+/* Version statique (quand on a choisi une série) */
 .nav-dock.is-static {
-    position: relative !important; /* Il ne colle plus au haut de l'écran */
-    top: 10px; !important;
-    box-shadow: none; /* On peut réduire l'ombre pour plus de discrétion */
-    margin-bottom: 30px;
+    position: relative !important;
+    top: 0 !important;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
- .nav-dock.hidden {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px); /* Petit effet de remontée en disparaissant */
-    pointer-events: none; /* Empêche de cliquer dessus quand il est invisible */
-}
-        
+/* Ajustement des icônes pour qu'elles soient bien centrées */
 .site-image-link {
-    width: 60px;
-    height: 60px;
-    border-radius: 10px;
-    overflow: hidden;
-    flex-shrink: 0;
+    width: 50px; /* Légèrement plus petit pour gagner de la place */
+    height: 50px;
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.2s ease;
 }
 
 .site-image-link:active {
