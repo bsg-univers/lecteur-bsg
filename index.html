@@ -113,45 +113,52 @@ header {
     transition: transform 0.3s ease;
 }
 
-/* Le dock "languette" qui sort du haut */
+/* Le dock "languette" qui sort physiquement du haut */
 .nav-dock {
     position: sticky;
-    top: 0; /* Collé tout en haut */
+    top: 0;                /* Collé au plafond */
     z-index: 3000;
-    width: fit-content; 
-    margin: 0 auto 30px auto;
+    width: fit-content;    
+    margin: 0 auto 30px auto; /* Centré horizontalement */
     display: flex;
     gap: 15px;
-    padding: 8px 20px 12px; /* Plus de padding en bas qu'en haut */
-    background: rgba(15, 18, 25, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     
-    /* On arrondit seulement les coins du bas */
+    /* Padding stratégique : 0 en haut pour toucher le bord, plus en bas pour l'esthétique */
+    padding: 0 20px 12px 20px; 
+    
+    background: rgba(15, 18, 25, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    
+    /* MAGIE DE LA LANGUETTE : 
+       Arrondi uniquement en bas. Le haut est à 0. */
     border-radius: 0 0 25px 25px; 
     
-    /* Bordure seulement sur les côtés et le bas */
-    border: 1px solid rgba(234, 189, 6, 0.3);
+    /* Bordure seulement sur les côtés et le bas (pas de bordure en haut) */
+    border: 1px solid rgba(234, 189, 6, 0.4);
     border-top: none; 
     
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
     transition: all 0.4s ease;
 }
 
-/* Version statique (quand on a choisi une série) */
-.nav-dock.is-static {
-    position: relative !important;
-    top: 0 !important;
-    box-shadow: none;
-    border-color: rgba(255, 255, 255, 0.1);
+/* On s'assure que les icônes ne touchent pas le bord du navigateur de façon brute */
+.site-image-link {
+    width: 50px;
+    height: 50px;
+    margin-top: 8px; /* On crée l'espace interne ici plutôt que dans le dock */
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease;
 }
 
-/* Ajustement des icônes pour qu'elles soient bien centrées */
-.site-image-link {
-    width: 50px; /* Légèrement plus petit pour gagner de la place */
-    height: 50px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+/* Quand on descend dans une série, le dock reste en haut de page mais sans coller au scroll */
+.nav-dock.is-static {
+    position: absolute !important; /* Change de sticky à absolute pour rester au sommet du document */
+    top: 0 !important;
+    box-shadow: none;
 }
 
 .site-image-link:active {
