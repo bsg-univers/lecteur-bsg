@@ -98,85 +98,59 @@ body{
 /* ===================== */
 /*        HEADER         */
 /* ===================== */
-/* Réinitialisation globale */
-
 header {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  text-align: center;
-  padding: 15px 20px;
-  
-  /* On remplace le flou par un dégradé plus dense en haut qui s'estompe */
-  /* Cela crée une profondeur visuelle sans demander de calculs de flou */
-  background: linear-gradient(
-    to bottom, 
-    rgba(11, 14, 20, 0.95) 0%, 
-    rgba(11, 14, 20, 0.8) 50%,
-    rgba(11, 14, 20, 0) 100%
-  );
-
-  /* On adoucit l'ombre pour qu'elle ne soit pas trop nette */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  
-  /* Astuce de performance : force le rendu sur la carte graphique */
-  backdrop-filter: none !important; /* On s'assure que le flou est bien désactivé */
-    -webkit-backdrop-filter: none !important;
-    
-  /* On force le navigateur à traiter le header sur son propre calque */
-  transform: translateZ(0); 
-  will-change: transform;
-    
-  /* On évite les débordements de peinture */
-  overflow: hidden;
+    position: sticky; /* Reste en haut sans bloquer le scroll de façon rigide */
+    top: 0;
+    z-index: 2000;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    /* On utilise un dégradé très subtil pour détacher le header sans flou */
+    background: linear-gradient(to bottom, rgba(11, 14, 20, 1) 70%, rgba(11, 14, 20, 0) 100%);
 }
 
 .logo-main {
-  max-width: 130px; /* Réduit de 200px à 130px */
-  margin-bottom: 12px;
-  filter: none;
-/* On aide le lissage des images */
-  image-rendering: -webkit-optimize-contrast;
-  backface-visibility: hidden;
-  transition: transform 0.3s ease;
+    max-width: 150px;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+    transition: transform 0.3s ease;
 }
 
-.logo-main:hover {
-  transform: scale(1.05); /* Petit effet au survol */
+/* Le conteneur des 4 icônes : On crée un "Dock" façon iOS */
+.nav-dock {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 15px;
+    border-radius: 20px; /* Forme pilule */
+    border: 1px solid rgba(234, 189, 6, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: none; /* On évite le blur pour la fluidité */
 }
 
-/* lien image */
 .site-image-link {
-    display: inline-block;
-    margin-right: 7px;
-    width: 58px;
-    height: 58px;
-    border-radius: 5px;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px; /* Coins arrondis façon app icon */
     overflow: hidden;
-    background: #000;
-    
-    /* On s'assure qu'elles ne créent pas de "traînée" */
-    isolation: isolate; 
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    
-    /* On garde la transition mais on ajoute hardware acceleration */
-    transition: transform .35s ease;
-    transform: translateZ(0);
 }
 
-.site-image-link:hover{
-  transform:translateY(-4px) scale(1.06);
+.site-image-link:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 5px 15px rgba(234, 189, 6, 0.3);
 }
 
-.site-image-link img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  /* On simplifie les filtres pendant le scroll */
-  filter: none; 
-  /* On aide le lissage des images */
-  image-rendering: -webkit-optimize-contrast;
-  backface-visibility: hidden;
+.site-image-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* ===================== */
@@ -639,21 +613,24 @@ audio {
 <body>
 
 <header>
-<a href="https://baleinesousgravillon.com/" target="_blank" title="Aller sur le site officiel">
-    <img src="https://baleinesousgravillon.com/wp-content/uploads/2023/08/logo-accueil3Plan-de-travail-2-copie-3@2x-1.png" alt="Logo" class="logo-main"><br>
-</a>
-<a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Aller sur le site officiel">
-    <img src="https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg" alt="Lien Site">
-</a>
-<a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Aller sur le site officiel">
-    <img src="https://image.ausha.co/A7P2IR07j1IuiB6cAAY9LjKIEcrbr4dPsgqobQHP_400x400.jpeg" alt="Lien Site">
-</a>
-<a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Aller sur le site officiel">
-    <img src="https://image.ausha.co/CBnPjfz7mxzBMJg4Fc3OGIHETweeY5jv4GH5JdU0_400x400.jpeg" alt="Lien Site">
-</a>
-<a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Aller sur le site officiel">
-    <img src="https://image.ausha.co/0xC11gNAqCw0Flp5qCUhuWM9kJI3p8Lw6J3lLm5w_400x400.jpeg" alt="Lien Site">
-</a>
+    <a href="https://baleinesousgravillon.com/" target="_blank">
+        <img src="https://baleinesousgravillon.com/wp-content/uploads/2023/08/logo-accueil3Plan-de-travail-2-copie-3@2x-1.png" alt="Logo BSG" class="logo-main">
+    </a>
+    
+    <nav class="nav-dock">
+        <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Baleine sous Gravillon">
+            <img src="https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg" alt="BSG">
+        </a>
+        <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Combats">
+            <img src="https://image.ausha.co/A7P2IR07j1IuiB6cAAY9LjKIEcrbr4dPsgqobQHP_400x400.jpeg" alt="Combats">
+        </a>
+        <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Petit Poisson">
+            <img src="https://image.ausha.co/CBnPjfz7mxzBMJg4Fc3OGIHETweeY5jv4GH5JdU0_400x400.jpeg" alt="PPDV">
+        </a>
+        <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Nomen">
+            <img src="https://image.ausha.co/0xC11gNAqCw0Flp5qCUhuWM9kJI3p8Lw6J3lLm5w_400x400.jpeg" alt="Nomen">
+        </a>
+    </nav>
 </header>
 
 <div class="container">
