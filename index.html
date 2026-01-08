@@ -113,41 +113,43 @@ header {
     transition: transform 0.3s ease;
 }
 /* Le dock "languette" optimisé (Aérien & Économe en batterie) */
+/* 1. LE DOCK (État normal : collant) */
 .nav-dock {
     position: sticky;
     top: 0;
-    /* On ajoute ces deux lignes pour garantir le centrage en toute circonstance */
-    left: 50%;
-    transform: translateX(-50%);
-    
     z-index: 3000;
     width: fit-content;    
-    /* Le margin auto n'est plus strictement nécessaire avec le transform, mais on le garde par sécurité */
+    
+    /* Centrage robuste pour Mobile et Desktop */
     margin: 0 auto 25px auto; 
+    left: 0;
+    right: 0;
+
     display: flex;
     gap: 12px;
     padding: 0 16px 10px 16px; 
-    
     background: #0d1117; 
     border-radius: 0 0 20px 20px; 
     border: 1px solid rgba(210, 179, 71, 0.2);
     border-top: none; 
-    
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
 }
 
-/* 2. LE DOCK STATIQUE (Quand on entre dans une série, il reste au sommet de la page) */
+/* 2. LE DOCK STATIQUE (Correction de la superposition) */
 .nav-dock.is-static {
-    position: absolute !important;
+    /* On utilise 'relative' au lieu d' 'absolute' ! */
+    /* Cela permet de garder sa place dans la page et d'empêcher les galets de monter dessous */
+    position: relative !important; 
     top: 0 !important;
-    /* On force le maintien au centre */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important; /* On annule le transform si vous en aviez mis un */
     
     background: #0d1117;
     border-color: rgba(255, 255, 255, 0.05);
     box-shadow: none;
+    margin-bottom: 25px; /* On s'assure qu'il y a de l'espace avec les galets */
 }
 
 /* 3. LES LIENS/IMAGES DU DOCK */
