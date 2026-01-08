@@ -155,7 +155,7 @@ header {
 }
 
 .site-image-link:active {
-    transform: scale(0.5);
+    transform: scale(0.9);
 }
 
 .site-image-link img {
@@ -276,52 +276,51 @@ h2,h3{
 /* ===================== */
 
 #player-img {
-    width: 140px;
-    height: 140px;
+    position: fixed;
+    bottom: 112px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 2000;
+    
     border-radius: 12px;
     object-fit: cover;
     background: #0b0e14;
     border: 1px solid rgba(243, 195, 0, 0.4);
     
-    position: fixed;
-    /* On fixe l'ancrage en bas */
-    bottom: 112px; 
-    left: 50%;
-    
-    /* L'état initial : centré horizontalement */
-    transform: translate(-50%, 0) scale(1);
-    
-    display: none;
-    z-index: 2000; 
-    cursor: zoom-in;
-    
-    /* Animation ultra-douce */
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                box-shadow 0.4s ease, 
-                border-radius 0.4s ease;
-    
-    touch-action: manipulation;
-    -webkit-user-drag: none;
+    /* Animation fluide entre petit et grand */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#player-img.zoomed {
-    display: block !important;
-    position: fixed !important;
-    
-    /* On calcule le déplacement pour simuler le centrage écran */
-    /* On remonte l'image de la moitié de l'écran moins sa position initiale */
-    transform: translate(-50%, calc(-50vh + 150px)) scale(2.2) !important;
-    
-    /* On adapte le scale selon la taille de l'écran via les media queries si besoin, 
-       mais 2.5 est une bonne base mobile */
+/* ÉTAT LOGO (Petit) */
+#player-img.is-logo {
+    width: 60px; /* Taille miniature */
+    height: 60px;
+    border-radius: 50%; /* On peut même le mettre en rond */
+    cursor: default;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+/* ÉTAT ÉPISODE (Grand) */
+#player-img.is-episode {
     width: 140px;
     height: 140px;
-    
+    border-radius: 12px;
+    cursor: zoom-in;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+}
+
+/* ZOOM UNIQUE ET PROPRE */
+#player-img.zoomed {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(2.5) !important; /* Centré parfaitement */
     z-index: 10000 !important;
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.9) !important;
     border-radius: 15px;
     cursor: zoom-out;
 }
+
 
 /* Sur les écrans plus larges (Ordinateur) */
 @media (min-width: 768px) {
@@ -623,12 +622,6 @@ audio {
 </head>
 <body>
 
-<header>
-    <a href="https://baleinesousgravillon.com/" target="_blank">
-        <img src="https://baleinesousgravillon.com/wp-content/uploads/2023/08/logo-accueil3Plan-de-travail-2-copie-3@2x-1.png" alt="Logo BSG" class="logo-main">
-    </a>
-</header>
-
 <nav class="nav-dock">
     <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Baleine sous Gravillon">
         <img src="https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg" alt="BSG">
@@ -648,7 +641,7 @@ audio {
     <div id="seasons_grid" class="grid-list"></div>
     <div id="episodes_list"></div>
 </div>
-
+<img id="player-img" class="is-logo" src="https://baleinesousgravillon.com/wp-content/uploads/2022/02/cropped-Baleine_sous_gravillon-1-270x270.png" alt="Illustration"> 
 <div class="player-container">
     <div id="now-playing-title" class="now-playing">Sélectionnez une aventure...</div>
     <audio id="player" style="border-radius: 15px;" controls playsinline preload="auto"></audio>
@@ -717,10 +710,27 @@ async function loadPlaylists() {
     showPlaylistsBySeason(seasons[0]);
 }
 
+ function resetPlayerImage() {
+    const pImg = document.getElementById('player-img');
+    if (pImg) {
+        pImg.src = "https://baleinesousgravillon.com/wp-content/uploads/2022/02/cropped-Baleine_sous_gravillon-1-270x270.png";
+        pImg.classList.remove('is-episode', 'zoomed');
+        pImg.classList.add('is-logo');
+    }
+}
+
+// Appelez cette fonction au chargement
+window.addEventListener('DOMContentLoaded', resetPlayerImage);   
+
 function showPlaylistsBySeason(season) {
     // Le dock redevient collant pour aider la navigation
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.remove('is-static');
+
+    // ... votre code existant ...
+    resetPlayerImage(); // On remet le petit logo
+    titleDisplay.innerText = "Sélectionnez une aventure...";
+
     
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
@@ -864,65 +874,38 @@ let html = `
 }
 
 
-// --- LECTURE OPTIMISÉE ---
 async function play(i) {
     current = i;
+    const episode = episodes[i];
+    const pImg = document.getElementById('player-img');
 
-    // 1. Mise à jour immédiate de l’UI (sélection dans la liste)
-    document.querySelectorAll('.list-item-ep')
-        .forEach(el => el.classList.remove('current'));
+    // 1. Gestion de l'image (Taille et Source)
+    if (pImg) {
+        pImg.classList.remove('zoomed');
+        if (episode.image && episode.image.trim() !== "") {
+            pImg.src = episode.image;
+            pImg.classList.replace('is-logo', 'is-episode');
+        } else {
+            pImg.src = "https://baleinesousgravillon.com/wp-content/uploads/2022/02/cropped-Baleine_sous_gravillon-1-270x270.png";
+            pImg.classList.replace('is-episode', 'is-logo');
+        }
+    }
+
+    // 2. UI : Sélection dans la liste
+    document.querySelectorAll('.list-item-ep').forEach(el => el.classList.remove('current'));
     document.getElementById(`ep-${i}`)?.classList.add('current');
 
+    // 3. Audio
     titleDisplay.innerText = "Plongée en cours...";
-
+    audio.src = episode.audio;
+    
     try {
-        const episode = episodes[i];
-
-        // Sécurité minimale
-        if (!episode || !episode.audio) {
-            console.error("Épisode ou audio manquant", episode);
-            titleDisplay.innerText = "Audio indisponible";
-            return;
-        }
-
-        // --- GESTION DE L'IMAGE DE L'ÉPISODE ---
-        const playerImg = document.getElementById('player-img');
-        if (playerImg) {
-            playerImg.classList.remove('zoomed');
-            document.body.style.overflow = '';
-            if (episode.image && episode.image.trim() !== "") {
-                playerImg.style.display = "none"; // On cache le temps du chargement
-                playerImg.src = episode.image;
-                playerImg.onload = () => { playerImg.style.display = "block"; };
-            } else {
-                playerImg.style.display = "none";
-            }
-        }
-
-        // 2. Chargement de l’audio (direct depuis le JSON)
-        audio.src = episode.audio;
-        audio.load();
-
-        // 3. Media Session (Contrôles du téléphone / écran de verrouillage)
+        await audio.play();
+        titleDisplay.innerText = episode.title;
         updateMediaSession(episode.title);
-
-        // 4. Lecture
-        const playPromise = audio.play();
-
-        if (playPromise !== undefined) {
-            playPromise
-                .then(() => {
-                    titleDisplay.innerText = episode.title;
-                })
-                .catch(err => {
-                    console.log("Lecture bloquée par le navigateur", err);
-                    titleDisplay.innerText = "Cliquez sur ▶ pour lancer la lecture";
-                });
-        }
-
     } catch (err) {
-        console.error("Erreur lecture épisode", err);
-        titleDisplay.innerText = "Erreur de lecture";
+        console.error("Erreur lecture", err);
+        titleDisplay.innerText = "Cliquez sur ▶ pour lire";
     }
 }
 
@@ -989,10 +972,10 @@ if ('serviceWorker' in navigator) {
 // Gestion du zoom robuste
 document.addEventListener('click', function(e) {
     const pImg = document.getElementById('player-img');
-    if (!pImg || e.target.closest('.btn-share')) return; // ignore si clic sur bouton partage
+    // On n'autorise le zoom QUE si l'image a la classe 'is-episode'
+    if (!pImg || !pImg.classList.contains('is-episode') || e.target.closest('.btn-share')) return;
 
     if (e.target === pImg) {
-        e.stopPropagation();
         pImg.classList.toggle('zoomed');
         document.body.style.overflow = pImg.classList.contains('zoomed') ? 'hidden' : '';
     } else if (pImg.classList.contains('zoomed')) {
@@ -1009,6 +992,7 @@ window.addEventListener('scroll', function() {
         logo.style.opacity = Math.max(opacity, 0);
     }
 });
+document.getElementById('player-img').src = "https://baleinesousgravillon.com/wp-content/uploads/2022/02/cropped-Baleine_sous_gravillon-1-270x270.png"; 
 </script>
     <img id="player-img" src="" alt="Thumbnail">
     <div id="toast">Lien de la série copié !</div>
