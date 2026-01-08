@@ -354,6 +354,7 @@ h2,h3{
     padding-left: 0;
     border-left: none;
     flex: 1;
+    scroll-margin-top: 20px;
 }
 
 /* Style spécifique pour le bouton de partage en haut de page */
@@ -860,6 +861,16 @@ let html = `
             `).join('');
 
         div.innerHTML = html;
+        // On attend un tout petit peu que le navigateur dessine le HTML
+setTimeout(() => {
+    const titleSection = div.querySelector('.playlist-header-container');
+    if (titleSection) {
+        titleSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+}, 50);
 // --- AJOUT ICI : Correction des liens ---
         const descLinks = div.querySelectorAll('.playlist-description-content a');
         descLinks.forEach(link => {
@@ -869,10 +880,6 @@ let html = `
 
         // Lecture auto du premier épisode
         play(0);
-
-        // --- AJOUTEZ CETTE LIGNE ICI ---
-        // On remonte tout en haut de la page pour voir le titre et le dock
-        window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
         console.error('Erreur chargement episodes', err);
