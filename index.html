@@ -558,12 +558,21 @@ h2,h3{
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 9000; /* En dessous de l'image normale, mais au-dessus du fond du zoom */
+    z-index: 9000;
     background: #0b0e14;
+    
+    /* On garde votre forme élégante */
     border-radius: 60px 60px 0 0 / 25px 25px 0 0;
-    border-top: 1px solid rgba(243, 195, 0, 0.3);
+    border-top: 1px solid rgba(243, 195, 0, 0.25);
     padding: 0px 20px 20px; 
-    box-shadow: 0 -15px 40px rgba(0,0,0,0.7);
+    
+    /* OMBRE NATURELLE : Multi-couches pour un effet diffus et soyeux */
+    box-shadow: 
+        0 -5px 10px rgba(0, 0, 0, 0.2),    /* Couche proche très fine */
+        0 -15px 35px rgba(0, 0, 0, 0.4),   /* Couche moyenne */
+        0 -30px 60px rgba(0, 0, 0, 0.5);   /* Grande diffusion lointaine */
+
+    /* On garde l'animation de couleur sur la bordure */
     animation: playerSubtleWave 15s ease-in-out infinite;
 }
 
@@ -1023,19 +1032,19 @@ document.addEventListener('click', function(e) {
     const pImg = document.getElementById('player-img');
     if (!pImg) return;
 
-    // 1. Si on clique sur l'image d'épisode : on bascule le zoom
+    // 1. Si on clique directement sur l'image d'épisode : on bascule le zoom
     if (e.target === pImg && pImg.classList.contains('is-episode')) {
         pImg.classList.toggle('zoomed');
         return;
     }
 
-    // 2. Si le zoom est actif
+    // 2. Si le mode zoom est actif
     if (pImg.classList.contains('zoomed')) {
-        // On NE ferme PAS si l'utilisateur clique sur le lecteur (boutons, barre, etc.)
+        // On ne ferme PAS le zoom si on clique sur les contrôles du lecteur
         if (e.target.closest('.player-container')) {
             return;
         }
-        // On ferme si on clique n'importe où ailleurs (le fond noir)
+        // On ferme si on clique sur le fond sombre ou ailleurs
         pImg.classList.remove('zoomed');
     }
 });
