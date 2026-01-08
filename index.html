@@ -524,7 +524,6 @@ h2,h3{
     background: rgba(11, 14, 20, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    bottom: -1px; /* Décale d'un pixel pour couvrir la jointure du bas */
     
     border-radius: 60px 60px 0 0 / 25px 25px 0 0;
     border-top: 1px solid rgba(243, 195, 0, 0.3); /* Bordure légèrement plus épaisse */
@@ -924,7 +923,7 @@ async function play(i) {
     } catch (err) {
         console.error("Erreur lecture", err);
         // Si l'autostart est bloqué par Chrome, on laisse le titre mais on prévient
-        titleDisplay.innerText = "▶ " + episode.title;
+        titleDisplay.innerText = episode.title;
     }
 }
 
