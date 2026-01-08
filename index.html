@@ -292,7 +292,7 @@ h2,h3{
     position: fixed;
     left: 50%;
     transform: translate(-50%, 0);
-    z-index: 2000;
+    z-index: 10000 !important;
     
     border-radius: 12px;
     object-fit: cover;
@@ -326,21 +326,23 @@ h2,h3{
 }
 
 
-/* --- LE MODE ZOOM OPTIMISÉ --- */
+/* 3. L'IMAGE EN MODE ZOOMÉ */
 #player-img.zoomed {
+    /* On baisse le z-index pour que l'ombre passe SOUS le lecteur */
+    z-index: 8500 !important; 
+    
     position: fixed !important;
-    top: 15% !important; /* Positionné en haut pour laisser le bas libre */
+    top: 15% !important;
     left: 50% !important;
-    transform: translateX(-50%) scale(2.1) !important;
+    transform: translateX(-50%) scale(1) !important;
     width: 85vw !important;
     max-width: 400px !important;
     height: auto !important;
     aspect-ratio: 1 / 1;
-    z-index: 8000 !important; /* Juste en dessous du lecteur */
     border-radius: 20px;
     cursor: zoom-out;
     
-    /* Fond noir semi-opaque via shadow (Économe en batterie) */
+    /* Le fond noir (shadow) couvrira tout SAUF le lecteur (qui est à 9000) */
     box-shadow: 0 0 0 100vmax rgba(5, 6, 8, 0.9) !important;
     animation: zoomIn 0.3s ease-out;
 }
@@ -349,7 +351,7 @@ h2,h3{
 @media (min-width: 768px) {
     #player-img.zoomed {
         top: 45% !important;
-        transform: translate(-50%, -50%) scale(3) !important;
+        transform: translate(-50%, -50%) scale(1) !important;
     }
 }        
 
@@ -535,18 +537,15 @@ h2,h3{
 }
 
 /* --- LE CONTENEUR (Ligne courbe) --- */
-/* --- LE CONTENEUR (Vos caractéristiques conservées, sans blur) --- */
 .player-container {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 9000; /* On augmente pour passer AU-DESSUS du zoom */
-    background: #0b0e14; /* Couleur solide (plus de batterie) */
-    
+    z-index: 9000; /* En dessous de l'image normale, mais au-dessus du fond du zoom */
+    background: #0b0e14;
     border-radius: 60px 60px 0 0 / 25px 25px 0 0;
     border-top: 1px solid rgba(243, 195, 0, 0.3);
-    
     padding: 0px 20px 20px; 
     box-shadow: 0 -15px 40px rgba(0,0,0,0.7);
     animation: playerSubtleWave 15s ease-in-out infinite;
