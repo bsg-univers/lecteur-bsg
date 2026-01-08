@@ -102,14 +102,26 @@ header {
   z-index: 10;
   width: 100%;
   text-align: center;
-  padding: 15px 20px; /* Réduit de 32px à 15px */
-  /* Dégradé plus léger et transparent */
-  background: linear-gradient(to bottom, 
-    rgba(11, 14, 20, 0.7) 0%, 
-    rgba(11, 14, 20, 0.4) 100%);
-  backdrop-filter: blur(8px); /* Ajoute un flou artistique derrière le header */
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  padding: 15px 20px;
+  
+  /* On remplace le flou par un dégradé plus dense en haut qui s'estompe */
+  /* Cela crée une profondeur visuelle sans demander de calculs de flou */
+  background: linear-gradient(
+    to bottom, 
+    rgba(11, 14, 20, 0.95) 0%, 
+    rgba(11, 14, 20, 0.8) 50%,
+    rgba(11, 14, 20, 0) 100%
+  );
+
+  /* On supprime ces deux lignes qui ralentissent le scroll */
+  /* backdrop-filter: blur(8px); */
+  /* -webkit-backdrop-filter: blur(8px); */
+
+  /* On adoucit l'ombre pour qu'elle ne soit pas trop nette */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  
+  /* Astuce de performance : force le rendu sur la carte graphique */
+  will-change: transform;
 }
 
 .logo-main {
