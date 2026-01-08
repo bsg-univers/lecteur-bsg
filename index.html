@@ -63,8 +63,14 @@ body::before{
 /*      FOND GLOBAL      */
 /* ===================== */
 
-html, body{
-  min-height:100%;
+/* À ajouter dans votre CSS */
+html, body {
+    background-color: #0b0e14; /* Force la couleur de fond partout */
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    /* Empêche le blanc d'apparaître lors du scroll élastique sur Chrome */
+    overscroll-behavior-y: none; 
 }
         
 html {
@@ -523,6 +529,7 @@ h2,h3{
     background: rgba(11, 14, 20, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    bottom: -1px; /* Décale d'un pixel pour couvrir la jointure du bas */
     
     border-radius: 60px 60px 0 0 / 25px 25px 0 0;
     border-top: 1px solid rgba(243, 195, 0, 0.3); /* Bordure légèrement plus épaisse */
@@ -894,7 +901,10 @@ async function play(i) {
     const episode = episodes[i];
     const pImg = document.getElementById('player-img');
 
-    // 1. Gestion de l'image (Taille et Source)
+    // 1. Mise à jour immédiate du titre (avant même le chargement audio)
+    titleDisplay.innerText = episode.title; 
+
+    // 2. Gestion de l'image
     if (pImg) {
         pImg.classList.remove('zoomed');
         if (episode.image && episode.image.trim() !== "") {
@@ -906,21 +916,20 @@ async function play(i) {
         }
     }
 
-    // 2. UI : Sélection dans la liste
-    document.querySelectorAll('.list-item-ep').forEach(el => el.classList.remove('current'));
+    // 3. UI : Sélection dans la liste
+    document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
     document.getElementById(`ep-${i}`)?.classList.add('current');
 
-    // 3. Audio
-    titleDisplay.innerText = "Plongée en cours...";
+    // 4. Chargement Audio
     audio.src = episode.audio;
     
     try {
         await audio.play();
-        titleDisplay.innerText = episode.title;
         updateMediaSession(episode.title);
     } catch (err) {
         console.error("Erreur lecture", err);
-        titleDisplay.innerText = "Cliquez sur ▶ pour lire";
+        // Si l'autostart est bloqué par Chrome, on laisse le titre mais on prévient
+        titleDisplay.innerText = "▶ " + episode.title;
     }
 }
 
