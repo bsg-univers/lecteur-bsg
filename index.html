@@ -99,77 +99,55 @@ body{
 /*        HEADER         */
 /* ===================== */
 header {
-    position: relative;
-    z-index: 2000;
-    padding: 20px 0 10px 0; /* Un peu d'espace en haut */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    background: transparent; /* On laisse le fond global gérer la couleur */
+    text-align: center;
+    padding: 30px 20px 10px;
+    background: transparent;
 }
 
 .logo-main {
-    max-width: 160px; /* Logo un peu plus grand pour la visibilité initiale */
+    max-width: 140px;
     height: auto;
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
-    transition: opacity 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
-/* LE DOCK : Large et Collant */
 .nav-dock {
+    /* POSITIONNEMENT COLLANT */
     position: sticky;
-    top: 15px; /* Distance du bord haut quand il est collé */
+    top: 10px; /* Se colle à 10px du haut */
+    z-index: 3000;
+    
+    /* TAILLE AJUSTÉE (Finit le vide inutile) */
+    width: fit-content; 
+    margin: 0 auto 20px auto; /* Centre le dock horizontalement */
+    
     display: flex;
-    justify-content: space-around; /* Répartit mieux les icônes */
-    align-items: center;
+    gap: 12px; /* Espace entre les icônes */
+    padding: 10px 14px;
     
-    width: 90%; /* Plus large sur l'écran */
-    max-width: 500px;
-    
-    background: rgba(18, 22, 30, 0.95); /* Fond plus sombre et quasi opaque pour la fluidité */
-    padding: 12px 20px;
-    border-radius: 24px;
-    border: 1px solid rgba(234, 189, 6, 0.3);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    
-    /* Hardware acceleration pour éviter la traînée */
-    transform: translateZ(0);
-    will-change: transform;
+    background: rgba(15, 18, 25, 0.98); /* Fond sombre quasi opaque */
+    border-radius: 22px;
+    border: 1px solid rgba(234, 189, 6, 0.4);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
 }
 
-/* ICÔNES PLUS LARGES */
 .site-image-link {
-    width: 65px; /* Largeur augmentée */
-    height: 65px; /* Hauteur augmentée */
-    border-radius: 16px;
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease;
 }
 
-.site-image-link:hover {
-    transform: translateY(-5px) scale(1.05);
-    border-color: var(--primary);
+.site-image-link:active {
+    transform: scale(0.92);
 }
 
 .site-image-link img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-/* Optimisation mobile pour ne pas que ce soit trop gros sur petit écran */
-@media (max-width: 400px) {
-    .site-image-link {
-        width: 55px;
-        height: 55px;
-    }
-    .nav-dock {
-        width: 95%;
-        padding: 10px;
-    }
 }
 
 /* ===================== */
@@ -635,22 +613,22 @@ audio {
     <a href="https://baleinesousgravillon.com/" target="_blank">
         <img src="https://baleinesousgravillon.com/wp-content/uploads/2023/08/logo-accueil3Plan-de-travail-2-copie-3@2x-1.png" alt="Logo BSG" class="logo-main">
     </a>
-    
-    <nav class="nav-dock">
-        <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Baleine sous Gravillon">
-            <img src="https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg" alt="BSG">
-        </a>
-        <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Combats">
-            <img src="https://image.ausha.co/A7P2IR07j1IuiB6cAAY9LjKIEcrbr4dPsgqobQHP_400x400.jpeg" alt="Combats">
-        </a>
-        <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Petit Poisson">
-            <img src="https://image.ausha.co/CBnPjfz7mxzBMJg4Fc3OGIHETweeY5jv4GH5JdU0_400x400.jpeg" alt="PPDV">
-        </a>
-        <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Nomen">
-            <img src="https://image.ausha.co/0xC11gNAqCw0Flp5qCUhuWM9kJI3p8Lw6J3lLm5w_400x400.jpeg" alt="Nomen">
-        </a>
-    </nav>
 </header>
+
+<nav class="nav-dock">
+    <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Baleine sous Gravillon">
+        <img src="https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg" alt="BSG">
+    </a>
+    <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Combats">
+        <img src="https://image.ausha.co/A7P2IR07j1IuiB6cAAY9LjKIEcrbr4dPsgqobQHP_400x400.jpeg" alt="Combats">
+    </a>
+    <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Petit Poisson">
+        <img src="https://image.ausha.co/CBnPjfz7mxzBMJg4Fc3OGIHETweeY5jv4GH5JdU0_400x400.jpeg" alt="PPDV">
+    </a>
+    <a href="https://baleinesousgravillon.com/" target="_blank" class="site-image-link" title="Nomen">
+        <img src="https://image.ausha.co/0xC11gNAqCw0Flp5qCUhuWM9kJI3p8Lw6J3lLm5w_400x400.jpeg" alt="Nomen">
+    </a>
+</nav>
 
 <div class="container">
     <div id="seasons_grid" class="grid-list"></div>
