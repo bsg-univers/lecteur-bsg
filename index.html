@@ -31,6 +31,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 :root{
@@ -113,23 +116,28 @@ header {
     rgba(11, 14, 20, 0) 100%
   );
 
-  /* On supprime ces deux lignes qui ralentissent le scroll */
-  /* backdrop-filter: blur(8px); */
-  /* -webkit-backdrop-filter: blur(8px); */
-
   /* On adoucit l'ombre pour qu'elle ne soit pas trop nette */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   
   /* Astuce de performance : force le rendu sur la carte graphique */
+  backdrop-filter: none !important; /* On s'assure que le flou est bien désactivé */
+    -webkit-backdrop-filter: none !important;
+    
+  /* On force le navigateur à traiter le header sur son propre calque */
+  transform: translateZ(0); 
   will-change: transform;
+    
+  /* On évite les débordements de peinture */
+  overflow: hidden;
 }
 
 .logo-main {
   max-width: 130px; /* Réduit de 200px à 130px */
   margin-bottom: 12px;
-  filter: 
-    drop-shadow(0 0 10px rgba(243,195,0,0.2))
-    drop-shadow(0 0 30px rgba(243,195,0,0.05));
+  filter: none;
+/* On aide le lissage des images */
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
   transition: transform 0.3s ease;
 }
 
@@ -138,15 +146,22 @@ header {
 }
 
 /* lien image */
-.site-image-link{
-  display:inline-block;
-  margin-right:7px;
-  width:58px;
-  height:58px;
-  border-radius:5px;
-  overflow:hidden;
-  background:#000;
-  transition:transform .35s ease, box-shadow .35s ease;
+.site-image-link {
+    display: inline-block;
+    margin-right: 7px;
+    width: 58px;
+    height: 58px;
+    border-radius: 5px;
+    overflow: hidden;
+    background: #000;
+    
+    /* On s'assure qu'elles ne créent pas de "traînée" */
+    isolation: isolate; 
+    position: relative;
+    
+    /* On garde la transition mais on ajoute hardware acceleration */
+    transition: transform .35s ease;
+    transform: translateZ(0);
 }
 
 .site-image-link:hover{
@@ -157,6 +172,11 @@ header {
   width:100%;
   height:100%;
   object-fit:cover;
+  /* On simplifie les filtres pendant le scroll */
+  filter: none; 
+  /* On aide le lissage des images */
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
 }
 
 /* ===================== */
