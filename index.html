@@ -288,10 +288,11 @@ h2,h3{
 /*      ÉPISODES         */
 /* ===================== */
 
+/* L'ÉTAT DE BASE (Petit) */
 #player-img {
-    position: fixed;
-    left: 50%;
-    transform: translate(-50%, 0);
+    position: fixed !important;
+    left: 50% !important;
+    transform: translateX(-50%) scale(1);
     z-index: 10000 !important;
     
     border-radius: 12px;
@@ -299,14 +300,22 @@ h2,h3{
     background: #0b0e14;
     border: 1px solid rgba(243, 195, 0, 0.4);
     
-    /* Animation fluide entre petit et grand */
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* TRANSITION DOUCE : On définit la durée et la courbe */
+    /* On utilise cubic-bezier pour un effet "amorti" plus premium */
+    transition: 
+        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+        bottom 0.5s ease-in-out,
+        top 0.5s ease-in-out,
+        width 0.5s ease-in-out,
+        box-shadow 0.5s ease;
+    
+    cursor: zoom-in;
 }
 
 /* ÉTAT LOGO (Petit) */
 #player-img.is-logo {
     width: 60px; /* Taille miniature */
-    bottom: 99px;
+    bottom: 105px;
     height: 60px;
     border-radius: 50%; /* On peut même le mettre en rond */
     cursor: default;
@@ -316,7 +325,7 @@ h2,h3{
 
 /* ÉTAT ÉPISODE (Grand) */
 #player-img.is-episode {
-    bottom: 109px;
+    bottom: 115px;
     width: 140px;
     height: 140px;
     border-radius: 12px;
@@ -326,25 +335,29 @@ h2,h3{
 }
 
 
-/* 3. L'IMAGE EN MODE ZOOMÉ */
+/* L'ÉTAT ZOOMÉ (Grand) */
 #player-img.zoomed {
-    /* On baisse le z-index pour que l'ombre passe SOUS le lecteur */
     z-index: 8500 !important; 
     
-    position: fixed !important;
-    top: 15% !important;
-    left: 50% !important;
-    transform: translateX(-50%) scale(1) !important;
+    /* On change les ancres de positionnement doucement */
+    bottom: auto !important;
+    top: 15% !important; 
+    
     width: 85vw !important;
     max-width: 400px !important;
-    height: auto !important;
-    aspect-ratio: 1 / 1;
     border-radius: 20px;
     cursor: zoom-out;
     
-    /* Le fond noir (shadow) couvrira tout SAUF le lecteur (qui est à 9000) */
+    /* L'ombre arrive en fondu */
     box-shadow: 0 0 0 100vmax rgba(5, 6, 8, 0.9) !important;
-    animation: zoomIn 0.3s ease-out;
+    
+    /* On scale un tout petit peu pour l'effet de souffle */
+    transform: translateX(-50%) scale(1.05) !important;
+}
+
+/* Désactiver l'animation de vague pendant le zoom pour éviter les tremblements */
+#player-img.zoomed {
+    animation: none !important;
 }
 
 /* --- AJUSTEMENT PC --- */
