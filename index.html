@@ -288,26 +288,29 @@ h2,h3{
 /*      ÉPISODES         */
 /* ===================== */
 
-/* L'ÉTAT DE BASE (Petit) */
+/* L'ÉTAT DE BASE (Petit et au-dessus du lecteur) */
 #player-img {
     position: fixed !important;
     left: 50% !important;
-    transform: translateX(-50%) scale(1);
-    z-index: 10000 !important;
+    width: 140px;
+    height: 140px;
     
+    /* On utilise transform pour TOUT le mouvement (plus fluide) */
+    transform: translateX(-50%) translateY(0) scale(1);
+    transform-origin: center bottom;
+    
+    z-index: 10000 !important;
     border-radius: 12px;
-    object-fit: cover;
-    background: #0b0e14;
+    object-fit: contain; /* L'image sera TOUJOURS entière, jamais coupée */
+    background: #000; /* Fond noir si l'image n'est pas carrée */
     border: 1px solid rgba(243, 195, 0, 0.4);
     
-    /* TRANSITION DOUCE : On définit la durée et la courbe */
-    /* On utilise cubic-bezier pour un effet "amorti" plus premium */
+    /* TRANSITION ULTRA-DOUCE */
+    /* 0.8s est la vitesse "luxe", très calme */
     transition: 
-        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-        bottom 0.5s ease-in-out,
-        top 0.5s ease-in-out,
-        width 0.5s ease-in-out,
-        box-shadow 0.5s ease;
+        transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+        box-shadow 0.8s ease,
+        border-radius 0.8s ease;
     
     cursor: zoom-in;
 }
@@ -315,7 +318,7 @@ h2,h3{
 /* ÉTAT LOGO (Petit) */
 #player-img.is-logo {
     width: 60px; /* Taille miniature */
-    bottom: 105px;
+    bottom: 100px;
     height: 60px;
     border-radius: 50%; /* On peut même le mettre en rond */
     cursor: default;
@@ -325,7 +328,7 @@ h2,h3{
 
 /* ÉTAT ÉPISODE (Grand) */
 #player-img.is-episode {
-    bottom: 115px;
+    bottom: 110px;
     width: 140px;
     height: 140px;
     border-radius: 12px;
@@ -334,39 +337,36 @@ h2,h3{
     animation: playerSubtleWave 12s infinite ease-in-out;
 }
 
-
-/* L'ÉTAT ZOOMÉ (Grand) */
+/* L'ÉTAT ZOOMÉ (Grand et visible en entier) */
 #player-img.zoomed {
     z-index: 8500 !important; 
     
-    /* On change les ancres de positionnement doucement */
-    bottom: auto !important;
-    top: 15% !important; 
+    /* On déplace l'image vers le haut de l'écran par rapport à sa base */
+    /* -50vh fait monter l'image vers le milieu/haut de l'écran doucement */
+    transform: translateX(-50%) translateY(-25vh) scale(2.4) !important;
     
-    width: 85vw !important;
-    max-width: 400px !important;
-    border-radius: 20px;
+    border-radius: 15px;
     cursor: zoom-out;
+    border-color: rgba(243, 195, 0, 0.1);
     
-    /* L'ombre arrive en fondu */
-    box-shadow: 0 0 0 100vmax rgba(5, 6, 8, 0.9) !important;
-    
-    /* On scale un tout petit peu pour l'effet de souffle */
-    transform: translateX(-50%) scale(1.05) !important;
+    /* L'ombre (fond noir) arrive de façon progressive */
+    box-shadow: 0 0 0 150vmax rgba(5, 6, 8, 0.95) !important;
+    animation: none !important;
 }
+
+/* Ajustement spécifique pour les petits écrans mobiles */
+@media (max-height: 700px) {
+    #player-img.zoomed {
+        transform: translateX(-50%) translateY(-20vh) scale(2) !important;
+    }
+}
+
 
 /* Désactiver l'animation de vague pendant le zoom pour éviter les tremblements */
 #player-img.zoomed {
     animation: none !important;
 }
-
-/* --- AJUSTEMENT PC --- */
-@media (min-width: 768px) {
-    #player-img.zoomed {
-        top: 45% !important;
-        transform: translate(-50%, -50%) scale(1) !important;
-    }
-}        
+    
 
 /* Animation d'ouverture */
 @keyframes zoomIn {
