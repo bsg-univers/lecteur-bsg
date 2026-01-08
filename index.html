@@ -110,27 +110,29 @@ header {
     transition: transform 0.3s ease;
 }
 
+/* Le dock par défaut (quand on choisit une saison) */
 .nav-dock {
-    /* POSITIONNEMENT COLLANT */
     position: sticky;
-    top: 10px; /* Se colle à 10px du haut */
+    top: 10px;
     z-index: 3000;
-    
-    /* TAILLE AJUSTÉE (Finit le vide inutile) */
     width: fit-content; 
-    margin: 0 auto 20px auto; /* Centre le dock horizontalement */
-    
+    margin: 0 auto 20px auto;
     display: flex;
-    gap: 12px; /* Espace entre les icônes */
+    gap: 12px;
     padding: 10px 14px;
-    
-    background: rgba(15, 18, 25, 0.98); /* Fond sombre quasi opaque */
+    background: rgba(15, 18, 25, 0.98);
     border-radius: 22px;
     border: 1px solid rgba(234, 189, 6, 0.4);
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
-    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
-    opacity: 1;
-    visibility: visible;
+    transition: all 0.4s ease;
+}
+
+/* LA CLASSE MAGIQUE : Le dock redevient normal et reste en haut de la page */
+.nav-dock.is-static {
+    position: relative !important; /* Il ne colle plus au haut de l'écran */
+    top: 0 !important;
+    box-shadow: none; /* On peut réduire l'ombre pour plus de discrétion */
+    margin-bottom: 30px;
 }
 
  .nav-dock.hidden {
@@ -714,6 +716,10 @@ async function loadPlaylists() {
 }
 
 function showPlaylistsBySeason(season) {
+    // Le dock redevient collant pour aider la navigation
+    const dock = document.querySelector('.nav-dock');
+    if (dock) dock.classList.remove('is-static');
+    
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
         btn.style.borderColor = active ? "var(--primary)" : "rgba(243,195,0,0.2)";
@@ -775,9 +781,9 @@ function showToast() {
 
 // --- ÉPISODES ---
 async function loadEpisodes(pid, encoded = false) {
-    // --- AJOUT : Masquer le Dock ---
+    // Le dock ne doit plus coller au scroll, il reste au sommet de la page
     const dock = document.querySelector('.nav-dock');
-    if (dock) dock.classList.add('hidden');
+    if (dock) dock.classList.add('is-static');
     
     // Décodage de l'ID si provenant d'un lien de partage
     const cleanId = encoded 
