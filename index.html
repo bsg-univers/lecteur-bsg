@@ -113,6 +113,7 @@ header {
     transition: transform 0.3s ease;
 }
 /* Le dock "languette" optimisé (Aérien & Économe en batterie) */
+/* Le dock agrandi et opaque pour une visibilité parfaite au scroll */
 .nav-dock {
     position: sticky;
     top: 0;
@@ -120,71 +121,60 @@ header {
     width: fit-content;    
     margin: 0 auto 30px auto;
     display: flex;
-    gap: 15px;
+    gap: 20px; /* Espace agrandi entre les icônes */
     
-    /* Padding ajusté pour un look plus fin */
-    padding: 0 18px 10px 18px; 
+    /* Padding augmenté pour donner plus de volume (Dock plus grand) */
+    padding: 0 25px 18px 25px; 
     
-    /* On remplace le noir opaque par un dégradé très léger */
-    /* Cela permet de garder le contraste des icônes sans bloquer le fond */
-    background: linear-gradient(
-        to bottom, 
-        rgba(11, 14, 20, 0.2) 0%, 
-        rgba(11, 14, 20, 0.7) 100%
-    );
+    /* FOND OPAQUE : On utilise un bleu très profond (presque noir) 
+       pour que les icônes ne se mélangent jamais au contenu qui défile dessous */
+    background: #080d11; 
     
-    /* SUPPRESSION DU BLUR POUR LA BATTERIE */
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    /* On ajoute un subtil dégradé interne pour donner du relief sans flou */
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 100%);
+
+    /* Arrondi généreux pour le look "languette" */
+    border-radius: 0 0 35px 35px; 
     
-    border-radius: 0 0 22px 22px; 
-    
-    /* Bordure lumineuse très fine au lieu d'une bordure jaune pleine */
-    border: 1px solid rgba(210, 179, 71, 0.25);
+    /* Bordure dorée plus affirmée pour bien délimiter l'objet */
+    border: 2px solid var(--primary);
     border-top: none; 
     
-    /* Ombre portée plus douce et colorée (bleutée) pour éviter le côté "noir sale" */
-    box-shadow: 0 10px 30px rgba(5, 10, 20, 0.4);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Ombre portée forte pour bien détacher le dock du fond */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+    transition: all 0.4s ease;
 }
 
-/* Style des liens images amélioré */
+/* Icônes agrandies pour aller avec le nouveau dock */
 .site-image-link {
-    width: 48px;
-    height: 48px;
-    margin-top: 8px;
+    width: 60px;  /* Taille augmentée (était 50px) */
+    height: 60px; /* Taille augmentée (était 50px) */
+    margin-top: 10px;
     border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
-    
-    /* On ajoute un léger éclat sur les bords des icônes */
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease, border-color 0.2s;
 }
 
-/* Effet d'interaction plus "fluide" */
 .site-image-link:hover {
-    transform: translateY(2px);
+    transform: translateY(4px) scale(1.05);
     border-color: var(--primary);
-    box-shadow: 0 5px 15px rgba(210, 179, 71, 0.2);
 }
 
+/* Version statique (quand on entre dans une série) */
 .nav-dock.is-static {
     position: absolute !important;
     top: 0 !important;
-    background: transparent; /* Encore plus discret quand il est statique */
     box-shadow: none;
-    border-color: rgba(210, 179, 71, 0.1);
+    border-color: rgba(210, 179, 71, 0.4);
 }
 
 .site-image-link img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* On adoucit un peu les images pour qu'elles s'intègrent au dock */
-    opacity: 0.9;
-    transition: opacity 0.3s;
 }
 
 .site-image-link:hover img {
