@@ -289,30 +289,25 @@ h2,h3{
 /*      ÉPISODES         */
 /* ===================== */
 
-/* L'ÉTAT DE BASE (Petit et au-dessus du lecteur) */
+/* L'ÉTAT DE BASE (Petit) */
 #player-img {
     position: fixed !important;
     left: 50% !important;
     width: 140px;
     height: 140px;
-    
-    /* On utilise transform pour TOUT le mouvement (plus fluide) */
-    transform: translateX(-50%) translateY(0) scale(1);
-    transform-origin: center bottom;
-    
     z-index: 10000 !important;
+    
+    /* On prépare la transformation */
+    transform: translateX(-50%) translateY(0) scale(1);
+    
     border-radius: 12px;
-    object-fit: contain; /* L'image sera TOUJOURS entière, jamais coupée */
-    background: #000; /* Fond noir si l'image n'est pas carrée */
+    object-fit: contain;
+    background: #000;
+    border: 1px solid rgba(243, 195, 0, 0.4);
     
-    
-    /* TRANSITION ULTRA-DOUCE */
-    /* 0.8s est la vitesse "luxe", très calme */
-    transition: 
-        transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
-        box-shadow 0.8s ease,
-        border-radius 0.8s ease;
-    
+    /* Transition sur le transform uniquement pour la performance */
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.5s ease;
     cursor: zoom-in;
 }
 
@@ -344,17 +339,16 @@ h2,h3{
 #player-img.zoomed {
     z-index: 8500 !important; 
     
-    /* On déplace l'image vers le haut de l'écran par rapport à sa base */
-    /* -50vh fait monter l'image vers le milieu/haut de l'écran doucement */
-    transform: translateX(-50%) translateY(-25vh) scale(2.3) !important;
+    /* Au lieu de changer 'top', on pousse l'image vers le haut avec translateY */
+    /* -45vh fait monter l'image d'environ la moitié de l'écran */
+    transform: translateX(-50%) translateY(-35vh) scale(2.2) !important;
     
     border-radius: 15px;
     border: 1px solid rgba(243, 195, 0, 0.4);
     cursor: zoom-out;
     
-    /* L'ombre (fond noir) arrive de façon progressive */
-    box-shadow: 0 0 0 150vmax rgba(5, 6, 8, 0.95) !important;
-    animation: none !important;
+    /* Fond noir progressif (Léger & Économe) */
+    box-shadow: 0 0 0 200vmax rgba(5, 6, 8, 0.9) !important;
 }
 
 /* Ajustement spécifique pour les petits écrans mobiles */
@@ -552,7 +546,7 @@ h2,h3{
   color:#111;
 }
 
-/* --- LE CONTENEUR (Ligne courbe) --- */
+/* L'OMBRE DU LECTEUR (Plus petite et naturelle) */
 .player-container {
     position: fixed;
     bottom: 0;
@@ -560,22 +554,15 @@ h2,h3{
     right: 0;
     z-index: 9000;
     background: #0b0e14;
-    
-    /* On garde votre forme élégante */
     border-radius: 60px 60px 0 0 / 25px 25px 0 0;
-    border-top: 1px solid rgba(243, 195, 0, 0.25);
-    padding: 0px 20px 20px; 
+    border-top: 1px solid rgba(243, 195, 0, 0.3);
+    padding: 0px 20px 20px;
     
-    /* OMBRE NATURELLE : Multi-couches pour un effet diffus et soyeux */
-    box-shadow: 
-        0 -5px 10px rgba(0, 0, 0, 0.2),    /* Couche proche très fine */
-        0 -15px 35px rgba(0, 0, 0, 0.4),   /* Couche moyenne */
-        0 -30px 60px rgba(0, 0, 0, 0.5);   /* Grande diffusion lointaine */
-
-    /* On garde l'animation de couleur sur la bordure */
+    /* Ombre beaucoup plus courte et moins sombre */
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
+    
     animation: playerSubtleWave 15s ease-in-out infinite;
 }
-
 /* --- LE TITRE (Espace rétabli) --- */
 .now-playing {
     text-align: center;
