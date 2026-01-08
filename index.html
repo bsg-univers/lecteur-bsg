@@ -870,6 +870,10 @@ let html = `
         // Lecture auto du premier épisode
         play(0);
 
+        // --- AJOUTEZ CETTE LIGNE ICI ---
+        // On remonte tout en haut de la page pour voir le titre et le dock
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
     } catch (err) {
         console.error('Erreur chargement episodes', err);
         div.innerHTML = '<p>Erreur de chargement des épisodes.</p>';
