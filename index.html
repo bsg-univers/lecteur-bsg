@@ -128,8 +128,18 @@ header {
     border-radius: 22px;
     border: 1px solid rgba(234, 189, 6, 0.4);
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    opacity: 1;
+    visibility: visible;
 }
 
+ .nav-dock.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px); /* Petit effet de remontée en disparaissant */
+    pointer-events: none; /* Empêche de cliquer dessus quand il est invisible */
+}
+        
 .site-image-link {
     width: 60px;
     height: 60px;
@@ -765,6 +775,10 @@ function showToast() {
 
 // --- ÉPISODES ---
 async function loadEpisodes(pid, encoded = false) {
+    // --- AJOUT : Masquer le Dock ---
+    const dock = document.querySelector('.nav-dock');
+    if (dock) dock.classList.add('hidden');
+    
     // Décodage de l'ID si provenant d'un lien de partage
     const cleanId = encoded 
         ? decodeURIComponent(escape(atob(pid))) 
