@@ -113,72 +113,75 @@ header {
     transition: transform 0.3s ease;
 }
 /* Le dock "languette" optimisé (Aérien & Économe en batterie) */
-/* Le dock agrandi et opaque pour une visibilité parfaite au scroll */
+/* 1. LE DOCK (État normal : collé au plafond en scrollant) */
 .nav-dock {
     position: sticky;
     top: 0;
     z-index: 3000;
     width: fit-content;    
-    margin: 0 auto 30px auto;
+    margin: 0 auto 25px auto;
     display: flex;
-    gap: 20px; /* Espace agrandi entre les icônes */
+    gap: 12px;
+    padding: 0 16px 10px 16px; 
     
-    /* Padding augmenté pour donner plus de volume (Dock plus grand) */
-    padding: 0 25px 18px 25px; 
+    /* Fond opaque Bleu Nuit Mat (élégant et économe) */
+    background: #0d1117; 
     
-    /* FOND OPAQUE : On utilise un bleu très profond (presque noir) 
-       pour que les icônes ne se mélangent jamais au contenu qui défile dessous */
-    background: #080d11; 
+    /* Forme languette */
+    border-radius: 0 0 20px 20px; 
     
-    /* On ajoute un subtil dégradé interne pour donner du relief sans flou */
-    background-image: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 100%);
-
-    /* Arrondi généreux pour le look "languette" */
-    border-radius: 0 0 35px 35px; 
-    
-    /* Bordure dorée plus affirmée pour bien délimiter l'objet */
-    border: 2px solid var(--primary);
+    /* Bordure dorée très subtile (pas de brillance excessive) */
+    border: 1px solid rgba(210, 179, 71, 0.2);
     border-top: none; 
     
-    /* Ombre portée forte pour bien détacher le dock du fond */
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
-    transition: all 0.4s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
 }
 
-/* Icônes agrandies pour aller avec le nouveau dock */
+/* 2. LE DOCK STATIQUE (Quand on entre dans une série, il reste au sommet de la page) */
+.nav-dock.is-static {
+    position: absolute !important; /* Il perd son côté "collant" */
+    top: 0 !important;
+    background: #0d1117;
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+}
+
+/* 3. LES LIENS/IMAGES DU DOCK */
 .site-image-link {
-    width: 60px;  /* Taille augmentée (était 50px) */
-    height: 60px; /* Taille augmentée (était 50px) */
-    margin-top: 10px;
+    width: 52px; 
+    height: 52px;
+    margin-top: 6px;
     border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: transform 0.2s ease, border-color 0.2s;
-}
-
-.site-image-link:hover {
-    transform: translateY(4px) scale(1.05);
-    border-color: var(--primary);
-}
-
-/* Version statique (quand on entre dans une série) */
-.nav-dock.is-static {
-    position: absolute !important;
-    top: 0 !important;
-    box-shadow: none;
-    border-color: rgba(210, 179, 71, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.2s ease;
 }
 
 .site-image-link img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
-.site-image-link:hover img {
-    opacity: 1;
+/* 4. INTERACTIONS */
+.site-image-link:active {
+    transform: scale(0.92);
+    border-color: var(--primary);
+}
+
+/* 5. ADAPTATION MOBILE (Écrans très étroits) */
+@media (max-width: 360px) {
+    .nav-dock {
+        gap: 8px;
+        padding: 0 12px 8px 12px;
+    }
+    .site-image-link {
+        width: 45px;
+        height: 45px;
+    }
 }
 /* ===================== */
 /*       CONTENU         */
