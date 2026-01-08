@@ -99,58 +99,77 @@ body{
 /*        HEADER         */
 /* ===================== */
 header {
-    position: sticky; /* Reste en haut sans bloquer le scroll de façon rigide */
-    top: 0;
+    position: relative;
     z-index: 2000;
-    padding: 20px;
+    padding: 20px 0 10px 0; /* Un peu d'espace en haut */
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    /* On utilise un dégradé très subtil pour détacher le header sans flou */
-    background: linear-gradient(to bottom, rgba(11, 14, 20, 1) 70%, rgba(11, 14, 20, 0) 100%);
+    gap: 20px;
+    background: transparent; /* On laisse le fond global gérer la couleur */
 }
 
 .logo-main {
-    max-width: 150px;
+    max-width: 160px; /* Logo un peu plus grand pour la visibilité initiale */
     height: auto;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-    transition: transform 0.3s ease;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    transition: opacity 0.3s ease;
 }
 
-/* Le conteneur des 4 icônes : On crée un "Dock" façon iOS */
+/* LE DOCK : Large et Collant */
 .nav-dock {
+    position: sticky;
+    top: 15px; /* Distance du bord haut quand il est collé */
     display: flex;
-    justify-content: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 8px 15px;
-    border-radius: 20px; /* Forme pilule */
-    border: 1px solid rgba(234, 189, 6, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: none; /* On évite le blur pour la fluidité */
+    justify-content: space-around; /* Répartit mieux les icônes */
+    align-items: center;
+    
+    width: 90%; /* Plus large sur l'écran */
+    max-width: 500px;
+    
+    background: rgba(18, 22, 30, 0.95); /* Fond plus sombre et quasi opaque pour la fluidité */
+    padding: 12px 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(234, 189, 6, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    
+    /* Hardware acceleration pour éviter la traînée */
+    transform: translateZ(0);
+    will-change: transform;
 }
 
+/* ICÔNES PLUS LARGES */
 .site-image-link {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px; /* Coins arrondis façon app icon */
+    width: 65px; /* Largeur augmentée */
+    height: 65px; /* Hauteur augmentée */
+    border-radius: 16px;
     overflow: hidden;
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    flex-shrink: 0;
 }
 
 .site-image-link:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px) scale(1.05);
     border-color: var(--primary);
-    box-shadow: 0 5px 15px rgba(234, 189, 6, 0.3);
 }
 
 .site-image-link img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Optimisation mobile pour ne pas que ce soit trop gros sur petit écran */
+@media (max-width: 400px) {
+    .site-image-link {
+        width: 55px;
+        height: 55px;
+    }
+    .nav-dock {
+        width: 95%;
+        padding: 10px;
+    }
 }
 
 /* ===================== */
@@ -979,6 +998,15 @@ document.addEventListener('click', function(e) {
     } else if (pImg.classList.contains('zoomed')) {
         pImg.classList.remove('zoomed');
         document.body.style.overflow = '';
+    }
+});
+window.addEventListener('scroll', function() {
+    const logo = document.querySelector('.logo-main');
+    if (logo) {
+        let scrollPos = window.scrollY;
+        // Le logo s'efface progressivement sur les 150 premiers pixels de scroll
+        let opacity = 1 - (scrollPos / 150);
+        logo.style.opacity = Math.max(opacity, 0);
     }
 });
 </script>
