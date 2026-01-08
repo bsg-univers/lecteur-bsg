@@ -681,7 +681,8 @@ if ('mediaSession' in navigator) {
 }
 
 async function loadJSON(file) {
-  const res = await fetch(`data/${file}`);
+  // On ajoute ?v= et l'heure actuelle pour ignorer le cache
+  const res = await fetch(`data/${file}?v=${new Date().getTime()}`);
   return await res.json();
 }
 
@@ -816,7 +817,7 @@ async function loadEpisodes(pid, encoded = false) {
         const playlistDesc = currentPl ? currentPl.description : "";
 
         // 2. Charger les épisodes depuis le fichier JSON statique
-        const res = await fetch('data/episodes.json');
+        const res = await fetch(`data/episodes.json?v=${new Date().getTime()}`);
         const allEpisodes = await res.json();
 
         // Filtrer et trier
