@@ -325,25 +325,33 @@ h2,h3{
     animation: playerSubtleWave 12s infinite ease-in-out;
 }
 
-/* ZOOM UNIQUE ET PROPRE */
+
+/* --- LE MODE ZOOM OPTIMISÉ --- */
 #player-img.zoomed {
     position: fixed !important;
-    top: 50% !important;
+    top: 15% !important; /* Positionné en haut pour laisser le bas libre */
     left: 50% !important;
-    transform: translate(-50%, -50%) scale(2.2) !important; /* Centré parfaitement */
-    z-index: 10000 !important;
-    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.9) !important;
-    border-radius: 15px;
+    transform: translateX(-50%) scale(2.1) !important;
+    width: 85vw !important;
+    max-width: 400px !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    z-index: 8000 !important; /* Juste en dessous du lecteur */
+    border-radius: 20px;
     cursor: zoom-out;
+    
+    /* Fond noir semi-opaque via shadow (Économe en batterie) */
+    box-shadow: 0 0 0 100vmax rgba(5, 6, 8, 0.9) !important;
+    animation: zoomIn 0.3s ease-out;
 }
 
-
-/* Sur les écrans plus larges (Ordinateur) */
+/* --- AJUSTEMENT PC --- */
 @media (min-width: 768px) {
     #player-img.zoomed {
-        transform: translate(-50%, calc(-50vh + 150px)) scale(3) !important;
+        top: 45% !important;
+        transform: translate(-50%, -50%) scale(3) !important;
     }
-}
+}        
 
 /* Animation d'ouverture */
 @keyframes zoomIn {
@@ -527,23 +535,20 @@ h2,h3{
 }
 
 /* --- LE CONTENEUR (Ligne courbe) --- */
+/* --- LE CONTENEUR (Vos caractéristiques conservées, sans blur) --- */
 .player-container {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
-    background: rgba(11, 14, 20, 0.98);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    z-index: 9000; /* On augmente pour passer AU-DESSUS du zoom */
+    background: #0b0e14; /* Couleur solide (plus de batterie) */
     
     border-radius: 60px 60px 0 0 / 25px 25px 0 0;
-    border-top: 1px solid rgba(243, 195, 0, 0.3); /* Bordure légèrement plus épaisse */
+    border-top: 1px solid rgba(243, 195, 0, 0.3);
     
     padding: 0px 20px 20px; 
     box-shadow: 0 -15px 40px rgba(0,0,0,0.7);
-    
-    /* Animation un peu plus rapide (15s) et plus visible */
     animation: playerSubtleWave 15s ease-in-out infinite;
 }
 
@@ -999,20 +1004,27 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(err => console.log("Erreur SW", err));
 }
     
-// Gestion du zoom robuste
 document.addEventListener('click', function(e) {
     const pImg = document.getElementById('player-img');
-    // On n'autorise le zoom QUE si l'image a la classe 'is-episode'
-    if (!pImg || !pImg.classList.contains('is-episode') || e.target.closest('.btn-share')) return;
+    if (!pImg) return;
 
-    if (e.target === pImg) {
+    // 1. Si on clique sur l'image d'épisode : on bascule le zoom
+    if (e.target === pImg && pImg.classList.contains('is-episode')) {
         pImg.classList.toggle('zoomed');
-        document.body.style.overflow = pImg.classList.contains('zoomed') ? 'hidden' : '';
-    } else if (pImg.classList.contains('zoomed')) {
+        return;
+    }
+
+    // 2. Si le zoom est actif
+    if (pImg.classList.contains('zoomed')) {
+        // On NE ferme PAS si l'utilisateur clique sur le lecteur (boutons, barre, etc.)
+        if (e.target.closest('.player-container')) {
+            return;
+        }
+        // On ferme si on clique n'importe où ailleurs (le fond noir)
         pImg.classList.remove('zoomed');
-        document.body.style.overflow = '';
     }
 });
+    
 window.addEventListener('scroll', function() {
     const logo = document.querySelector('.logo-main');
     if (logo) {
