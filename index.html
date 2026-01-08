@@ -112,65 +112,84 @@ header {
     display: block; /* Évite les décalages de texte */
     transition: transform 0.3s ease;
 }
-
-/* Le dock "languette" qui sort physiquement du haut */
+/* Le dock "languette" optimisé (Aérien & Économe en batterie) */
 .nav-dock {
     position: sticky;
-    top: 0;                /* Collé au plafond */
+    top: 0;
     z-index: 3000;
     width: fit-content;    
-    margin: 0 auto 30px auto; /* Centré horizontalement */
+    margin: 0 auto 30px auto;
     display: flex;
     gap: 15px;
     
-    /* Padding stratégique : 0 en haut pour toucher le bord, plus en bas pour l'esthétique */
-    padding: 0 20px 12px 20px; 
+    /* Padding ajusté pour un look plus fin */
+    padding: 0 18px 10px 18px; 
     
-    background: rgba(15, 18, 25, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    /* On remplace le noir opaque par un dégradé très léger */
+    /* Cela permet de garder le contraste des icônes sans bloquer le fond */
+    background: linear-gradient(
+        to bottom, 
+        rgba(11, 14, 20, 0.2) 0%, 
+        rgba(11, 14, 20, 0.7) 100%
+    );
     
-    /* MAGIE DE LA LANGUETTE : 
-       Arrondi uniquement en bas. Le haut est à 0. */
-    border-radius: 0 0 25px 25px; 
+    /* SUPPRESSION DU BLUR POUR LA BATTERIE */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     
-    /* Bordure seulement sur les côtés et le bas (pas de bordure en haut) */
-    border: 1px solid rgba(234, 189, 6, 0.4);
+    border-radius: 0 0 22px 22px; 
+    
+    /* Bordure lumineuse très fine au lieu d'une bordure jaune pleine */
+    border: 1px solid rgba(210, 179, 71, 0.25);
     border-top: none; 
     
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-    transition: all 0.4s ease;
+    /* Ombre portée plus douce et colorée (bleutée) pour éviter le côté "noir sale" */
+    box-shadow: 0 10px 30px rgba(5, 10, 20, 0.4);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* On s'assure que les icônes ne touchent pas le bord du navigateur de façon brute */
+/* Style des liens images amélioré */
 .site-image-link {
-    width: 50px;
-    height: 50px;
-    margin-top: 8px; /* On crée l'espace interne ici plutôt que dans le dock */
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    margin-top: 8px;
+    border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.2s ease;
+    
+    /* On ajoute un léger éclat sur les bords des icônes */
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
-/* Quand on descend dans une série, le dock reste en haut de page mais sans coller au scroll */
+/* Effet d'interaction plus "fluide" */
+.site-image-link:hover {
+    transform: translateY(2px);
+    border-color: var(--primary);
+    box-shadow: 0 5px 15px rgba(210, 179, 71, 0.2);
+}
+
 .nav-dock.is-static {
-    position: absolute !important; /* Change de sticky à absolute pour rester au sommet du document */
+    position: absolute !important;
     top: 0 !important;
+    background: transparent; /* Encore plus discret quand il est statique */
     box-shadow: none;
-}
-
-.site-image-link:active {
-    transform: scale(0.9);
+    border-color: rgba(210, 179, 71, 0.1);
 }
 
 .site-image-link img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* On adoucit un peu les images pour qu'elles s'intègrent au dock */
+    opacity: 0.9;
+    transition: opacity 0.3s;
 }
 
+.site-image-link:hover img {
+    opacity: 1;
+}
 /* ===================== */
 /*       CONTENU         */
 /* ===================== */
