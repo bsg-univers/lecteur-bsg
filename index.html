@@ -100,13 +100,16 @@ body{
 /* ===================== */
 header {
     text-align: center;
-    padding: 30px 20px 10px;
+    padding: 0px 20px 10px;
     background: transparent;
+    margin-top: 0;
 }
 
 .logo-main {
-    max-width: 140px;
+    max-width: 120px;
     height: auto;
+    display: block; /* Évite les décalages de texte */
+    margin: 0 auto; /* Centre le logo sans ajouter d'espace en haut */
     transition: transform 0.3s ease;
 }
 
@@ -145,7 +148,7 @@ header {
 .site-image-link {
     width: 60px;
     height: 60px;
-    border-radius: 14px;
+    border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -153,7 +156,7 @@ header {
 }
 
 .site-image-link:active {
-    transform: scale(0.92);
+    transform: scale(0.5);
 }
 
 .site-image-link img {
