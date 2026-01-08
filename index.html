@@ -118,7 +118,7 @@ header {
     top: 10px;
     z-index: 3000;
     width: fit-content; 
-    margin: 0 auto 20px auto;
+    margin: 0 auto 25px auto;
     display: flex;
     gap: 12px;
     padding: 10px 14px;
@@ -132,7 +132,7 @@ header {
 /* LA CLASSE MAGIQUE : Le dock redevient normal et reste en haut de la page */
 .nav-dock.is-static {
     position: relative !important; /* Il ne colle plus au haut de l'écran */
-    top: 0 !important;
+    top: 10px; !important;
     box-shadow: none; /* On peut réduire l'ombre pour plus de discrétion */
     margin-bottom: 30px;
 }
@@ -145,8 +145,8 @@ header {
 }
         
 .site-image-link {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
