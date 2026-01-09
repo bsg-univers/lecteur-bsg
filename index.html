@@ -183,14 +183,13 @@ header {
 /*       CONTENU         */
 /* ===================== */
 
-/* === HASHTAGS : RUBAN INTELLIGENT (OPTIMISÉ) === */
+/* === HASHTAGS : RUBAN INTELLIGENT === */
 
 .hashtag-container {
     position: relative;
     overflow: hidden;
     white-space: nowrap;
-    margin-top: 8px;
-    /* Création du dégradé de transparence sur les bords */
+    margin-top: 6px;
     -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
     mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
@@ -198,45 +197,40 @@ header {
 /* Le rail interne */
 .hashtag-track {
     display: inline-flex;
-    gap: 12px; /* Un peu plus d'espace pour la lisibilité */
+    gap: 6px;
     will-change: transform;
-    padding: 0 10%; /* Évite que le premier tag soit coupé au démarrage */
 }
 
-/* État animé avec fluidité accrue */
+/* État animé UNIQUEMENT si overflow détecté */
 .hashtag-container.is-animated .hashtag-track {
     animation: hashtag-scroll linear infinite;
-    /* Calcul de la durée pour un mouvement lent et premium */
-    animation-duration: var(--scroll-duration, 30s); 
+    animation-duration: var(--scroll-duration, 18s);
 }
 
-/* Animation fluide */
+/* Animation */
 @keyframes hashtag-scroll {
     from { transform: translateX(0); }
-    /* On défile vers la gauche de la moitié (car on a doublé le contenu) */
     to   { transform: translateX(-50%); }
 }
 
-/* Hashtag Style */
+/* Hashtag */
 .hashtag-badge {
     flex-shrink: 0;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     color: var(--primary);
-    background: rgba(210, 179, 71, 0.08);
-    padding: 3px 10px;
+    background: rgba(210, 179, 71, 0.1);
+    padding: 2px 8px;
     border-radius: 12px;
-    border: 1px solid rgba(210, 179, 71, 0.25);
+    border: 1px solid rgba(210, 179, 71, 0.3);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .hashtag-badge:hover {
     background: var(--primary);
     color: #0b0e14;
-    transform: translateY(-1px);
 }
 
-/* Pause douce au survol */
 .hashtag-container.is-animated:hover .hashtag-track {
     animation-play-state: paused;
 }
