@@ -794,14 +794,11 @@ audio {
 /* On superpose le bouton sur la barre */
 .bsg-progress-row {
     display: grid;
-    /* On donne plus de place à la barre (1fr) et on réduit les chiffres */
     grid-template-columns: 50px 1fr 50px; 
-    align-items: center;
-    gap: 0px; /* Réduit pour gagner de la place */
+    align-items: center; /* Aligne les éléments sur le même axe */
     width: 100%;
-    /* On la colle tout en bas */
-    margin-bottom: 0; 
-    padding-bottom: 5px; /* Petit espace de confort pour le doigt */
+    margin-bottom: 0;
+    padding-bottom: 10px; /* Un peu d'air sous la barre */
 }
 
 .bsg-whale-btn {
@@ -850,19 +847,24 @@ audio {
 .bsg-time {
     font-size: 0.72rem;
     color: rgba(255,255,255,0.55);
+    text-align: center;
+    /* REMONTÉE DES CHIFFRES : */
+    margin-bottom: 8px; 
+    align-self: flex-end; /* Aligne le texte vers le haut de la ligne de grille */
 }
 
 /* --- Vague --- */
 .bsg-wave {
-    height: 40px; /* Légèrement plus haut pour faciliter le clic mobile */
+    height: 40px;
     cursor: pointer;
     width: 100%;
-    padding: 0; /* Supprime les marges internes */
+    display: flex;
+    align-items: center; /* Centre la vague verticalement */
 }
 
 .bsg-wave svg {
     width: 100%;
-    height: 100%;
+    height: 25px; /* On réduit un peu la hauteur du SVG pour laisser de l'air */
 }
 
 #wave-bg {
