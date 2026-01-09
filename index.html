@@ -1037,13 +1037,23 @@ async function loadEpisodes(pid, encoded = false) {
         // 3. Construction du HTML
         // On prépare l'ID encodé pour le bouton de partage
 const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
+// On récupère les hashtags (on utilise 'currentPl' qui est déjà défini au dessus dans votre code)
+const hashtagsHtml = (currentPl && currentPl.hashtags) 
+    ? `<div class="hashtag-container" style="margin-top: -10px; margin-bottom: 20px; -webkit-mask-image:none; mask-image:none; overflow:visible; white-space: normal;">
+        <div class="hashtag-track" style="display: flex; flex-wrap: wrap; gap: 8px;">
+            ${currentPl.hashtags.split(' ').map(tag => 
+                `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
+            ).join('')}
+        </div>
+       </div>` 
+    : "";
 
-// On crée une ligne avec le titre à gauche et le bouton à droite
 let html = `
 <div class="playlist-header-container">
     <h2>${cleanId}</h2>
     <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">🔗</button>
-</div>`;
+</div>
+${hashtagsHtml}`; // <-- On insère les hashtags ici
 
         // Affichage de la description avec l'effet "Lire la suite"
         if (playlistDesc && playlistDesc.trim() !== "") {
