@@ -787,6 +787,97 @@ audio {
   padding:24px;
   font-style:italic;
 }
+/* ===================== */
+/* LECTEUR PERSONNALISÉ */
+/* ===================== */
+
+.custom-player {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0 4px;
+}
+
+/* --- Bouton Baleine --- */
+#whale-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #1e2c3a, #050608);
+    border: 1px solid rgba(210,179,71,0.4);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+#whale-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(210,179,71,0.35));
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+#whale-btn.playing img {
+    filter: drop-shadow(0 0 12px rgba(70,160,255,0.6));
+    transform: rotate(-8deg);
+}
+
+#whale-btn:active {
+    transform: scale(0.92);
+}
+
+/* --- Zone temps + vague --- */
+.progress-zone {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 46px 1fr 46px;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: rgba(234,234,234,0.6);
+}
+
+/* --- Vague --- */
+.wave-track {
+    position: relative;
+    height: 26px;
+    cursor: pointer;
+}
+
+.wave-track svg {
+    width: 100%;
+    height: 100%;
+}
+
+#wave-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.15);
+    stroke-width: 3;
+}
+
+#wave-progress {
+    fill: none;
+    stroke: url(#waveGradient);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    transition: stroke-dashoffset 0.15s linear;
+}
+
+/* Animation douce de la vague */
+@keyframes waveMotion {
+    0% { d: path("M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"); }
+    50% { d: path("M0 30 Q 30 38 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"); }
+    100% { d: path("M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"); }
+}
+
+.custom-player.playing #wave-progress,
+.custom-player.playing #wave-bg {
+    animation: waveMotion 3.5s ease-in-out infinite;
+}
+
 </style>
 </head>
 <body>
@@ -813,9 +904,32 @@ audio {
 <a href="https://baleinesousgravillon.com/" target="_blank" id="logo-link">
     <img id="player-img" class="is-logo" src="https://baleinesousgravillon.com/wp-content/uploads/2022/02/cropped-Baleine_sous_gravillon-1-270x270.png" alt="Logo">
 </a>
-    <div class="player-container">
+    <div class="custom-player">
+    <button id="whale-btn" aria-label="Lecture / Pause">
+        <img src="https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/wtw.png" alt="Play">
+    </button>
+
+    <div class="progress-zone">
+        <span id="current-time">0:00</span>
+
+        <div class="wave-track" id="wave-track">
+            <svg viewBox="0 0 600 60" preserveAspectRatio="none">
+                <path id="wave-bg"
+                      d="M0 30 Q 30 20 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"
+                      />
+                <path id="wave-progress"
+                      d="M0 30 Q 30 20 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"
+                      />
+            </svg>
+        </div>
+
+        <span id="duration">0:00</span>
+    </div>
+</div>
+
     <div id="now-playing-title" class="now-playing">Sélectionnez une aventure...</div>
-    <audio id="player" style="border-radius: 15px;" controls playsinline preload="auto"></audio>
+    <audio id="player" playsinline preload="auto"></audio>
+
 </div>
 
 <script>
@@ -828,6 +942,61 @@ let allPlaylists = [];
 
 const audio = document.getElementById('player');
 const titleDisplay = document.getElementById('now-playing-title');
+
+const whaleBtn = document.getElementById('whale-btn');
+const waveProgress = document.getElementById('wave-progress');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
+const playerUI = document.querySelector('.custom-player');
+const waveTrack = document.getElementById('wave-track');
+
+/* --- Play / Pause --- */
+whaleBtn.addEventListener('click', () => {
+    if (audio.paused) {
+        audio.play();
+    } else {
+        audio.pause();
+    }
+});
+
+/* --- UI Sync --- */
+audio.addEventListener('play', () => {
+    whaleBtn.classList.add('playing');
+    playerUI.classList.add('playing');
+});
+
+audio.addEventListener('pause', () => {
+    whaleBtn.classList.remove('playing');
+    playerUI.classList.remove('playing');
+});
+
+/* --- Temps & Progression --- */
+audio.addEventListener('loadedmetadata', () => {
+    durationEl.textContent = formatTime(audio.duration);
+});
+
+audio.addEventListener('timeupdate', () => {
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+
+    const progress = audio.currentTime / audio.duration;
+    const dash = 600 - (600 * progress);
+    waveProgress.style.strokeDashoffset = dash;
+});
+
+/* --- Seek au clic sur la vague --- */
+waveTrack.addEventListener('click', (e) => {
+    const rect = waveTrack.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    audio.currentTime = ratio * audio.duration;
+});
+
+/* --- Utils --- */
+function formatTime(t) {
+    if (!t) return "0:00";
+    const m = Math.floor(t / 60);
+    const s = Math.floor(t % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+}
 
 // --- MEDIA SESSION : handlers déclarés UNE SEULE FOIS ---
 if ('mediaSession' in navigator) {
