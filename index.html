@@ -190,17 +190,34 @@ header {
     overflow: hidden;
     white-space: nowrap;
     margin-top: 6px;
-    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 65%, transparent);
-    mask-image: linear-gradient(to right, transparent, black 15%, black 65%, transparent);
+
+    /* Utilisation de pixels fixes pour les bords (40px) */
+    /* Le masque reste transparent de 0 à 0px, puis devient noir à 40px */
+    -webkit-mask-image: linear-gradient(
+        to right, 
+        transparent 0px, 
+        black 40px, 
+        black calc(100% - 40px), 
+        transparent 100%
+    );
+    mask-image: linear-gradient(
+        to right, 
+        transparent 0px, 
+        black 40px, 
+        black calc(100% - 40px), 
+        transparent 100%
+    );
 }
 
-/* Le rail interne */
 .hashtag-track {
     display: inline-flex;
     gap: 8px;
     will-change: transform;
+    /* On ajoute une marge interne pour que le premier hashtag 
+       ne commence pas pile dans la zone transparente */
+    padding: 0 10px; 
 }
-
+        
 /* État animé UNIQUEMENT si overflow détecté */
 .hashtag-container.is-animated .hashtag-track {
     animation: hashtag-scroll linear infinite;
