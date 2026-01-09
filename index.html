@@ -192,23 +192,22 @@ header {
     margin-top: 6px;
 }
 
-/* Le rail interne */
-.hashtag-track {
-    display: inline-flex;
-    gap: 6px;
-    will-change: transform;
+.hashtag-container.is-animated .hashtag-track {
+    animation: hashtag-scroll var(--scroll-duration, 22s)
+               cubic-bezier(0.25, 0.1, 0.25, 1)
+               infinite;
 }
 
-/* État animé UNIQUEMENT si overflow détecté */
-.hashtag-container.is-animated .hashtag-track {
-    animation: hashtag-scroll linear infinite;
-    animation-duration: var(--scroll-duration, 18s);
+.hashtag-track {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* Animation */
 @keyframes hashtag-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+    0%, 10%   { transform: translateX(0); }
+    90%, 100% { transform: translateX(-50%); }
 }
 
 /* Hashtag */
@@ -911,7 +910,7 @@ function initHashtagMarquees(root = document) {
         track.innerHTML += track.innerHTML;
         track.dataset.duplicated = "true";
 
-        const duration = Math.max(baseWidth / 40, 12);
+        const duration = Math.max(baseWidth / 70, 18);
         container.style.setProperty('--scroll-duration', `${duration}s`);
         container.classList.add('is-animated');
     });
