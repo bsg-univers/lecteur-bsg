@@ -191,20 +191,20 @@ header {
     white-space: nowrap;
     margin-top: 6px;
 
-    /* Utilisation de pixels fixes pour les bords (40px) */
-    /* Le masque reste transparent de 0 à 0px, puis devient noir à 40px */
+    /* Utilisation de pixels fixes pour les bords (30px) */
+    /* Le masque reste transparent de 0 à 0px, puis devient noir à 30px */
     -webkit-mask-image: linear-gradient(
         to right, 
         transparent 0px, 
-        black 40px, 
-        black calc(100% - 40px), 
+        black 30px, 
+        black calc(100% - 30px), 
         transparent 100%
     );
     mask-image: linear-gradient(
         to right, 
         transparent 0px, 
-        black 40px, 
-        black calc(100% - 40px), 
+        black 30px, 
+        black calc(100% - 30px), 
         transparent 100%
     );
 }
@@ -213,9 +213,6 @@ header {
     display: inline-flex;
     gap: 8px;
     will-change: transform;
-    /* On ajoute une marge interne pour que le premier hashtag 
-       ne commence pas pile dans la zone transparente */
-    padding: 0 10px; 
 }
         
 /* État animé UNIQUEMENT si overflow détecté */
