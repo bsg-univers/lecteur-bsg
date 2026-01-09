@@ -130,7 +130,7 @@ header {
     padding: 0 16px 10px 16px; 
     background: #0d1117; 
     border-radius: 0 0 20px 20px; 
-    border: 1px solid rgba(243, 195, 0, 0.4);
+    border: 1px solid rgba(210, 179, 71, 0.2); 
     border-top: none; 
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
@@ -147,7 +147,7 @@ header {
     transform: none !important; /* On annule le transform si vous en aviez mis un */
     
     background: #0d1117;
-    border: 1px solid rgba(243, 195, 0, 0.4);
+    border: 1px solid rgba(210, 179, 71, 0.2); 
     box-shadow: none;
     border-top: none; 
     margin-bottom: 10px; /* On s'assure qu'il y a de l'espace avec les galets */
@@ -309,6 +309,7 @@ h2,h3{
     transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
                 box-shadow 0.5s ease;
     cursor: zoom-in;
+    pointer-events: auto !important;
 }
 
 /* ÉTAT LOGO (Petit) */
@@ -337,8 +338,11 @@ h2,h3{
     animation: playerSubtleWave 12s infinite ease-in-out;
 }
         
-#logo-link:has(img.is-episode) {
-    pointer-events: none; /* Le lien entourant devient inactif */
+/* Désactive le lien complètement dès que l'image n'est plus un logo */
+#logo-link:has(.is-episode), 
+#logo-link:has(.zoomed) {
+    pointer-events: none; /* Le clic traverse le lien sans l'activer */
+    cursor: default;
 }
 
 /* L'ÉTAT ZOOMÉ (Grand et visible en entier) */
@@ -1033,21 +1037,20 @@ if ('serviceWorker' in navigator) {
     
 document.addEventListener('click', function(e) {
     const pImg = document.getElementById('player-img');
+    const pLink = document.getElementById('logo-link');
     if (!pImg) return;
 
-    // 1. Si on clique directement sur l'image d'épisode : on bascule le zoom
-    if (e.target === pImg && pImg.classList.contains('is-episode')) {
-        pImg.classList.toggle('zoomed');
-        return;
-    }
-
-    // 2. Si le mode zoom est actif
-    if (pImg.classList.contains('zoomed')) {
-        // On ne ferme PAS le zoom si on clique sur les contrôles du lecteur
-        if (e.target.closest('.player-container')) {
-            return;
-        }
-        // On ferme si on clique sur le fond sombre ou ailleurs
+    // Si on clique sur l'image
+    if (e.target === pImg) {
+        // SI C'EST UN ÉPISODE : On gère le zoom et on bloque le lien
+        if (pImg.classList.contains('is-episode')) {
+            e.preventDefault(); // Empêche le lien de s'ouvrir
+            pImg.classList.toggle('zoomed');
+        } 
+        // SI C'EST LE LOGO : On laisse le comportement par défaut (le lien s'ouvre)
+    } 
+    // Si on clique ailleurs alors que c'est zoomé, on dézoome
+    else if (pImg.classList.contains('zoomed')) {
         pImg.classList.remove('zoomed');
     }
 });
