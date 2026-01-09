@@ -46,7 +46,7 @@ async function run() {
       description: descriptionFromEpisode || r.get("Description") || "", // Priorité à la description de l'épisode
       public: r.get("Public") === "TRUE" || r.get("Public") === true,
       season: r.get("Saison") || "Saison inconnue",
-      image: r.get("Image") || (firstEpMatch ? firstEpMatch.get("Image") : "")
+      image: r.get("Image") || (firstEpMatch ? firstEpMatch.get("Image") : ""),
       hashtags: r.get("Hashtag") || "" // AJOUT ICI : Récupère le contenu de la colonne "Hashtag"
     };
   }).filter(pl => pl.id); // Sécurité : ignore les lignes sans ID
