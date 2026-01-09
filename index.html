@@ -158,10 +158,10 @@ header {
     width: 55px; 
     height: 55px;
     margin-top: 6px;
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
     flex-shrink: 0;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(210, 179, 71, 0.2);
     transition: transform 0.2s ease;
 }
 
@@ -953,6 +953,18 @@ async function play(i) {
         // Si l'autostart est bloqué par Chrome, on laisse le titre mais on prévient
         titleDisplay.innerText = episode.title;
     }
+
+    // Dans votre fonction play(i)
+if (episode.image && episode.image.trim() !== "") {
+    pImg.src = episode.image;
+    pImg.classList.replace('is-logo', 'is-episode');
+    pImg.onclick = null; // On enlève toute action de lien si c'est une image d'épisode
+} else {
+    pImg.src = "votre-logo.png";
+    pImg.classList.replace('is-episode', 'is-logo');
+    // On ajoute le lien uniquement quand c'est le logo
+    pImg.onclick = () => window.open("https://baleinesousgravillon.com/", "_blank");
+}
 }
 
 
