@@ -186,10 +186,8 @@ header {
 /* --- Style des Hashtags --- */
 .hashtag-container {
     display: flex;
-    gap: 15px; /* Plus d'espace entre les tags pour l'effet ruban */
+    overflow: hidden;
     margin-top: 10px;
-    overflow: hidden; /* Cache ce qui dépasse */
-    white-space: nowrap;
     position: relative;
     padding: 5px 0;
 }
@@ -198,7 +196,28 @@ header {
 .hashtag-scroll {
     display: flex;
     gap: 15px;
-    animation: scroll-ruban 20s linear infinite; /* Vitesse ajustable */
+    white-space: nowrap;
+}
+
+/* L'animation ne s'active QUE si on ajoute cette classe en JS */
+.hashtag-container.is-scrolling .hashtag-scroll {
+    animation: scroll-ruban 20s linear infinite;
+}
+
+/* On n'affiche les dégradés sur les bords QUE si ça défile */
+.hashtag-container.is-scrolling::before,
+.hashtag-container.is-scrolling::after {
+    content: "";
+    position: absolute;
+    top: 0; width: 30px; height: 100%; z-index: 2;
+    pointer-events: none;
+}
+.hashtag-container.is-scrolling::before { left: 0; background: linear-gradient(to right, #0b0e14, transparent); }
+.hashtag-container.is-scrolling::after { right: 0; background: linear-gradient(to left, #0b0e14, transparent); }
+
+@keyframes scroll-ruban {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 /* Animation de translation */
@@ -869,14 +888,35 @@ function showPlaylistsBySeason(season) {
     
     // Génération du HTML des hashtags
     const hashtagsHtml = p.hashtags 
-    ? `<div class="hashtag-container">
-        <div class="hashtag-scroll">
+    ? `<div class="hashtag-container" id="container-${p.id}">
+        <div class="hashtag-scroll" id="scroll-${p.id}">
             ${(p.hashtags + ' ' + p.hashtags).split(' ').map(tag => 
                 `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
             ).join('')}
         </div>
        </div>`
     : "";
+        
+    list.forEach(p => {
+    const container = document.getElementById(`container-${p.id}`);
+    const scrollContent = document.getElementById(`scroll-${p.id}`);
+    
+    if (container && scrollContent) {
+        // scrollContent.scrollWidth / 2 car on a doublé les tags
+        const realContentWidth = scrollContent.scrollWidth / 2;
+        const containerWidth = container.offsetWidth;
+
+        if (realContentWidth > containerWidth) {
+            // Si le contenu est plus large, on active l'animation
+            container.classList.add('is-scrolling');
+        } else {
+            // Sinon, on remet le contenu simple (facultatif mais plus propre)
+            scrollContent.innerHTML = p.hashtags.split(' ').map(tag => 
+                `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
+            ).join('');
+        }
+    }
+});
 
     return `
     <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
