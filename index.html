@@ -795,7 +795,7 @@ audio {
 
 /* On superpose le bouton sur la barre */
 .bsg-progress-row {
-    margin-top: 30px; /* Crée l'espace nécessaire sous le haut du bouton */
+    margin-top: 10px; /* Crée l'espace nécessaire sous le haut du bouton */
     display: grid;
     grid-template-columns: 45px 1fr 45px;
     align-items: center;
@@ -824,6 +824,11 @@ audio {
     /* Supprimez le margin-bottom pour bien toucher le bord */
     margin: 0; 
     padding: 0;
+    /* AJOUT DE LA TRANSPARENCE ICI */
+    opacity: 0.6; /* 1 est opaque, 0 est invisible */
+    
+    /* Transition pour que le changement de transparence soit fluide au survol */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .bsg-whale-btn img {
@@ -840,9 +845,6 @@ audio {
     transform: scale(1.1) rotate(-5deg);
     filter: drop-shadow(0 0 12px rgba(243,195,0,0.6));
 }
-
-
-
 
 .bsg-time {
     font-size: 0.72rem;
