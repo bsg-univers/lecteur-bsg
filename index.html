@@ -183,51 +183,60 @@ header {
 /*       CONTENU         */
 /* ===================== */
 
-/* === HASHTAGS : RUBAN INTELLIGENT === */
+/* === HASHTAGS : RUBAN INTELLIGENT (OPTIMISÉ) === */
 
 .hashtag-container {
     position: relative;
     overflow: hidden;
     white-space: nowrap;
-    margin-top: 6px;
+    margin-top: 8px;
+    /* Création du dégradé de transparence sur les bords */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
 
-.hashtag-container.is-animated .hashtag-track {
-    animation: hashtag-scroll var(--scroll-duration, 22s)
-               cubic-bezier(0.25, 0.1, 0.25, 1)
-               infinite;
-}
-
+/* Le rail interne */
 .hashtag-track {
+    display: inline-flex;
+    gap: 12px; /* Un peu plus d'espace pour la lisibilité */
     will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    padding: 0 10%; /* Évite que le premier tag soit coupé au démarrage */
 }
 
-/* Animation */
+/* État animé avec fluidité accrue */
+.hashtag-container.is-animated .hashtag-track {
+    animation: hashtag-scroll linear infinite;
+    /* Calcul de la durée pour un mouvement lent et premium */
+    animation-duration: var(--scroll-duration, 30s); 
+}
+
+/* Animation fluide */
 @keyframes hashtag-scroll {
-    0%, 10%   { transform: translateX(0); }
-    90%, 100% { transform: translateX(-50%); }
+    from { transform: translateX(0); }
+    /* On défile vers la gauche de la moitié (car on a doublé le contenu) */
+    to   { transform: translateX(-50%); }
 }
 
-/* Hashtag */
+/* Hashtag Style */
 .hashtag-badge {
     flex-shrink: 0;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--primary);
-    background: rgba(210, 179, 71, 0.1);
-    padding: 2px 8px;
+    background: rgba(210, 179, 71, 0.08);
+    padding: 3px 10px;
     border-radius: 12px;
-    border: 1px solid rgba(210, 179, 71, 0.3);
+    border: 1px solid rgba(210, 179, 71, 0.25);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 .hashtag-badge:hover {
     background: var(--primary);
     color: #0b0e14;
+    transform: translateY(-1px);
 }
 
+/* Pause douce au survol */
 .hashtag-container.is-animated:hover .hashtag-track {
     animation-play-state: paused;
 }
@@ -910,7 +919,7 @@ function initHashtagMarquees(root = document) {
         track.innerHTML += track.innerHTML;
         track.dataset.duplicated = "true";
 
-        const duration = Math.max(baseWidth / 70, 18);
+        const duration = Math.max(baseWidth / 60, 18);
         container.style.setProperty('--scroll-duration', `${duration}s`);
         container.classList.add('is-animated');
     });
