@@ -683,7 +683,6 @@ h2,h3{
 }
 
 /* L'OMBRE DU LECTEUR (Plus petite et naturelle) */
-/* Modifie cette section existante */
 .player-container {
     position: fixed;
     bottom: 0;
@@ -691,23 +690,22 @@ h2,h3{
     right: 0;
     z-index: 9000;
     background: #0b0e14;
-    border-radius: 40px 40px 0 0 / 20px 20px 0 0; /* Arrondi plus léger */
+    border-radius: 40px 40px 0 0 / 20px 20px 0 0;
     border-top: 1px solid rgba(243, 195, 0, 0.3);
-    padding: 0px 20px 25px;
+    /* On garde du padding sur les côtés, mais ZERO en bas pour coller la barre */
+    padding: 0px 0px 0px; 
     box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
     animation: playerSubtleWave 15s ease-in-out infinite;
 }
 /* --- LE TITRE (Espace rétabli) --- */
 .now-playing {
     text-align: center;
-    font-size: 0.85rem; /* Légèrement plus petit */
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--primary);
-    margin-top: 45px; 
-    margin-bottom: 1px; 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin-top: 40px; 
+    margin-bottom: 5px;
+    padding: 0 20px; /* Pour ne pas que le texte touche les bords */
 }
 
 /* --- LE LECTEUR AUDIO (Espace avec le titre) --- */
@@ -795,13 +793,15 @@ audio {
 
 /* On superpose le bouton sur la barre */
 .bsg-progress-row {
-    margin-top: 10px; /* Crée l'espace nécessaire sous le haut du bouton */
     display: grid;
-    grid-template-columns: 45px 1fr 45px;
+    /* On donne plus de place à la barre (1fr) et on réduit les chiffres */
+    grid-template-columns: 50px 1fr 50px; 
     align-items: center;
-    gap: 10px;
+    gap: 0px; /* Réduit pour gagner de la place */
     width: 100%;
-    bottom: 0; 
+    /* On la colle tout en bas */
+    margin-bottom: 0; 
+    padding-bottom: 5px; /* Petit espace de confort pour le doigt */
 }
 
 .bsg-whale-btn {
@@ -854,10 +854,10 @@ audio {
 
 /* --- Vague --- */
 .bsg-wave {
-    height: 30px;
+    height: 40px; /* Légèrement plus haut pour faciliter le clic mobile */
     cursor: pointer;
-    /* On ajoute un peu de marge interne pour que le bouton ne cache pas tout */
-    padding: 0 10px; 
+    width: 100%;
+    padding: 0; /* Supprime les marges internes */
 }
 
 .bsg-wave svg {
