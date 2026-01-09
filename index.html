@@ -787,95 +787,80 @@ audio {
   padding:24px;
   font-style:italic;
 }
-/* ===================== */
-/* LECTEUR PERSONNALISÉ */
-/* ===================== */
+/* =============================== */
+/* LECTEUR AUDIO INTERNE BSG       */
+/* =============================== */
 
-.custom-player {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 10px 0 4px;
-}
-
-/* --- Bouton Baleine --- */
-#whale-btn {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #1e2c3a, #050608);
-    border: 1px solid rgba(210,179,71,0.4);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-#whale-btn img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 0 6px rgba(210,179,71,0.35));
-    transition: filter 0.3s ease, transform 0.3s ease;
-}
-
-#whale-btn.playing img {
-    filter: drop-shadow(0 0 12px rgba(70,160,255,0.6));
-    transform: rotate(-8deg);
-}
-
-#whale-btn:active {
-    transform: scale(0.92);
-}
-
-/* --- Zone temps + vague --- */
-.progress-zone {
-    flex: 1;
+.bsg-audio-player {
     display: grid;
-    grid-template-columns: 46px 1fr 46px;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    align-items: center;
+}
+
+/* --- Ligne progression --- */
+.bsg-progress-row {
+    display: grid;
+    grid-template-columns: 42px 1fr 42px;
     align-items: center;
     gap: 10px;
-    font-size: 0.75rem;
-    color: rgba(234,234,234,0.6);
+}
+
+.bsg-time {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.55);
 }
 
 /* --- Vague --- */
-.wave-track {
-    position: relative;
+.bsg-wave {
     height: 26px;
     cursor: pointer;
 }
 
-.wave-track svg {
+.bsg-wave svg {
     width: 100%;
     height: 100%;
 }
 
 #wave-bg {
     fill: none;
-    stroke: rgba(255,255,255,0.15);
+    stroke: rgba(255,255,255,0.18);
     stroke-width: 3;
 }
 
 #wave-progress {
     fill: none;
-    stroke: url(#waveGradient);
+    stroke: #f3c300;
     stroke-width: 3;
     stroke-linecap: round;
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
-    transition: stroke-dashoffset 0.15s linear;
+    transition: stroke-dashoffset 0.12s linear;
 }
 
-/* Animation douce de la vague */
-@keyframes waveMotion {
-    0% { d: path("M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"); }
-    50% { d: path("M0 30 Q 30 38 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"); }
-    100% { d: path("M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"); }
+/* --- Bouton Baleine centré --- */
+.bsg-whale-btn {
+    justify-self: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #1c2733, #050608);
+    border: 1px solid rgba(243,195,0,0.35);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.55);
+    cursor: pointer;
 }
 
-.custom-player.playing #wave-progress,
-.custom-player.playing #wave-bg {
-    animation: waveMotion 3.5s ease-in-out infinite;
+.bsg-whale-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(243,195,0,0.45));
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.bsg-audio-player.is-playing .bsg-whale-btn img {
+    transform: rotate(-8deg);
+    filter: drop-shadow(0 0 12px rgba(80,160,255,0.7));
 }
 
 </style>
@@ -904,33 +889,36 @@ audio {
 <a href="https://baleinesousgravillon.com/" target="_blank" id="logo-link">
     <img id="player-img" class="is-logo" src="https://baleinesousgravillon.com/wp-content/uploads/2022/02/cropped-Baleine_sous_gravillon-1-270x270.png" alt="Logo">
 </a>
-    <div class="custom-player">
-    <button id="whale-btn" aria-label="Lecture / Pause">
-        <img src="https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/wtw.png" alt="Play">
-    </button>
+<div class="player-container">
 
-    <div class="progress-zone">
-        <span id="current-time">0:00</span>
+    <div id="now-playing-title" class="now-playing">
+        Sélectionnez une aventure…
+    </div>
 
-        <div class="wave-track" id="wave-track">
+<div class="bsg-audio-player" data-player>
+
+    <div class="bsg-progress-row">
+        <span class="bsg-time" id="current-time">0:00</span>
+
+        <div class="bsg-wave" id="wave-track" aria-label="Progression audio">
             <svg viewBox="0 0 600 60" preserveAspectRatio="none">
                 <path id="wave-bg"
-                      d="M0 30 Q 30 20 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"
-                      />
+                      d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
                 <path id="wave-progress"
-                      d="M0 30 Q 30 20 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30"
-                      />
+                      d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
             </svg>
         </div>
 
-        <span id="duration">0:00</span>
+        <span class="bsg-time" id="duration">0:00</span>
     </div>
+
+    <button id="whale-btn" class="bsg-whale-btn" aria-label="Lecture / Pause">
+        <img src="whale-tail.svg" alt="">
+    </button>
+
 </div>
 
-    <div id="now-playing-title" class="now-playing">Sélectionnez une aventure...</div>
-    <audio id="player" playsinline preload="auto"></audio>
-
-</div>
+<audio id="player" preload="metadata" playsinline></audio>
 
 <script>
     
@@ -944,59 +932,72 @@ const audio = document.getElementById('player');
 const titleDisplay = document.getElementById('now-playing-title');
 
 const whaleBtn = document.getElementById('whale-btn');
+const waveTrack = document.getElementById('wave-track');
 const waveProgress = document.getElementById('wave-progress');
 const currentTimeEl = document.getElementById('current-time');
 const durationEl = document.getElementById('duration');
-const playerUI = document.querySelector('.custom-player');
-const waveTrack = document.getElementById('wave-track');
+const uiPlayer = document.querySelector('.bsg-audio-player');
+
+let isScrubbing = false;
 
 /* --- Play / Pause --- */
 whaleBtn.addEventListener('click', () => {
-    if (audio.paused) {
-        audio.play();
-    } else {
-        audio.pause();
-    }
+    audio.paused ? audio.play() : audio.pause();
 });
 
-/* --- UI Sync --- */
-audio.addEventListener('play', () => {
-    whaleBtn.classList.add('playing');
-    playerUI.classList.add('playing');
-});
+audio.addEventListener('play', () => uiPlayer.classList.add('is-playing'));
+audio.addEventListener('pause', () => uiPlayer.classList.remove('is-playing'));
 
-audio.addEventListener('pause', () => {
-    whaleBtn.classList.remove('playing');
-    playerUI.classList.remove('playing');
-});
-
-/* --- Temps & Progression --- */
+/* --- Durée --- */
 audio.addEventListener('loadedmetadata', () => {
     durationEl.textContent = formatTime(audio.duration);
 });
 
+/* --- Progression --- */
 audio.addEventListener('timeupdate', () => {
-    currentTimeEl.textContent = formatTime(audio.currentTime);
-
-    const progress = audio.currentTime / audio.duration;
-    const dash = 600 - (600 * progress);
-    waveProgress.style.strokeDashoffset = dash;
+    if (isScrubbing || !audio.duration) return;
+    updateProgress(audio.currentTime / audio.duration);
 });
 
-/* --- Seek au clic sur la vague --- */
-waveTrack.addEventListener('click', (e) => {
+/* --- Scrub clic + drag --- */
+const seek = (clientX) => {
     const rect = waveTrack.getBoundingClientRect();
-    const ratio = (e.clientX - rect.left) / rect.width;
+    const ratio = Math.min(Math.max(0, clientX - rect.left), rect.width) / rect.width;
     audio.currentTime = ratio * audio.duration;
+    updateProgress(ratio);
+};
+
+waveTrack.addEventListener('pointerdown', e => {
+    isScrubbing = true;
+    audio.pause();
+    seek(e.clientX);
 });
 
-/* --- Utils --- */
+window.addEventListener('pointerup', () => {
+    if (isScrubbing && audio.currentTime < audio.duration) {
+        audio.play();
+    }
+    isScrubbing = false;
+});
+
+window.addEventListener('pointermove', e => {
+    if (isScrubbing) seek(e.clientX);
+});
+
+
+/* --- UI --- */
+function updateProgress(ratio) {
+    waveProgress.style.strokeDashoffset = 600 - ratio * 600;
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+}
+
 function formatTime(t) {
-    if (!t) return "0:00";
+    if (!Number.isFinite(t)) return "0:00";
     const m = Math.floor(t / 60);
     const s = Math.floor(t % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
 }
+
 
 // --- MEDIA SESSION : handlers déclarés UNE SEULE FOIS ---
 if ('mediaSession' in navigator) {
