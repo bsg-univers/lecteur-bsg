@@ -707,6 +707,7 @@ h2,h3{
     margin-bottom: 15px;
     padding: 0 20px; /* Pour ne pas que le texte touche les bords */
     display: none;
+    opacity: 0;
 }
 
 /* --- LE LECTEUR AUDIO (Espace avec le titre) --- */
@@ -812,8 +813,8 @@ audio {
     border: none !important;
     box-shadow: none !important;
     
-    width: 180px;  /* Augmenté un peu pour l'effet visuel */
-    height: 160px;
+    width: 150px;  /* Augmenté un peu pour l'effet visuel */
+    height: 140px;
     z-index: 10000; /* Passe au-dessus de tout le reste */
     cursor: pointer;
     outline: none;
@@ -1098,7 +1099,7 @@ function showPlaylistsBySeason(season) {
     if (dock) dock.classList.remove('is-static');
 
     resetPlayerImage();
-    titleDisplay.innerText = "";
+    titleDisplay.innerText = "D";
 
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
