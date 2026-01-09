@@ -183,6 +183,46 @@ header {
 /*       CONTENU         */
 /* ===================== */
 
+.btn-explore-themes {
+    width: 42px; /* Un peu plus grand que les boutons de partage */
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(210, 179, 71, 0.1);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.btn-explore-themes:hover {
+    background: var(--primary);
+    color: #0b0e14;
+    transform: scale(1.1);
+}
+
+/* Conteneur pour aligner Titre + Bouton */
+.season-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Changez flex-start par space-between */
+    margin: 32px 0 18px;
+    width: 100%;
+}
+/* On ajuste le H2 pour qu'il ne prenne pas toute la place et qu'il n'ait plus sa propre marge */
+.season-title-container h2 {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* === HASHTAGS : RUBAN INTELLIGENT === */
 
 .hashtag-container {
@@ -868,8 +908,18 @@ function showPlaylistsBySeason(season) {
     const list = allPlaylists.filter(p => p.season === season);
     const div = document.getElementById('episodes_list');
 
-    div.innerHTML =
-        `<h2>Séries — ${season}</h2>` +
+    // NOUVEAU : Titre + Bouton circulaire ✨
+    div.innerHTML = `
+        <div class="season-title-container">
+            <h2>Séries — ${season}</h2>
+            <div class="btn-explore-themes" onclick="toggleHashtagLibrary()" title="Explorer par thématiques">
+                🤿
+            </div>
+        </div>
+        <div id="hashtag-library" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(210, 179, 71, 0.1);">
+            <div id="hashtag-cloud" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;"></div>
+        </div>
+    ` +
         list.map(p => {
             const encoded = btoa(unescape(encodeURIComponent(p.id)));
 
@@ -895,6 +945,33 @@ function showPlaylistsBySeason(season) {
         }).join('');
 
     requestAnimationFrame(() => initHashtagMarquees(div));
+}
+
+function toggleHashtagLibrary() {
+    const library = document.getElementById('hashtag-library');
+    const cloud = document.getElementById('hashtag-cloud');
+    
+    if (library.style.display === 'block') {
+        library.style.display = 'none';
+        return;
+    }
+
+    let allTags = [];
+    allPlaylists.forEach(p => {
+        if (p.hashtags) {
+            const tags = p.hashtags.split(' ');
+            allTags = allTags.concat(tags);
+        }
+    });
+
+    // Nettoyage : on enlève les espaces vides, on dédoublonne et on trie
+    const uniqueTags = [...new Set(allTags.filter(t => t.trim() !== ""))].sort((a, b) => a.localeCompare(b));
+
+    cloud.innerHTML = uniqueTags.map(tag => `
+        <span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>
+    `).join('');
+
+    library.style.display = 'block';
 }
 
 function initHashtagMarquees(root = document) {
