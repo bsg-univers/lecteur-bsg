@@ -188,34 +188,29 @@ header {
 .hashtag-container {
     position: relative;
     overflow: hidden;
-    white-space: nowrap;
-    margin-top: 6px;
-    -webkit-mask-image: linear-gradient(to right, transparent 0px, black 40px, black calc(100% - 40px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0px, black 40px, black calc(100% - 40px), transparent 100%);
+    margin-top: 8px;
+    /* Masque progressif sur les côtés */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent);
 }
 
 .hashtag-track {
     display: flex;
-    gap: 8px;
-    width: max-content;
+    width: max-content; 
+    gap: 12px; /* On fixe le gap pour le calcul */
     will-change: transform;
-    transform: translate3d(0,0,0);
+    transform: translateZ(0);
 }
 
 .hashtag-container.is-animated .hashtag-track {
-    animation-name: marquee;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-duration: var(--scroll-duration);
+    animation: hashtag-scroll linear infinite;
+    animation-duration: var(--scroll-duration, 40s);
 }
 
-@keyframes marquee {
-    from {
-        transform: translate3d(0,0,0);
-    }
-    to {
-        transform: translate3d(var(--scroll-distance),0,0);
-    }
+@keyframes hashtag-scroll {
+    from { transform: translateX(0); }
+    /* On décale de 50% (la moitié clonée) + la moitié du gap pour un raccord invisible */
+    to   { transform: translateX(calc(-50% - 6px)); } 
 }
 
 /* Hashtag */
@@ -905,32 +900,28 @@ function showPlaylistsBySeason(season) {
 function initHashtagMarquees(root = document) {
     root.querySelectorAll('.hashtag-container').forEach(container => {
         const track = container.querySelector('.hashtag-track');
-        if (!track || track.dataset.ready) return;
+        if (!track || track.dataset.duplicated === "true") return;
 
-        const content = track.innerHTML;
+        const baseWidth = track.scrollWidth;
+        
+        if (baseWidth > container.offsetWidth) {
+            // On double le contenu pour la boucle
+            track.innerHTML += track.innerHTML; 
+            track.dataset.duplicated = "true";
 
-        // Créer un clone propre (sans toucher à innerHTML +=)
-        const clone = document.createElement('div');
-        clone.className = 'hashtag-track-clone';
-        clone.innerHTML = content;
-
-        track.appendChild(clone);
-        track.dataset.ready = "true";
-
-        requestAnimationFrame(() => {
-            const width = track.scrollWidth / 2;
-            if (width <= container.offsetWidth) return;
-
-            const speed = 40; // pixels par seconde (lent et fluide)
-            const duration = width / speed;
-
-            container.style.setProperty('--scroll-distance', `-${width}px`);
+            // Vitesse ultra-lente demandée
+            const speed = 8; 
+            
+            // La durée est calculée sur la moitié de la largeur totale 
+            // (puisqu'on a doublé le contenu)
+            const duration = baseWidth / speed;
+            
             container.style.setProperty('--scroll-duration', `${duration}s`);
             container.classList.add('is-animated');
-        });
+        }
     });
 }
-
+    
 function filterByHashtag(event, tag) {
     event.stopPropagation(); // Empêche d'ouvrir la playlist en cliquant sur le tag
     
