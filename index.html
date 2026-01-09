@@ -198,12 +198,19 @@ header {
     transition: all 0.3s ease;
     flex-shrink: 0;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    margin-right: 15px;
+    transition: all .3s ease;
+    animation: pulse-border 12s infinite ease-in-out;
+        /* Supprime le rectangle bleu sur mobile */
+    -webkit-tap-highlight-color: transparent;
+      
+    /* Supprime le contour de sélection au focus (clavier/accessibilité) */
+    outline: none;
 }
 
 .btn-explore-themes:hover {
     background: var(--primary);
     color: #0b0e14;
-    transform: scale(1.1);
 }
 
 /* Conteneur pour aligner Titre + Bouton */
@@ -211,7 +218,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between; /* Changez flex-start par space-between */
-    margin: 32px 0 18px;
+    margin: 10px 0 18px;
     width: 100%;
 }
 /* On ajuste le H2 pour qu'il ne prenne pas toute la place et qu'il n'ait plus sa propre marge */
