@@ -793,12 +793,11 @@ audio {
 
 /* On superpose le bouton sur la barre */
 .bsg-progress-row {
-    display: grid;
-    grid-template-columns: 50px 1fr 50px; 
-    align-items: center; /* Aligne les éléments sur le même axe */
+    display: flex;
+    flex-direction: column; /* On empile les éléments verticalement */
     width: 100%;
+    padding: 0; 
     margin-bottom: 0;
-    padding-bottom: 10px; /* Un peu d'air sous la barre */
 }
 
 .bsg-whale-btn {
@@ -844,27 +843,34 @@ audio {
     filter: drop-shadow(0 0 12px rgba(243,195,0,0.6));
 }
 
+.bsg-time-container {
+    display: flex;
+    justify-content: space-between; /* Un à gauche, un à droite */
+    padding: 0 15px; /* Petit espace sur les côtés pour ne pas coller aux bords */
+    margin-bottom: -5px; /* On les rapproche de la barre */
+    z-index: 2;
+}
+        
 .bsg-time {
-    font-size: 0.72rem;
-    color: rgba(255,255,255,0.55);
-    text-align: center;
-    /* REMONTÉE DES CHIFFRES : */
-    margin-bottom: 8px; 
-    align-self: flex-end; /* Aligne le texte vers le haut de la ligne de grille */
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: bold;
+    font-variant-numeric: tabular-nums; /* Évite que les chiffres bougent */
 }
 
 /* --- Vague --- */
 .bsg-wave {
-    height: 40px;
+    height: 35px;
     cursor: pointer;
-    width: 100%;
+    width: 100vw; /* Utilise toute la largeur de l'écran */
     display: flex;
-    align-items: center; /* Centre la vague verticalement */
+    align-items: center;
+    position: relative;
 }
 
 .bsg-wave svg {
     width: 100%;
-    height: 25px; /* On réduit un peu la hauteur du SVG pour laisser de l'air */
+    height: 40px;
 }
 
 #wave-bg {
@@ -921,22 +927,20 @@ audio {
         <img src="https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/wtw.png" alt="whale tail">
     </button>
     <div class="bsg-progress-row">
+        <div class="bsg-time-container">
         <span class="bsg-time" id="current-time">0:00</span>
-
-        <div class="bsg-wave" id="wave-track" aria-label="Progression audio">
-            <svg viewBox="0 0 600 60" preserveAspectRatio="none">
-                <path id="wave-bg"
-                      d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
-                <path id="wave-progress"
-                      d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
-            </svg>
+        <span class="bsg-time" id="duration">0:00</span>
         </div>
 
-        <span class="bsg-time" id="duration">0:00</span>
+        <div class="bsg-wave" id="wave-track" aria-label="Progression audio">
+        <svg viewBox="0 0 600 60" preserveAspectRatio="none">
+            <path id="wave-bg"
+                  d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
+            <path id="wave-progress"
+                  d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
+        </svg>
+        </div>
     </div>
-
-    
-
 </div>
 
 <audio id="player" preload="metadata" playsinline></audio>
