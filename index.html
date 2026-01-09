@@ -183,15 +183,37 @@ header {
 /*       CONTENU         */
 /* ===================== */
 
-/* --- Style des Hashtags --- */
+/* === HASHTAGS : RUBAN INTELLIGENT === */
+
 .hashtag-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: 6px;
 }
 
+/* Le rail interne */
+.hashtag-track {
+    display: inline-flex;
+    gap: 6px;
+    will-change: transform;
+}
+
+/* État animé UNIQUEMENT si overflow détecté */
+.hashtag-container.is-animated .hashtag-track {
+    animation: hashtag-scroll linear infinite;
+    animation-duration: var(--scroll-duration, 18s);
+}
+
+/* Animation */
+@keyframes hashtag-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+/* Hashtag */
 .hashtag-badge {
+    flex-shrink: 0;
     font-size: 0.75rem;
     color: var(--primary);
     background: rgba(210, 179, 71, 0.1);
@@ -207,6 +229,10 @@ header {
     color: #0b0e14;
 }
 
+.hashtag-container.is-animated:hover .hashtag-track {
+    animation-play-state: paused;
+}
+        
 /* Titre spécial pour la vue filtrée */
 .filter-header {
     display: flex;
@@ -825,15 +851,12 @@ async function loadPlaylists() {
 window.addEventListener('DOMContentLoaded', resetPlayerImage);   
 
 function showPlaylistsBySeason(season) {
-    // Le dock redevient collant pour aider la navigation
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.remove('is-static');
 
-    // ... votre code existant ...
-    resetPlayerImage(); // On remet le petit logo
+    resetPlayerImage();
     titleDisplay.innerText = "Sélectionnez une aventure...";
 
-    
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
         btn.style.borderColor = active ? "var(--primary)" : "rgba(243,195,0,0.2)";
@@ -843,28 +866,59 @@ function showPlaylistsBySeason(season) {
     const list = allPlaylists.filter(p => p.season === season);
     const div = document.getElementById('episodes_list');
 
-    div.innerHTML = `<h2>Séries — ${season}</h2>` + list.map(p => {
-    const encoded = btoa(unescape(encodeURIComponent(p.id)));
-    
-    // Génération du HTML des hashtags
-    const hashtagsHtml = p.hashtags 
-        ? `<div class="hashtag-container">` + 
-          p.hashtags.split(' ').map(tag => 
-            `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
-          ).join('') + `</div>`
-        : "";
+    div.innerHTML =
+        `<h2>Séries — ${season}</h2>` +
+        list.map(p => {
+            const encoded = btoa(unescape(encodeURIComponent(p.id)));
 
-    return `
-    <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="episode-title"><strong>${p.name}</strong></span>
-            <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
-        </div>
-        ${hashtagsHtml}
-    </div>`;
-}).join('');
-    
+            const hashtagsHtml = p.hashtags
+                ? `
+                <div class="hashtag-container">
+                    <div class="hashtag-track">
+                        ${p.hashtags.split(' ').map(tag =>
+                            `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
+                        ).join('')}
+                    </div>
+                </div>`
+                : "";
+
+            return `
+            <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="episode-title"><strong>${p.name}</strong></span>
+                    <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+                </div>
+                ${hashtagsHtml}
+            </div>`;
+        }).join('');
+
+    requestAnimationFrame(() => initHashtagMarquees(div));
 }
+
+
+function initHashtagMarquees(root = document) {
+    root.querySelectorAll('.hashtag-container').forEach(container => {
+        const track = container.querySelector('.hashtag-track');
+        if (!track) return;
+
+        // Empêche toute redétection
+        if (track.dataset.duplicated === "true") return;
+
+        const baseWidth = track.scrollWidth;
+        if (baseWidth <= container.clientWidth) return;
+
+        // Duplication propre
+        track.innerHTML += track.innerHTML;
+        track.dataset.duplicated = "true";
+
+        const duration = Math.max(baseWidth / 40, 12);
+        container.style.setProperty('--scroll-duration', `${duration}s`);
+        container.classList.add('is-animated');
+    });
+}
+
+
+
 function filterByHashtag(event, tag) {
     event.stopPropagation(); // Empêche d'ouvrir la playlist en cliquant sur le tag
     
@@ -885,7 +939,7 @@ function filterByHashtag(event, tag) {
     let html = `
     <div class="filter-header">
         <span style="color:var(--primary); font-weight:bold;"># Thème : ${tag}</span>
-        <button class="btn-close-filter" onclick="showPlaylistsBySeason(allPlaylists[0].season)">Fermer</button>
+        <button class="btn-close-filter" onclick="showPlaylistsBySeason(allPlaylists[0].season)">X</button>
     </div>`;
 
     html += filtered.map(p => {
