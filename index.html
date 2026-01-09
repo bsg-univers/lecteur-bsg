@@ -692,95 +692,12 @@ h2,h3{
     background: #0b0e14;
     border-radius: 60px 60px 0 0 / 25px 25px 0 0;
     border-top: 1px solid rgba(243, 195, 0, 0.3);
-    padding: 0px 25px 20px;
+    padding: 0px 20px 20px;
+    
+    /* Ombre beaucoup plus courte et moins sombre */
     box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
+    
     animation: playerSubtleWave 15s ease-in-out infinite;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* --- LE BOUTON BALEINE --- */
-.whale-control-wrapper {
-    margin-top: -10px; /* Pour remonter un peu vers le titre */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-audio#player {
-    display: none;
-}
-.whale-toggle {
-    width: 60px;
-    height: 60px;
-    background: url('https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/wtw.png') no-repeat center;
-    background-size: contain;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: drop-shadow(0 0 10px rgba(210, 179, 71, 0.3));
-}
-
-.whale-toggle.playing {
-    animation: whale-swim 3s ease-in-out infinite;
-}
-
-@keyframes whale-swim {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-5px) scale(1.05); }
-}
-
-/* --- LA BARRE DE PROGRESSION VAGUE --- */
-.progress-section {
-    width: 100%;
-    max-width: 500px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.time-text {
-    font-size: 0.75rem;
-    color: var(--primary);
-    font-family: monospace;
-    min-width: 35px;
-    opacity: 0.8;
-}
-
-.wave-bar-container {
-    flex: 1;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    position: relative;
-    cursor: pointer;
-    overflow: hidden;
-}
-
-.wave-fill {
-    position: absolute;
-    height: 100%;
-    width: 0%; /* Piloté par JS */
-    background: linear-gradient(90deg, #1e3c72 0%, var(--primary) 100%);
-    border-radius: 10px;
-    transition: width 0.1s linear;
-}
-
-/* Animation de la petite vague sur la barre */
-.wave-fill::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    width: 40px;
-    height: 100%;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M0 10 Q5 0 10 10 T20 10' fill='none' stroke='white' stroke-width='1' opacity='0.5'/%3E%3C/svg%3E");
-    animation: wave-slide 2s linear infinite;
-}
-
-@keyframes wave-slide {
-    from { background-position-x: 0; }
-    to { background-position-x: 40px; }
 }
 /* --- LE TITRE (Espace rétabli) --- */
 .now-playing {
@@ -898,68 +815,10 @@ audio {
 </a>
     <div class="player-container">
     <div id="now-playing-title" class="now-playing">Sélectionnez une aventure...</div>
-    
-    <div class="whale-control-wrapper">
-        <button id="whale-play" class="whale-toggle" onclick="togglePlay()"></button>
-    </div>
-
-    <div class="progress-section">
-        <span class="time-text" id="current-time">0:00</span>
-        <div class="wave-bar-container" id="progress-clickable" onclick="seek(event)">
-            <div class="wave-fill" id="wave-fill"></div>
-        </div>
-        <span class="time-text" id="total-duration">0:00</span>
-    </div>
-
-    <audio id="player" style="display:none;" playsinline preload="auto"></audio>
-</div>
-    <div id="now-playing-title" class="now-playing">Sélectionnez une aventure...</div>
     <audio id="player" style="border-radius: 15px;" controls playsinline preload="auto"></audio>
 </div>
 
 <script>
-// On récupère les nouveaux éléments
-const whaleBtn = document.getElementById('whale-play');
-const waveFill = document.getElementById('wave-fill');
-const currentTimeText = document.getElementById('current-time');
-const durationText = document.getElementById('total-duration');
-
-function togglePlay() {
-    if (audio.paused) {
-        audio.play();
-        whaleBtn.classList.add('playing');
-    } else {
-        audio.pause();
-        whaleBtn.classList.remove('playing');
-    }
-}
-
-// Mise à jour de la vaguelette
-audio.addEventListener('timeupdate', () => {
-    const progress = (audio.currentTime / audio.duration) * 100;
-    waveFill.style.width = progress + "%";
-    currentTimeText.innerText = formatTime(audio.currentTime);
-});
-
-audio.addEventListener('loadedmetadata', () => {
-    durationText.innerText = formatTime(audio.duration);
-});
-
-function formatTime(secs) {
-    const min = Math.floor(secs / 60);
-    const sec = Math.floor(secs % 60);
-    return min + ":" + (sec < 10 ? "0" : "") + sec;
-}
-
-function seek(e) {
-    const rect = document.getElementById('progress-clickable').getBoundingClientRect();
-    const pos = (e.clientX - rect.left) / rect.width;
-    audio.currentTime = pos * audio.duration;
-}
-
-// Synchroniser avec les changements d'épisodes (quand tu cliques sur play ailleurs)
-audio.addEventListener('play', () => whaleBtn.classList.add('playing'));
-audio.addEventListener('pause', () => whaleBtn.classList.remove('playing'));
     
 // --- CONFIGURATION ---
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoj1HRP-nYuZW5YHoaNXLw64iLvbcK9Q-Wxj5hN6CgPNqNt6vXlrV9qfqBcyBRzRiH0A/exec";
