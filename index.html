@@ -195,22 +195,27 @@ header {
 }
 
 .hashtag-track {
-    display: inline-flex;
+    display: flex;
     gap: 8px;
+    width: max-content;
     will-change: transform;
-    /* Force le rendu fluide sur mobile */
-    transform: translate3d(0, 0, 0); 
+    transform: translate3d(0,0,0);
 }
 
 .hashtag-container.is-animated .hashtag-track {
-    animation: hashtag-scroll linear infinite;
-    animation-duration: var(--scroll-duration, 25s);
+    animation-name: marquee;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: var(--scroll-duration);
 }
 
-@keyframes hashtag-scroll {
-    from { transform: translateX(0); }
-    /* On utilise -50% car le contenu est doublé en JS */
-    to   { transform: translateX(-50%); }
+@keyframes marquee {
+    from {
+        transform: translate3d(0,0,0);
+    }
+    to {
+        transform: translate3d(var(--scroll-distance),0,0);
+    }
 }
 
 /* Hashtag */
@@ -900,24 +905,29 @@ function showPlaylistsBySeason(season) {
 function initHashtagMarquees(root = document) {
     root.querySelectorAll('.hashtag-container').forEach(container => {
         const track = container.querySelector('.hashtag-track');
-        if (!track || track.dataset.duplicated === "true") return;
+        if (!track || track.dataset.ready) return;
 
-        // On mesure la largeur AVANT de doubler
-        const baseWidth = track.scrollWidth;
-        
-        if (baseWidth > container.offsetWidth) {
-            // On double le contenu
-            track.innerHTML += track.innerHTML; 
-            track.dataset.duplicated = "true";
+        const content = track.innerHTML;
 
-            // VITESSE : on base le temps sur baseWidth uniquement
-            // 30 est une vitesse très douce. Augmentez à 40 ou 50 si trop lent.
-            const speed = 8; 
-            const duration = baseWidth / speed;
-            
+        // Créer un clone propre (sans toucher à innerHTML +=)
+        const clone = document.createElement('div');
+        clone.className = 'hashtag-track-clone';
+        clone.innerHTML = content;
+
+        track.appendChild(clone);
+        track.dataset.ready = "true";
+
+        requestAnimationFrame(() => {
+            const width = track.scrollWidth / 2;
+            if (width <= container.offsetWidth) return;
+
+            const speed = 40; // pixels par seconde (lent et fluide)
+            const duration = width / speed;
+
+            container.style.setProperty('--scroll-distance', `-${width}px`);
             container.style.setProperty('--scroll-duration', `${duration}s`);
             container.classList.add('is-animated');
-        }
+        });
     });
 }
 
