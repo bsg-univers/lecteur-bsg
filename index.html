@@ -196,9 +196,10 @@ header {
 
 .hashtag-track {
     display: inline-flex;
-    gap: 8px; /* Augmentez un peu l'espace entre les tags */
+    gap: 8px;
     will-change: transform;
-    /* Suppression du padding pour éviter le glitch de calcul */
+    /* Force le rendu fluide sur mobile */
+    transform: translate3d(0, 0, 0); 
 }
 
 .hashtag-container.is-animated .hashtag-track {
@@ -896,25 +897,22 @@ function showPlaylistsBySeason(season) {
     requestAnimationFrame(() => initHashtagMarquees(div));
 }
 
-
 function initHashtagMarquees(root = document) {
     root.querySelectorAll('.hashtag-container').forEach(container => {
         const track = container.querySelector('.hashtag-track');
         if (!track || track.dataset.duplicated === "true") return;
 
+        // On mesure la largeur AVANT de doubler
         const baseWidth = track.scrollWidth;
         
-        // On n'anime que si le contenu dépasse du container
         if (baseWidth > container.offsetWidth) {
-            // TECHNIQUE ANTI-GLITCH : 
-            // On clone tout le contenu pour être sûr d'avoir exactement le même espacement
-            const clone = track.innerHTML;
-            track.innerHTML = clone + clone; 
-            
+            // On double le contenu
+            track.innerHTML += track.innerHTML; 
             track.dataset.duplicated = "true";
 
-            // Calcul de vitesse constante (ex: 50px par seconde)
-            const speed = 50; 
+            // VITESSE : on base le temps sur baseWidth uniquement
+            // 30 est une vitesse très douce. Augmentez à 40 ou 50 si trop lent.
+            const speed = 30; 
             const duration = baseWidth / speed;
             
             container.style.setProperty('--scroll-duration', `${duration}s`);
