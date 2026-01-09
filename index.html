@@ -178,9 +178,57 @@ header {
     border-color: var(--primary);
 }
 
+
 /* ===================== */
 /*       CONTENU         */
 /* ===================== */
+
+/* --- Style des Hashtags --- */
+.hashtag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.hashtag-badge {
+    font-size: 0.75rem;
+    color: var(--primary);
+    background: rgba(210, 179, 71, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(210, 179, 71, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hashtag-badge:hover {
+    background: var(--primary);
+    color: #0b0e14;
+}
+
+/* Titre spécial pour la vue filtrée */
+.filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.btn-close-filter {
+    background: var(--primary);
+    border: none;
+    color: #0b0e14;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+        
 .container{
   max-width:820px;
   margin:auto;
@@ -795,15 +843,65 @@ function showPlaylistsBySeason(season) {
     const div = document.getElementById('episodes_list');
 
     div.innerHTML = `<h2>Séries — ${season}</h2>` + list.map(p => {
-        const encoded = btoa(unescape(encodeURIComponent(p.id)));
-        return `
-        <div class="episode-item" onclick="loadEpisodes('${encoded}', true)">
+    const encoded = btoa(unescape(encodeURIComponent(p.id)));
+    
+    // Génération du HTML des hashtags
+    const hashtagsHtml = p.hashtags 
+        ? `<div class="hashtag-container">` + 
+          p.hashtags.split(' ').map(tag => 
+            `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
+          ).join('') + `</div>`
+        : "";
+
+    return `
+    <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="episode-title"><strong>${p.name}</strong></span>
             <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+        </div>
+        ${hashtagsHtml}
+    </div>`;
+}).join('');
+    
+}
+function filterByHashtag(event, tag) {
+    event.stopPropagation(); // Empêche d'ouvrir la playlist en cliquant sur le tag
+    
+    const dock = document.querySelector('.nav-dock');
+    if (dock) dock.classList.remove('is-static');
+    
+    // On désactive la sélection visuelle des saisons
+    document.querySelectorAll('.season-item').forEach(btn => {
+        btn.style.borderColor = "rgba(243,195,0,0.2)";
+        btn.style.background = "rgba(255,255,255,0.03)";
+    });
+
+    const div = document.getElementById('episodes_list');
+    
+    // Filtrage dans TOUTES les playlists (toutes saisons confondues)
+    const filtered = allPlaylists.filter(p => p.hashtags && p.hashtags.includes(tag));
+
+    let html = `
+    <div class="filter-header">
+        <span style="color:var(--primary); font-weight:bold;"># Thème : ${tag}</span>
+        <button class="btn-close-filter" onclick="showPlaylistsBySeason(allPlaylists[0].season)">Fermer</button>
+    </div>`;
+
+    html += filtered.map(p => {
+        const encoded = btoa(unescape(encodeURIComponent(p.id)));
+        return `
+        <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="episode-title"><strong>${p.name}</strong> <small style="opacity:0.5; font-size:0.7em;">(${p.season})</small></span>
+                <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+            </div>
         </div>`;
     }).join('');
-}
 
+    div.innerHTML = html;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+    
 // --- PARTAGE NATIF + COPIE ---
 async function sharePlaylist(e, encodedPid) {
     e.stopPropagation();
