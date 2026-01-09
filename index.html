@@ -186,60 +186,20 @@ header {
 /* --- Style des Hashtags --- */
 .hashtag-container {
     display: flex;
-    overflow: hidden;
-    margin-top: 10px;
-    position: relative;
-    padding: 5px 0;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
 }
 
-/* Le groupe qui défile */
-.hashtag-scroll {
-    display: flex;
-    gap: 15px;
-    white-space: nowrap;
-}
-
-/* L'animation ne s'active QUE si on ajoute cette classe en JS */
-.hashtag-container.is-scrolling .hashtag-scroll {
-    animation: scroll-ruban 20s linear infinite;
-}
-
-/* On n'affiche les dégradés sur les bords QUE si ça défile */
-.hashtag-container.is-scrolling::before,
-.hashtag-container.is-scrolling::after {
-    content: "";
-    position: absolute;
-    top: 0; width: 30px; height: 100%; z-index: 2;
-    pointer-events: none;
-}
-.hashtag-container.is-scrolling::before { left: 0; background: linear-gradient(to right, #0b0e14, transparent); }
-.hashtag-container.is-scrolling::after { right: 0; background: linear-gradient(to left, #0b0e14, transparent); }
-
-@keyframes scroll-ruban {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-
-/* Animation de translation */
-@keyframes scroll-ruban {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); } 
-}
-
-/* On ralentit au survol pour faciliter le clic */
-.hashtag-container:hover .hashtag-scroll {
-    animation-play-state: paused;
-}
-        
 .hashtag-badge {
-    flex-shrink: 0; /* Empêche les tags de s'écraser */
     font-size: 0.75rem;
     color: var(--primary);
     background: rgba(210, 179, 71, 0.1);
-    padding: 4px 12px;
+    padding: 2px 8px;
     border-radius: 12px;
     border: 1px solid rgba(210, 179, 71, 0.3);
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .hashtag-badge:hover {
@@ -869,9 +829,11 @@ function showPlaylistsBySeason(season) {
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.remove('is-static');
 
+    // ... votre code existant ...
     resetPlayerImage(); // On remet le petit logo
     titleDisplay.innerText = "Sélectionnez une aventure...";
 
+    
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
         btn.style.borderColor = active ? "var(--primary)" : "rgba(243,195,0,0.2)";
@@ -881,62 +843,28 @@ function showPlaylistsBySeason(season) {
     const list = allPlaylists.filter(p => p.season === season);
     const div = document.getElementById('episodes_list');
 
-    // --- 1. GÉNÉRATION DU HTML ---
     div.innerHTML = `<h2>Séries — ${season}</h2>` + list.map(p => {
-        const encoded = btoa(unescape(encodeURIComponent(p.id)));
-        
-        // Génération du HTML des hashtags (toujours doublés au début)
-        const hashtagsHtml = p.hashtags 
-        ? `<div class="hashtag-container" id="container-${p.id}">
-            <div class="hashtag-scroll" id="scroll-${p.id}">
-                ${(p.hashtags + ' ' + p.hashtags).split(' ').map(tag => 
-                    `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
-                ).join('')}
-            </div>
-           </div>`
+    const encoded = btoa(unescape(encodeURIComponent(p.id)));
+    
+    // Génération du HTML des hashtags
+    const hashtagsHtml = p.hashtags 
+        ? `<div class="hashtag-container">` + 
+          p.hashtags.split(' ').map(tag => 
+            `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
+          ).join('') + `</div>`
         : "";
 
-        return `
-        <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span class="episode-title"><strong>${p.name}</strong></span>
-                <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
-            </div>
-            ${hashtagsHtml}
-        </div>`;
-    }).join('');
-
-    // --- 2. VÉRIFICATION DES LARGEURS (Après l'injection dans le DOM) ---
-    // On attend un tout petit peu (10ms) que le navigateur dessine les éléments
-    setTimeout(() => {
-        list.forEach(p => {
-            if (!p.hashtags) return;
-
-            const container = document.getElementById(`container-${p.id}`);
-            const scrollContent = document.getElementById(`scroll-${p.id}`);
-            
-            if (container && scrollContent) {
-                // scrollContent.scrollWidth / 2 car on a injecté deux fois les tags
-                const realContentWidth = scrollContent.scrollWidth / 2;
-                const containerWidth = container.offsetWidth;
-
-                // Debug : décommentez la ligne suivante si besoin de voir les mesures dans la console
-                // console.log(p.name, "Contenu:", realContentWidth, "Conteneur:", containerWidth);
-
-                if (realContentWidth > containerWidth) {
-                    // Si ça dépasse, on active l'animation
-                    container.classList.add('is-scrolling');
-                } else {
-                    // Si ça loge, on remet une version simple (non doublée) et immobile
-                    scrollContent.innerHTML = p.hashtags.split(' ').map(tag => 
-                        `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
-                    ).join('');
-                }
-            }
-        });
-    }, 10);
-}
+    return `
+    <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="episode-title"><strong>${p.name}</strong></span>
+            <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+        </div>
+        ${hashtagsHtml}
+    </div>`;
+}).join('');
     
+}
 function filterByHashtag(event, tag) {
     event.stopPropagation(); // Empêche d'ouvrir la playlist en cliquant sur le tag
     
