@@ -706,6 +706,7 @@ h2,h3{
     margin-top: 40px; 
     margin-bottom: 15px;
     padding: 0 20px; /* Pour ne pas que le texte touche les bords */
+    display: none;
 }
 
 /* --- LE LECTEUR AUDIO (Espace avec le titre) --- */
@@ -811,8 +812,8 @@ audio {
     border: none !important;
     box-shadow: none !important;
     
-    width: 100px;  /* Augmenté un peu pour l'effet visuel */
-    height: 80px;
+    width: 140px;  /* Augmenté un peu pour l'effet visuel */
+    height: 120px;
     z-index: 10000; /* Passe au-dessus de tout le reste */
     cursor: pointer;
     outline: none;
@@ -834,7 +835,7 @@ audio {
     object-fit: contain;
     object-position: bottom; 
     /* Ombre blanche douce par défaut pour détacher le noir du fond */
-    filter: drop-shadow(0 -2px 6px rgba(255, 255, 255, 0.6));
+    filter: drop-shadow(0 -2px 6px rgba(255, 255, 255, 0.5));
     transition: filter 0.3s ease, transform 0.3s ease;
 }
 
