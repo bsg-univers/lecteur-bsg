@@ -869,11 +869,9 @@ function showPlaylistsBySeason(season) {
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.remove('is-static');
 
-    // ... votre code existant ...
     resetPlayerImage(); // On remet le petit logo
     titleDisplay.innerText = "Sélectionnez une aventure...";
 
-    
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
         btn.style.borderColor = active ? "var(--primary)" : "rgba(243,195,0,0.2)";
@@ -883,52 +881,62 @@ function showPlaylistsBySeason(season) {
     const list = allPlaylists.filter(p => p.season === season);
     const div = document.getElementById('episodes_list');
 
+    // --- 1. GÉNÉRATION DU HTML ---
     div.innerHTML = `<h2>Séries — ${season}</h2>` + list.map(p => {
-    const encoded = btoa(unescape(encodeURIComponent(p.id)));
-    
-    // Génération du HTML des hashtags
-    const hashtagsHtml = p.hashtags 
-    ? `<div class="hashtag-container" id="container-${p.id}">
-        <div class="hashtag-scroll" id="scroll-${p.id}">
-            ${(p.hashtags + ' ' + p.hashtags).split(' ').map(tag => 
-                `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
-            ).join('')}
-        </div>
-       </div>`
-    : "";
+        const encoded = btoa(unescape(encodeURIComponent(p.id)));
         
-    list.forEach(p => {
-    const container = document.getElementById(`container-${p.id}`);
-    const scrollContent = document.getElementById(`scroll-${p.id}`);
-    
-    if (container && scrollContent) {
-        // scrollContent.scrollWidth / 2 car on a doublé les tags
-        const realContentWidth = scrollContent.scrollWidth / 2;
-        const containerWidth = container.offsetWidth;
+        // Génération du HTML des hashtags (toujours doublés au début)
+        const hashtagsHtml = p.hashtags 
+        ? `<div class="hashtag-container" id="container-${p.id}">
+            <div class="hashtag-scroll" id="scroll-${p.id}">
+                ${(p.hashtags + ' ' + p.hashtags).split(' ').map(tag => 
+                    `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
+                ).join('')}
+            </div>
+           </div>`
+        : "";
 
-        if (realContentWidth > containerWidth) {
-            // Si le contenu est plus large, on active l'animation
-            container.classList.add('is-scrolling');
-        } else {
-            // Sinon, on remet le contenu simple (facultatif mais plus propre)
-            scrollContent.innerHTML = p.hashtags.split(' ').map(tag => 
-                `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
-            ).join('');
-        }
-    }
-});
+        return `
+        <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="episode-title"><strong>${p.name}</strong></span>
+                <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+            </div>
+            ${hashtagsHtml}
+        </div>`;
+    }).join('');
 
-    return `
-    <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="episode-title"><strong>${p.name}</strong></span>
-            <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
-        </div>
-        ${hashtagsHtml}
-    </div>`;
-}).join('');
-    
+    // --- 2. VÉRIFICATION DES LARGEURS (Après l'injection dans le DOM) ---
+    // On attend un tout petit peu (10ms) que le navigateur dessine les éléments
+    setTimeout(() => {
+        list.forEach(p => {
+            if (!p.hashtags) return;
+
+            const container = document.getElementById(`container-${p.id}`);
+            const scrollContent = document.getElementById(`scroll-${p.id}`);
+            
+            if (container && scrollContent) {
+                // scrollContent.scrollWidth / 2 car on a injecté deux fois les tags
+                const realContentWidth = scrollContent.scrollWidth / 2;
+                const containerWidth = container.offsetWidth;
+
+                // Debug : décommentez la ligne suivante si besoin de voir les mesures dans la console
+                // console.log(p.name, "Contenu:", realContentWidth, "Conteneur:", containerWidth);
+
+                if (realContentWidth > containerWidth) {
+                    // Si ça dépasse, on active l'animation
+                    container.classList.add('is-scrolling');
+                } else {
+                    // Si ça loge, on remet une version simple (non doublée) et immobile
+                    scrollContent.innerHTML = p.hashtags.split(' ').map(tag => 
+                        `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
+                    ).join('');
+                }
+            }
+        });
+    }, 10);
 }
+    
 function filterByHashtag(event, tag) {
     event.stopPropagation(); // Empêche d'ouvrir la playlist en cliquant sur le tag
     
