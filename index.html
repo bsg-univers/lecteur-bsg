@@ -190,43 +190,25 @@ header {
     overflow: hidden;
     white-space: nowrap;
     margin-top: 6px;
-
-    /* Utilisation de pixels fixes pour les bords (40px) */
-    /* Le masque reste transparent de 0 à 0px, puis devient noir à 40px */
-    -webkit-mask-image: linear-gradient(
-        to right, 
-        transparent 0px, 
-        black 40px, 
-        black calc(100% - 40px), 
-        transparent 100%
-    );
-    mask-image: linear-gradient(
-        to right, 
-        transparent 0px, 
-        black 40px, 
-        black calc(100% - 40px), 
-        transparent 100%
-    );
+    -webkit-mask-image: linear-gradient(to right, transparent 0px, black 40px, black calc(100% - 40px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0px, black 40px, black calc(100% - 40px), transparent 100%);
 }
 
 .hashtag-track {
     display: inline-flex;
-    gap: 8px;
+    gap: 8px; /* Augmentez un peu l'espace entre les tags */
     will-change: transform;
-    /* On ajoute une marge interne pour que le premier hashtag 
-       ne commence pas pile dans la zone transparente */
-    padding: 0 20px; 
+    /* Suppression du padding pour éviter le glitch de calcul */
 }
-        
-/* État animé UNIQUEMENT si overflow détecté */
+
 .hashtag-container.is-animated .hashtag-track {
     animation: hashtag-scroll linear infinite;
     animation-duration: var(--scroll-duration, 25s);
 }
 
-/* Animation */
 @keyframes hashtag-scroll {
     from { transform: translateX(0); }
+    /* On utilise -50% car le contenu est doublé en JS */
     to   { transform: translateX(-50%); }
 }
 
@@ -918,25 +900,28 @@ function showPlaylistsBySeason(season) {
 function initHashtagMarquees(root = document) {
     root.querySelectorAll('.hashtag-container').forEach(container => {
         const track = container.querySelector('.hashtag-track');
-        if (!track) return;
-
-        // Empêche toute redétection
-        if (track.dataset.duplicated === "true") return;
+        if (!track || track.dataset.duplicated === "true") return;
 
         const baseWidth = track.scrollWidth;
-        if (baseWidth <= container.clientWidth) return;
+        
+        // On n'anime que si le contenu dépasse du container
+        if (baseWidth > container.offsetWidth) {
+            // TECHNIQUE ANTI-GLITCH : 
+            // On clone tout le contenu pour être sûr d'avoir exactement le même espacement
+            const clone = track.innerHTML;
+            track.innerHTML = clone + clone; 
+            
+            track.dataset.duplicated = "true";
 
-        // Duplication propre
-        track.innerHTML += track.innerHTML;
-        track.dataset.duplicated = "true";
-
-        const duration = Math.max(baseWidth / 60, 18);
-        container.style.setProperty('--scroll-duration', `${duration}s`);
-        container.classList.add('is-animated');
+            // Calcul de vitesse constante (ex: 50px par seconde)
+            const speed = 50; 
+            const duration = baseWidth / speed;
+            
+            container.style.setProperty('--scroll-duration', `${duration}s`);
+            container.classList.add('is-animated');
+        }
     });
 }
-
-
 
 function filterByHashtag(event, tag) {
     event.stopPropagation(); // Empêche d'ouvrir la playlist en cliquant sur le tag
