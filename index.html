@@ -693,7 +693,7 @@ h2,h3{
     background: #0b0e14;
     border-radius: 40px 40px 0 0 / 20px 20px 0 0; /* Arrondi plus léger */
     border-top: 1px solid rgba(243, 195, 0, 0.3);
-    padding: 10px 20px 15px; /* Réduit en haut (0px -> 10px pour respirer) */
+    padding: 0px 20px 20px;
     box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
     animation: playerSubtleWave 15s ease-in-out infinite;
 }
@@ -703,8 +703,8 @@ h2,h3{
     font-size: 0.85rem; /* Légèrement plus petit */
     font-weight: 700;
     color: var(--primary);
-    margin-top: 10px;  /* Réduit de 35px à 10px */
-    margin-bottom: 5px; 
+    margin-top: 35px; 
+    margin-bottom: 10px; 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -808,13 +808,14 @@ audio {
     position: absolute;
     top: 50%; /* Centre verticalement sur la barre */
     left: 50%;
+    bottom: 15px;
     transform: translate(-50%, -50%); /* Centrage parfait */
-    width: 65px; /* Un peu plus petit pour ne pas masquer tout le temps */
-    height: 65px;
+    width: 75px; /* Un peu plus petit pour ne pas masquer tout le temps */
+    height: 75px;
     z-index: 10; /* Passe au-dessus de la barre de progression */
     background: radial-gradient(circle at 30% 30%, #1c2733, #050608);
     border-radius: 50%;
-    border: 2px solid rgba(243,195,0,0.2);
+    border: 0 solid rgba(243,195,0,0.2);
     box-shadow: 0 4px 15px rgba(0,0,0,0.6);
     cursor: pointer;
     transition: all 0.3s ease;
