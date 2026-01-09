@@ -812,8 +812,8 @@ audio {
     border: none !important;
     box-shadow: none !important;
     
-    width: 140px;  /* Augmenté un peu pour l'effet visuel */
-    height: 120px;
+    width: 180px;  /* Augmenté un peu pour l'effet visuel */
+    height: 160px;
     z-index: 10000; /* Passe au-dessus de tout le reste */
     cursor: pointer;
     outline: none;
@@ -1098,7 +1098,7 @@ function showPlaylistsBySeason(season) {
     if (dock) dock.classList.remove('is-static');
 
     resetPlayerImage();
-    titleDisplay.innerText = "Baleine sous Gravillon";
+    titleDisplay.innerText = "";
 
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
