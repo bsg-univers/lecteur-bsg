@@ -186,20 +186,41 @@ header {
 /* --- Style des Hashtags --- */
 .hashtag-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
+    gap: 15px; /* Plus d'espace entre les tags pour l'effet ruban */
+    margin-top: 10px;
+    overflow: hidden; /* Cache ce qui dépasse */
+    white-space: nowrap;
+    position: relative;
+    padding: 5px 0;
 }
 
+/* Le groupe qui défile */
+.hashtag-scroll {
+    display: flex;
+    gap: 15px;
+    animation: scroll-ruban 20s linear infinite; /* Vitesse ajustable */
+}
+
+/* Animation de translation */
+@keyframes scroll-ruban {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } 
+}
+
+/* On ralentit au survol pour faciliter le clic */
+.hashtag-container:hover .hashtag-scroll {
+    animation-play-state: paused;
+}
+        
 .hashtag-badge {
+    flex-shrink: 0; /* Empêche les tags de s'écraser */
     font-size: 0.75rem;
     color: var(--primary);
     background: rgba(210, 179, 71, 0.1);
-    padding: 2px 8px;
+    padding: 4px 12px;
     border-radius: 12px;
     border: 1px solid rgba(210, 179, 71, 0.3);
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
 .hashtag-badge:hover {
@@ -848,11 +869,14 @@ function showPlaylistsBySeason(season) {
     
     // Génération du HTML des hashtags
     const hashtagsHtml = p.hashtags 
-        ? `<div class="hashtag-container">` + 
-          p.hashtags.split(' ').map(tag => 
-            `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
-          ).join('') + `</div>`
-        : "";
+    ? `<div class="hashtag-container">
+        <div class="hashtag-scroll">
+            ${(p.hashtags + ' ' + p.hashtags).split(' ').map(tag => 
+                `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
+            ).join('')}
+        </div>
+       </div>`
+    : "";
 
     return `
     <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block;">
