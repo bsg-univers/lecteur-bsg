@@ -857,7 +857,7 @@ function showPlaylistsBySeason(season) {
     if (dock) dock.classList.remove('is-static');
 
     resetPlayerImage();
-    titleDisplay.innerText = "Sélectionnez une aventure...";
+    titleDisplay.innerText = "Baleine sous Gravillon";
 
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
@@ -878,7 +878,7 @@ function showPlaylistsBySeason(season) {
                 <div class="hashtag-container">
                     <div class="hashtag-track">
                         ${p.hashtags.split(' ').map(tag =>
-                            `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">${tag}</span>`
+                            `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
                         ).join('')}
                     </div>
                 </div>`
