@@ -833,8 +833,10 @@ audio {
     object-fit: contain;
     object-position: bottom; 
     /* Ombre blanche douce par défaut pour détacher le noir du fond */
-    filter: drop-shadow(0 10px 20px rgba(0, 146, 199, 0.7));
-}
+    filter: drop-shadow(0 -2px 5px rgba(0, 146, 199, 0.7));
+    transition: filter 0.3s ease, transform 0.3s ease;
+
+} 
 
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
