@@ -1693,7 +1693,6 @@ audio {
     align-items: center;
     position: relative;
     gap: 5px;
-    animation: auroraPulse 6s ease-in-out infinite;
 }
 
 /* On superpose le bouton sur la barre */
@@ -1737,15 +1736,15 @@ audio {
     height: 100%;
     object-fit: contain;
     object-position: bottom; 
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) 
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4)) 
 
 }
 
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
     /* On mélange l'éclat blanc et l'éclat doré du podcast */
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) 
-            drop-shadow(0 0 6px rgba(243, 195, 0, 0.2));
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3)) 
+            drop-shadow(0 0 20px rgba(243, 195, 0, 0.2));
 }
         
 .bsg-time-container {
@@ -1805,17 +1804,6 @@ audio {
         stroke-dashoffset 0.12s linear;
     -webkit-tap-highlight-color: transparent;
     outline: none;
-}
-
-@keyframes auroraPulse {
-    0%, 100% {
-        opacity: 0.75;
-        stroke-width: 5;
-    }
-    50% {
-        opacity: 1;
-        stroke-width: 6.5;
-    }
 }
 
 
