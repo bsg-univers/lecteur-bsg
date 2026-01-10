@@ -685,6 +685,7 @@ h2,h3{
 /* L'OMBRE DU LECTEUR (Plus petite et naturelle) */
 .player-container {
     position: fixed;
+    height: 110px;
     bottom: 0;
     left: 0;
     right: 0;
@@ -1097,7 +1098,6 @@ function showPlaylistsBySeason(season) {
     if (dock) dock.classList.remove('is-static');
 
     resetPlayerImage();
-    titleDisplay.innerText = "Baleine sous Gravillon";
 
     document.querySelectorAll('.season-item').forEach(btn => {
         const active = btn.innerText === season;
@@ -1386,7 +1386,6 @@ async function play(i) {
     const pImg = document.getElementById('player-img');
 
     // 1. Mise à jour immédiate du titre (avant même le chargement audio)
-    titleDisplay.innerText = episode.title; 
 
     // 2. Gestion de l'image
     if (pImg) {
