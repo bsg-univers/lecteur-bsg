@@ -833,8 +833,9 @@ audio {
     object-fit: contain;
     object-position: bottom; 
     /* Ombre blanche douce par défaut pour détacher le noir du fond */
-    filter: 
-        drop-shadow(2px 2px 4px rgba(255, 255, 255, 0.5));
+    filter:
+    drop-shadow(0 -3px 6px rgba(255, 255, 255, 0.35))
+    drop-shadow(0 1px 2px rgba(255, 255, 255, 0.2));
     transition: filter 0.3s ease, transform 0.3s ease;
 
 } 
@@ -842,8 +843,9 @@ audio {
 
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
-    filter: 
-        drop-shadow(2px 2px 4px rgba(243, 195, 0, 0.6));
+    filter:
+    drop-shadow(0 -3px 6px rgba(243, 195, 0, 0.6))
+    drop-shadow(0 1px 2px rgba(243, 195, 0, 0.45));
     transition: filter 0.3s ease, transform 0.3s ease;
 }
 
