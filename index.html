@@ -833,7 +833,7 @@ audio {
     object-fit: contain;
     object-position: bottom; 
     /* Ombre blanche douce par défaut pour détacher le noir du fond */
-    filter: drop-shadow(0 -2px 5px rgba(0, 146, 199, 0.7));
+    filter: drop-shadow(0 -2px 5px rgba(0, 146, 199, 0.6));
     transition: filter 0.3s ease, transform 0.3s ease;
 
 } 
@@ -841,7 +841,8 @@ audio {
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
     /* On mélange l'éclat blanc et l'éclat doré du podcast */
-    filter: drop-shadow(0 10px 20px rgba(243, 195, 0, 0.7));
+    filter: drop-shadow(0 -2px 5px rgba(243, 195, 0, 0.6));
+    transition: filter 0.3s ease, transform 0.3s ease;
 }
 
 .bsg-time-container {
