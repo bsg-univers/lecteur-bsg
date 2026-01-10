@@ -789,6 +789,7 @@ audio {
     align-items: center;
     position: relative;
     gap: 5px;
+    animation: auroraPulse 6s ease-in-out infinite;
 }
 
 /* On superpose le bouton sur la barre */
@@ -873,7 +874,6 @@ audio {
     position: relative;
     -webkit-tap-highlight-color: transparent;
     outline: none;
-    animation: auroraPulse 6s ease-in-out infinite;
 }
 
 .bsg-wave svg {
@@ -959,9 +959,9 @@ audio {
             <defs>
     <!-- Dégradé bleu → vert "abyssal" -->
     <linearGradient id="auroraGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%"  stop-color="rgba(70,130,180,0.6)" />
-        <stop offset="50%" stop-color="rgba(64,180,160,0.6)" />
-        <stop offset="100%" stop-color="rgba(90,220,190,0.6)" />
+        <stop offset="0%"  stop-color="rgba(70,130,180,0.3)" />
+        <stop offset="50%" stop-color="rgba(64,180,160,0.3)" />
+        <stop offset="100%" stop-color="rgba(90,220,190,0.3)" />
     </linearGradient>
 
     <!-- Flou doux pour casser la rigidité -->
