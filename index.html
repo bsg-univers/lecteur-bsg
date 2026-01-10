@@ -782,6 +782,18 @@ audio {
 /* =============================== */
 /* LECTEUR AUDIO INTERNE BSG       */
 /* =============================== */
+/* NOUVELLE RÈGLE : Définition d'un dégradé pour le progrès */
+@property --progress-color-start {
+  syntax: "<color>";
+  initial-value: rgba(70, 130, 180, 0.6); /* Bleu doux */
+  inherits: false;
+}
+
+@property --progress-color-end {
+  syntax: "<color>";
+  initial-value: rgba(0, 120, 90, 0.7); /* Vert océan */
+  inherits: false;
+}
 
 .bsg-audio-player {
     display: flex;
@@ -803,7 +815,8 @@ audio {
     position: fixed; /* Fixé par rapport à l'écran */
     bottom: 0;      /* Colle au bord bas */
     left: 50%;
-    transform: translateX(-50%); /* Centrage horizontal parfait */
+    transform: translateX(-50%) scale(0.95); /* Légèrement plus petite */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
     /* Suppression du fond et de la bordure */
     background: none !important;
@@ -822,9 +835,6 @@ audio {
     padding: 0;
     /* AJOUT DE LA TRANSPARENCE ICI */
     opacity: 1; /* 1 est opaque, 0 est invisible */
-    
-    /* Transition pour que le changement de transparence soit fluide au survol */
-    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .bsg-whale-btn img {
@@ -832,16 +842,18 @@ audio {
     height: 100%;
     object-fit: contain;
     object-position: bottom; 
-    /* Ombre blanche douce par défaut pour détacher le noir du fond */
-    filter: drop-shadow(0 -2px 5px rgba(255, 255, 255, 0.25));
+    /* OMBRE PLUS RICHE ET SUBTILE POUR LA BALEINE */
+    filter: drop-shadow(0 -2px 8px rgba(0, 40, 60, 0.5)) /* Ombre profonde */
+            drop-shadow(0 -1px 4px rgba(70, 130, 180, 0.3)); /* Halo lumineux supérieur */
     transition: filter 0.3s ease, transform 0.3s ease;
 }
 
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
-    /* On mélange l'éclat blanc et l'éclat doré du podcast */
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) 
-            drop-shadow(0 0 8px rgba(243, 195, 0, 0.2));
+    transform: scale(0.92); /* Légère impulsion */
+    filter: drop-shadow(0 -3px 10px rgba(0, 40, 60, 0.6))
+            drop-shadow(0 -2px 6px rgba(70, 130, 180, 0.4))
+            drop-shadow(0 0 10px rgba(243, 195, 0, 0.3)); /* Léger reflet doré activé */
 }
 
 .bsg-time-container {
@@ -855,13 +867,15 @@ audio {
 }
         
 .bsg-time {
-    /* Police légère et élégante pour l'aspect végétal */
     font-family: "Segoe UI Semilight", "Helvetica Neue", sans-serif;
-    font-weight: 100; 
-    font-size: 1.5rem; /* Chiffres plus grands */
-    color: rgba(210, 179, 71, 0.4);
+    font-weight: 100;  
+    font-size: 1.6rem; 
+    color: rgba(210, 179, 71, 0.5); /* Plus de contraste pour les chiffres */
     font-variant-numeric: tabular-nums;
     letter-spacing: 1px;
+    /* OMBRE DOUCE ET LÉGÈRE POUR SIMULER LA PROFONDEUR */
+    text-shadow: 0 0 8px rgba(243, 195, 0, 0.2), /* Doré léger */
+                 0 0 15px rgba(0, 0, 0, 0.4); /* Ombre de profondeur */
 }
 
 /* --- Vague --- */
@@ -872,6 +886,7 @@ audio {
     display: flex;
     align-items: center;
     position: relative;
+    overflow: hidden;
 }
 
 .bsg-wave svg {
@@ -885,20 +900,73 @@ audio {
     stroke-width: 3;
 }
 
-/* Dégradé animé très lent pour la progression */
 #wave-progress {
-    stroke-width: 4;
+    /* UTILISATION DU DÉGRADÉ DYNAMIQUE POUR LE PROGRÈS */
+    stroke: linear-gradient(to right, var(--progress-color-start), var(--progress-color-end));
+    stroke-width: 3.5; /* Légèrement plus épais pour mieux voir le dégradé */
     stroke-linecap: round;
-    stroke-dasharray: 600;
-    stroke-dashoffset: 600;
-    transition: stroke-dashoffset 0.12s linear;
-
-    stroke: url(#waveGradient);
-    filter: drop-shadow(0 0 4px rgba(70,160,180,0.25));
+    /* OMBRES DOUCES ET ÉCLATANTES POUR LA VAGUE */
+    filter: drop-shadow(0 0 5px rgba(70, 130, 180, 0.4)) /* Reflet bleu */
+            drop-shadow(0 0 8px rgba(0, 120, 90, 0.4)) /* Reflet vert */
+            drop-shadow(0 0 15px rgba(243, 195, 0, 0.1)); /* Léger halo doré */
+    /* Transition douce pour la couleur du dégradé */
+    transition: stroke-dashoffset 0.12s linear, --progress-color-start 0.5s ease-out, --progress-color-end 0.5s ease-out;
 }
 
+/* NOUVELLES LIGNES : Vagues secondaires/fantômes */
+.bsg-wave svg::before,
+.bsg-wave svg::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%; /* Centre sur la ligne de la vague */
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    opacity: 0; /* Caché par défaut */
+    pointer-events: none;
+    transition: all 0.5s ease;
+    z-index: -1;
+}
 
+/* Effet de vagues secondaires animées */
+.bsg-wave.is-playing svg::before {
+    opacity: 0.1;
+    border-color: rgba(70, 130, 180, 0.5); /* Bleu */
+    transform: translateY(-8px) scaleX(1.02);
+    animation: wavePulse 8s linear infinite;
+}
 
+.bsg-wave.is-playing svg::after {
+    opacity: 0.08;
+    border-color: rgba(0, 120, 90, 0.5); /* Vert */
+    transform: translateY(8px) scaleX(1.01);
+    animation: wavePulse 10s linear infinite reverse;
+    animation-delay: 1.5s;
+}
+
+/* --- NOUVELLES ANIMATIONS --- */
+
+/* Animation de pulsation lumineuse du lecteur */
+@keyframes glowSubtle {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(243, 195, 0, 0.05),
+                    0 0 20px rgba(0, 120, 90, 0.05);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(243, 195, 0, 0.1),
+                    0 0 25px rgba(70, 130, 180, 0.1);
+    }
+}
+
+/* Animation des vagues secondaires */
+@keyframes wavePulse {
+    0% { transform: scaleX(1) translateY(-8px); }
+    50% { transform: scaleX(1.05) translateY(-9px); }
+    100% { transform: scaleX(1) translateY(-8px); }
+}
 </style>
 </head>
 <body>
@@ -939,17 +1007,11 @@ audio {
 
         <div class="bsg-wave" id="wave-track" aria-label="Progression audio">
         <svg viewBox="0 0 600 60" preserveAspectRatio="none">
-  <defs>
-    <linearGradient id="waveGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="0">
-      <stop offset="0%" stop-color="#3aa6c1"/>
-      <stop offset="60%" stop-color="#3ccfc0"/>
-      <stop offset="100%" stop-color="#1fa57a"/>
-    </linearGradient>
-  </defs>
-
-  <path id="wave-bg" d="M0 30 Q 30 22 60 30 T 600 30"/>
-  <path id="wave-progress" d="M0 30 Q 30 22 60 30 T 600 30"/>
-</svg>
+            <path id="wave-bg"
+                  d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
+            <path id="wave-progress"
+                  d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
+        </svg>
         </div>
     </div>
 </div>
