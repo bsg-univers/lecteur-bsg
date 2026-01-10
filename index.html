@@ -840,7 +840,7 @@ audio {
 
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
-    transform: scale(1.1) rotate(-5deg);
+    transform: scale(1.1) rotate(-1deg);
     /* On mélange l'éclat blanc et l'éclat doré du podcast */
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3)) 
             drop-shadow(0 0 15px rgba(243, 195, 0, 0.2));
@@ -849,13 +849,13 @@ audio {
 .bsg-time-container {
     display: flex;
     justify-content: space-between; /* Un à gauche, un à droite */
-    padding: 0 15px; /* Petit espace sur les côtés pour ne pas coller aux bords */
+    padding: 0 25px; /* Petit espace sur les côtés pour ne pas coller aux bords */
     margin-bottom: -5px; /* On les rapproche de la barre */
     z-index: 2;
 }
         
 .bsg-time {
-    font-size: 0.75rem;
+    font-size: 1.5rem;
     color: rgba(255,255,255,0.6);
     font-weight: bold;
     font-variant-numeric: tabular-nums; /* Évite que les chiffres bougent */
@@ -869,6 +869,7 @@ audio {
     display: flex;
     align-items: center;
     position: relative;
+    margin-top: 40px;
 }
 
 .bsg-wave svg {
