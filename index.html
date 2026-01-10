@@ -839,8 +839,8 @@ audio {
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
     /* On mélange l'éclat blanc et l'éclat doré du podcast */
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4)) 
-            drop-shadow(0 0 7px rgba(243, 195, 0, 0.3));
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) 
+            drop-shadow(0 0 6px rgba(243, 195, 0, 0.2));
 }
         
 .bsg-time-container {
@@ -873,6 +873,7 @@ audio {
     position: relative;
     -webkit-tap-highlight-color: transparent;
     outline: none;
+    animation: auroraPulse 6s ease-in-out infinite;
 }
 
 .bsg-wave svg {
@@ -896,9 +897,6 @@ audio {
 
     opacity: 0.85;
     filter: url(#softGlow);
-
-    animation: auroraPulse 6s ease-in-out infinite;
-
     transition:
         stroke-dashoffset 0.12s linear;
     -webkit-tap-highlight-color: transparent;
