@@ -881,21 +881,42 @@ audio {
 
 #wave-bg {
     fill: none;
-    stroke: rgba(255,255,255,0.18);
-    stroke-width: 3;
+    stroke: rgba(255, 255, 255, 0.08); /* Plus discret et transparent */
+    stroke-width: 2; /* Plus fin pour moins de rigidité */
+    stroke-linecap: round;
 }
-
+        
 #wave-progress {
     fill: none;
-    stroke: #f3c300;
+    /* Dégradé doux Bleu-Vert */
+    stroke: #4deeea; 
     stroke-width: 4;
     stroke-linecap: round;
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
     transition: stroke-dashoffset 0.12s linear;
+    
+    /* L'effet de lueur "Aurore" */
+    filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.6)) 
+            drop-shadow(0 0 12px rgba(0, 150, 255, 0.4));
+    
+    /* Animation pour que la lueur bouge légèrement comme une aurore */
+    animation: aurora-glow 4s infinite ease-in-out;
 }
 
-
+/* Animation de la lueur */
+@keyframes aurora-glow {
+    0%, 100% { 
+        filter: drop-shadow(0 0 5px rgba(0, 255, 170, 0.5)) 
+                drop-shadow(0 0 10px rgba(0, 150, 255, 0.3));
+        stroke: #4deeea;
+    }
+    50% { 
+        filter: drop-shadow(0 0 15px rgba(0, 255, 170, 0.8)) 
+                drop-shadow(0 0 20px rgba(0, 150, 255, 0.6));
+        stroke: #72ffcf; /* Devient un peu plus vert/clair au milieu */
+    }
+}
 </style>
 </head>
 <body>
@@ -937,9 +958,9 @@ audio {
         <div class="bsg-wave" id="wave-track" aria-label="Progression audio">
         <svg viewBox="0 0 600 60" preserveAspectRatio="none">
             <path id="wave-bg"
-                  d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
+                  d="M0 30 Q 75 10 150 30 T 300 30 T 450 30 T 600 30" />
             <path id="wave-progress"
-                  d="M0 30 Q 30 22 60 30 T 120 30 T 180 30 T 240 30 T 300 30 T 360 30 T 420 30 T 480 30 T 540 30 T 600 30" />
+                  d="M0 30 Q 75 10 150 30 T 300 30 T 450 30 T 600 30" />
         </svg>
         </div>
     </div>
