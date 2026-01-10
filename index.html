@@ -832,16 +832,16 @@ audio {
     height: 100%;
     object-fit: contain;
     object-position: bottom; 
-    border: 1px solid rgba(243, 195, 0, 0.3);
-    border-bottom: none;
-    animation: playerSubtleWave 15s ease-in-out infinite;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.1)) 
+            drop-shadow(0 0 5px rgba(243, 195, 0, 0.1));
+
 }
 
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
     /* On mélange l'éclat blanc et l'éclat doré du podcast */
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) 
-            drop-shadow(0 0 8px rgba(243, 195, 0, 0.2));
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.2)) 
+            drop-shadow(0 0 5px rgba(243, 195, 0, 0.15));
 }
         
 .bsg-time-container {
