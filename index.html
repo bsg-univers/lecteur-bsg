@@ -848,33 +848,41 @@ audio {
 
 .bsg-time-container {
     display: flex;
-    justify-content: space-between; /* Un à gauche, un à droite */
-    padding: 0 25px; /* Petit espace sur les côtés pour ne pas coller aux bords */
-    margin-bottom: -5px; /* On les rapproche de la barre */
-    z-index: 2;
+    justify-content: space-between;
+    padding: 0 30px;
+    /* On utilise une marge négative pour aspirer les chiffres vers le bas */
+    margin-bottom: -22px; 
+    position: relative;
+    z-index: 10;
+    pointer-events: none; /* Pour que le clic traverse les chiffres et atteigne la barre */
 }
         
 .bsg-time {
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.6);
-    font-weight: bold;
-    font-variant-numeric: tabular-nums; /* Évite que les chiffres bougent */
+    /* Police légère et élégante pour l'aspect végétal */
+    font-family: "Segoe UI Semilight", "Helvetica Neue", sans-serif;
+    font-weight: 200; 
+    font-size: 1.5rem; /* Chiffres plus grands */
+    color: rgba(210, 179, 71, 0.9);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
 }
 
 /* --- Vague --- */
 .bsg-wave {
     height: 35px;
     cursor: pointer;
-    width: 100vw; /* Utilise toute la largeur de l'écran */
+    width: 100vw;
     display: flex;
     align-items: center;
     position: relative;
-    margin-top: 40px;
+    /* On supprime le margin-top de 40px qui créait le vide */
+    margin-top: 0; 
+    margin-bottom: 5px;
 }
 
 .bsg-wave svg {
     width: 100%;
-    height: 40px;
+    height: 100%; /* Le SVG prend toute la place du conteneur réduit */
 }
 
 #wave-bg {
