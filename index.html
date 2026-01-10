@@ -843,10 +843,6 @@ audio {
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) 
             drop-shadow(0 0 8px rgba(243, 195, 0, 0.2));
 }
-
-.bsg-audio-player.is-playing #wave-progress {
-    animation: auroraPulse 6s ease-in-out infinite;
-}
         
 .bsg-time-container {
     margin-top: 60px; 
@@ -892,36 +888,31 @@ audio {
 #wave-progress {
     fill: none;
     stroke: url(#auroraGradient);
-    stroke-width: 4.5;
+    stroke-width: 5.5;
     stroke-linecap: round;
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
 
-    /* Ligne plus vivante */
-    opacity: 0.9;
+    opacity: 0.85;
     filter: url(#softGlow);
 
+    animation: auroraPulse 6s ease-in-out infinite;
+
     transition:
-        stroke-dashoffset 0.12s linear,
-        opacity 0.4s ease;
+        stroke-dashoffset 0.12s linear;
 }
+
 @keyframes auroraPulse {
-    0% {
-        filter:
-            drop-shadow(0 0 4px rgba(80,160,200,0.25))
-            drop-shadow(0 0 8px rgba(80,220,180,0.15));
+    0%, 100% {
+        opacity: 0.75;
+        stroke-width: 5;
     }
     50% {
-        filter:
-            drop-shadow(0 0 8px rgba(80,200,220,0.45))
-            drop-shadow(0 0 14px rgba(100,240,200,0.35));
-    }
-    100% {
-        filter:
-            drop-shadow(0 0 4px rgba(80,160,200,0.25))
-            drop-shadow(0 0 8px rgba(80,220,180,0.15));
+        opacity: 1;
+        stroke-width: 6.5;
     }
 }
+
 
 
 </style>
