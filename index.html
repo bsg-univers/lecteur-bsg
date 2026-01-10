@@ -881,40 +881,44 @@ audio {
 
 #wave-bg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.08); /* Plus discret et transparent */
-    stroke-width: 2; /* Plus fin pour moins de rigidité */
+    stroke: rgba(255, 255, 255, 0.03); /* Très subtil */
+    stroke-width: 3;
     stroke-linecap: round;
 }
         
 #wave-progress {
     fill: none;
-    /* Dégradé doux Bleu-Vert */
-    stroke: #4deeea; 
-    stroke-width: 4;
+    /* Couleur de base : un vert d'eau très doux et transparent */
+    stroke: rgba(114, 255, 207, 0.7); 
+    stroke-width: 3;
     stroke-linecap: round;
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
     transition: stroke-dashoffset 0.12s linear;
+
+    /* LE SECRET : Plusieurs couches d'ombres floues de différentes couleurs */
+    /* On mélange du vert émeraude, du bleu polaire et une touche de violet */
+    filter: 
+        blur(0.5px) /* Adoucit la ligne elle-même */
+        drop-shadow(0 -2px 6px rgba(0, 255, 150, 0.5))  /* Halo vert */
+        drop-shadow(0 -5px 15px rgba(0, 150, 255, 0.3)) /* Halo bleu profond */
+        drop-shadow(0 -8px 25px rgba(180, 100, 255, 0.2)); /* Touche de violet lointain */
     
-    /* L'effet de lueur "Aurore" */
-    filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.6)) 
-            drop-shadow(0 0 12px rgba(0, 150, 255, 0.4));
-    
-    /* Animation pour que la lueur bouge légèrement comme une aurore */
-    animation: aurora-glow 4s infinite ease-in-out;
+    /* Animation de pulsation lente et irrégulière */
+    animation: aurora-fluid 8s infinite ease-in-out;
 }
 
-/* Animation de la lueur */
-@keyframes aurora-glow {
+/* Animation qui change l'intensité et la couleur comme les courants solaires */
+@keyframes aurora-fluid {
     0%, 100% { 
-        filter: drop-shadow(0 0 5px rgba(0, 255, 170, 0.5)) 
-                drop-shadow(0 0 10px rgba(0, 150, 255, 0.3));
-        stroke: #4deeea;
+        opacity: 0.8;
+        stroke: rgba(114, 255, 207, 0.6);
+        filter: blur(0.5px) drop-shadow(0 -2px 10px rgba(0, 255, 150, 0.4)) drop-shadow(0 -10px 20px rgba(0, 150, 255, 0.2));
     }
     50% { 
-        filter: drop-shadow(0 0 15px rgba(0, 255, 170, 0.8)) 
-                drop-shadow(0 0 20px rgba(0, 150, 255, 0.6));
-        stroke: #72ffcf; /* Devient un peu plus vert/clair au milieu */
+        opacity: 1;
+        stroke: rgba(150, 255, 255, 0.8); /* Vire légèrement au bleu clair */
+        filter: blur(1.5px) drop-shadow(0 -5px 20px rgba(0, 255, 150, 0.7)) drop-shadow(0 -15px 40px rgba(0, 150, 255, 0.4));
     }
 }
 </style>
@@ -958,9 +962,9 @@ audio {
         <div class="bsg-wave" id="wave-track" aria-label="Progression audio">
         <svg viewBox="0 0 600 60" preserveAspectRatio="none">
             <path id="wave-bg"
-                  d="M0 30 Q 75 10 150 30 T 300 30 T 450 30 T 600 30" />
+                  d="M0 35 C 100 15, 200 55, 300 35 C 400 15, 500 55, 600 35" />
             <path id="wave-progress"
-                  d="M0 30 Q 75 10 150 30 T 300 30 T 450 30 T 600 30" />
+                  d="M0 35 C 100 15, 200 55, 300 35 C 400 15, 500 55, 600 35" />
         </svg>
         </div>
     </div>
