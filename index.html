@@ -348,13 +348,13 @@ h2,h3{
 
   /* Look Verre Poli */
   background: rgba(40, 45, 55, 0.8); 
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   will-change: transform;
 
   /* Ombre très douce pour éviter l'aspect lourd */
   box-shadow: 
-    0 8px 15px rgba(0, 0, 0, 0.2),
-    inset 0 0 10px rgba(255, 255, 255, 0.05);
+    0 8px 12px rgba(0, 0, 0, 0.2),
+    inset 0 0 10px rgba(255, 255, 255, 0.04);
 
   transition: all 0.3s ease-in-out;
   animation: float-organic 7s ease-in-out infinite;
@@ -872,6 +872,8 @@ audio {
     display: flex;
     align-items: center;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
 }
 
 .bsg-wave svg {
@@ -900,6 +902,8 @@ audio {
 
     transition:
         stroke-dashoffset 0.12s linear;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
 }
 
 @keyframes auroraPulse {
