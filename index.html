@@ -840,7 +840,6 @@ audio {
 
 /* Effet plus lumineux quand on joue la musique */
 .bsg-audio-player.is-playing .bsg-whale-btn img {
-    transform: scale(1);
     /* On mélange l'éclat blanc et l'éclat doré du podcast */
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3)) 
             drop-shadow(0 0 8px rgba(243, 195, 0, 0.2));
@@ -851,9 +850,7 @@ audio {
     justify-content: space-between;
     padding: 0 30px;
     /* On utilise une marge négative pour aspirer les chiffres vers le bas */
-    margin-bottom: -22px; 
     position: relative;
-    z-index: 10;
     pointer-events: none; /* Pour que le clic traverse les chiffres et atteigne la barre */
 }
         
@@ -862,14 +859,14 @@ audio {
     font-family: "Segoe UI Semilight", "Helvetica Neue", sans-serif;
     font-weight: 100; 
     font-size: 1.5rem; /* Chiffres plus grands */
-    color: rgba(210, 179, 71, 0.2);
+    color: rgba(210, 179, 71, 0.5);
     font-variant-numeric: tabular-nums;
     letter-spacing: 1px;
 }
 
 /* --- Vague --- */
 .bsg-wave {
-    height: 5px;
+    height: 15px;
     cursor: pointer;
     width: 100vw;
     display: flex;
@@ -882,7 +879,7 @@ audio {
 
 .bsg-wave svg {
     width: 100%;
-    height: 40%; /* Le SVG prend toute la place du conteneur réduit */
+    height: 100%; /* Le SVG prend toute la place du conteneur réduit */
 }
 
 #wave-bg {
