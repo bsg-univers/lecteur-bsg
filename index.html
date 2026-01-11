@@ -341,7 +341,7 @@ h2,h3{
   padding: 20px 15px;
   font-weight: 700;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   text-align: center;
   cursor: pointer;
   z-index: 1;
@@ -353,12 +353,12 @@ h2,h3{
   outline: none;
   border: 1px solid rgba(255, 255, 255, 0.1);
   
-  /* Volume naturel */
+  /* Volume naturel commun */
   box-shadow: 
-    0 10px 20px rgba(0, 0, 0, 0.3),
-    inset 0 1px 1px rgba(255, 255, 255, 0.1),
-    inset 0 -8px 15px rgba(0, 0, 0, 0.3),
-    inset 5px 8px 15px rgba(255, 255, 255, 0.03);
+    0 10px 20px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -8px 15px rgba(0, 0, 0, 0.4),
+    inset 5px 8px 18px rgba(255, 255, 255, 0.05);
 
   will-change: transform;
   animation: float-organic infinite alternate;
@@ -374,70 +374,70 @@ h2,h3{
   inset: 0;
   border-radius: inherit;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.04;
+  opacity: 0.05;
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
-/* --- VARIATIONS UNIQUES (6 Styles différents) --- */
+/* --- VARIATIONS RÉELLES (6 Styles avec !important) --- */
 
-/* 1. Gris Anthracite Classique */
+/* 1. Gris Charbon (Classique) */
 .season-item:nth-child(6n+1) {
-  border-radius: 70% 30% 60% 40% / 50% 60% 40% 50%;
-  background: linear-gradient(145deg, #3a3f47, #24282f);
+  border-radius: 70% 30% 60% 40% / 50% 60% 40% 50% !important;
+  background: linear-gradient(145deg, #3a3f47, #1c1f24) !important;
 }
 
-/* 2. Brun Terreux (Chaud) */
+/* 2. Galet Sable / Blanc Cassé */
 .season-item:nth-child(6n+2) {
-  border-radius: 40% 60% 35% 65% / 55% 45% 55% 45%;
-  background: linear-gradient(145deg, #46403a, #2f2a26);
+  border-radius: 40% 60% 35% 65% / 55% 45% 55% 45% !important;
+  background: linear-gradient(145deg, #d4d4d4, #a8a8a8) !important;
+  color: #222; /* Texte sombre pour galet clair */
 }
 
-/* 3. Gris Ardoise (Bleuté) */
+/* 3. Brun Ocre / Argile */
 .season-item:nth-child(6n+3) {
-  border-radius: 60% 40% 70% 30% / 45% 55% 45% 55%;
-  background: linear-gradient(145deg, #3a4146, #262c30);
+  border-radius: 60% 40% 70% 30% / 45% 55% 45% 55% !important;
+  background: linear-gradient(145deg, #5c534a, #3b352f) !important;
 }
 
-/* 4. Sable Clair (Minéral clair) */
+/* 4. Gris Ardoise / Bleuté */
 .season-item:nth-child(6n+4) {
-  border-radius: 50% 50% 65% 35% / 60% 40% 60% 40%;
-  background: linear-gradient(145deg, #53585e, #3a3f44);
+  border-radius: 50% 50% 65% 35% / 60% 40% 60% 40% !important;
+  background: linear-gradient(145deg, #444e59, #2b323a) !important;
 }
 
-/* 5. Galet Allongé (Ovale) */
+/* 5. Galet Mousse / Sombre */
 .season-item:nth-child(6n+5) {
-  border-radius: 80% 20% 75% 25% / 40% 40% 60% 60%;
-  background: linear-gradient(145deg, #3f444b, #2a2e33);
+  border-radius: 80% 20% 75% 25% / 40% 40% 60% 60% !important;
+  background: linear-gradient(145deg, #2f3530, #1a1d1a) !important;
 }
 
-/* 6. Galet Rond Trapu */
+/* 6. Galet Gris Perle */
 .season-item:nth-child(6n+6) {
-  border-radius: 45% 55% 50% 50% / 50% 50% 60% 40%;
-  background: linear-gradient(145deg, #443e38, #2d2925);
+  border-radius: 45% 55% 50% 50% / 50% 50% 60% 40% !important;
+  background: linear-gradient(145deg, #7a7e85, #51545a) !important;
 }
 
-/* --- EFFETS --- */
+/* --- INTERACTIONS --- */
 .season-item:hover {
-  transform: translateY(-5px) scale(1.04);
-  filter: brightness(1.1);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.2);
+  transform: translateY(-5px) scale(1.05);
+  filter: brightness(1.15);
+  z-index: 2;
 }
 
 .season-item.active {
   background: var(--primary) !important;
   color: #0b0e14 !important;
-  transform: scale(0.95) !important;
-  box-shadow: 0 10px 20px rgba(243, 195, 0, 0.3);
+  transform: scale(0.94) !important;
+  box-shadow: 0 10px 20px rgba(243, 195, 0, 0.3); !important;
   animation: none !important;
 }
 
 @keyframes float-organic {
-  0%   { transform: translate(0, 0) rotate(0deg); }
-  50%  { transform: translate(2px, -4px) rotate(1deg); }
-  100% { transform: translate(-1px, -2px) rotate(-1deg); }
+  0%   { transform: rotate(0deg) translate(0, 0); }
+  50%  { transform: rotate(1.5deg) translate(2px, -3px); }
+  100% { transform: rotate(-1.5deg) translate(-1px, -1px); }
 }
-
 /* ===================== */
 /*      ÉPISODES         */
 /* ===================== */
