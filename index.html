@@ -372,6 +372,7 @@ h2,h3{
 
   transition: all 0.3s ease-in-out;
   animation: float-organic 7s ease-in-out infinite;
+  animation-duration: calc(6s + var(--i, 0) * 0.6s);
 }
 
 
@@ -417,8 +418,25 @@ h2,h3{
 
 /* --- Animation plus calme --- */
 @keyframes float-organic {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(2px, -6px) rotate(1deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  20% {
+    transform: translate(-3px, -4px) rotate(-1.2deg);
+  }
+
+  45% {
+    transform: translate(2px, -7px) rotate(1.8deg);
+  }
+
+  70% {
+    transform: translate(4px, -2px) rotate(-1deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
 }
 
 /* --- Hover & Active --- */
@@ -1106,6 +1124,13 @@ async function loadPlaylists() {
     grid.innerHTML = seasons.map(s =>
         `<div class="season-item" onclick="showPlaylistsBySeason('${s}')">${s}</div>`
     ).join('');
+        // --- Désynchronisation des galets (float organique) ---
+    const seasonItems = grid.querySelectorAll('.season-item');
+    
+    seasonItems.forEach(item => {
+      item.style.setProperty('--i', Math.random() * 6);
+    });
+
 
     if (initialPlaylistId) {
         const shared = allPlaylists.find(p => String(p.id).trim() === initialPlaylistId.trim());
