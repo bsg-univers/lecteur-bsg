@@ -318,30 +318,24 @@ h2,h3{
 }
 
 /* ===================== */
-/* SAISONS ZEN - COMPACT */
+/* SAISONS ZEN - UNIQUE  */
 /* ===================== */
 
 .grid-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
   gap: 20px;
-  perspective: 1000px; /* Pour un effet de profondeur */
+  perspective: 1000px;
 }
 
 @media (max-width: 640px) {
   .grid-list {
-    grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
-    gap: 10px;
-  }
-
-  .season-item {
-    aspect-ratio: 1.15 / 1;
-    padding: 10px 8px;
-    min-height: 38px;
-    font-size: 0.85rem;
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+    gap: 12px;
   }
 }
 
+/* --- BASE COMMUNE --- */
 .season-item {
   position: relative;
   padding: 20px 15px;
@@ -354,117 +348,95 @@ h2,h3{
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 60px;
+  min-height: 65px;
   -webkit-tap-highlight-color: transparent;
   outline: none;
-
-  /* --- RENDU MINÉRAL AVANCÉ --- */
+  border: 1px solid rgba(255, 255, 255, 0.1);
   
-  /* Fond : Dégradé très subtil pour la base */
-  background: linear-gradient(145deg, #323842, #242932);
-
-  /* Bordure : On simule un biseau très fin */
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  /* Empilement d'ombres pour le volume réaliste :
-     1. Ombre portée douce (maintient le galet au sol)
-     2. Lueur de contour (Rim light) très fine en haut
-     3. Ombre interne profonde en bas pour le "poids"
-     4. Lumière diffuse (pas de tache blanche) sur le haut gauche */
+  /* Volume naturel */
   box-shadow: 
-    0 12px 24px rgba(0, 0, 0, 0.35),
-    inset 0 1px 1px rgba(255, 255, 255, 0.12),
-    inset 0 -10px 20px rgba(0, 0, 0, 0.3),
-    inset 6px 10px 20px rgba(255, 255, 255, 0.03);
+    0 10px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -8px 15px rgba(0, 0, 0, 0.3),
+    inset 5px 8px 15px rgba(255, 255, 255, 0.03);
 
   will-change: transform;
-
-  animation: float-organic infinite;
-  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
-  animation-duration: calc(9s + var(--i, 0) * 0.8s);
-  animation-direction: alternate;
-
-  transition: transform 0.25s ease;
+  animation: float-organic infinite alternate;
+  animation-timing-function: ease-in-out;
+  animation-duration: calc(8s + var(--i, 0) * 1s);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Texture de roche (Grain subtil) */
+/* Grain de pierre */
 .season-item::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  /* Simule le grain de la pierre avec un bruit statique */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3 Oper%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.04; /* Très discret */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.04;
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
-/* Suppression de l'ancienne tache blanche trop vive */
-.season-item::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  /* Un simple voile de lumière directionnel et large */
-  background: radial-gradient(
-    circle at 35% 30%, 
-    rgba(255, 255, 255, 0.08) 0%, 
-    transparent 60%
-  );
-  pointer-events: none;
+/* --- VARIATIONS UNIQUES (6 Styles différents) --- */
+
+/* 1. Gris Anthracite Classique */
+.season-item:nth-child(6n+1) {
+  border-radius: 70% 30% 60% 40% / 50% 60% 40% 50%;
+  background: linear-gradient(145deg, #3a3f47, #24282f);
 }
 
-/* --- Formes de galets plus subtiles pour petits formats --- */
-.season-item:nth-child(4n+1) {
-  border-radius: 82% 18% 64% 36% / 58% 66% 34% 42%;
-  background: linear-gradient(145deg, #383e48, #2a2f37);
+/* 2. Brun Terreux (Chaud) */
+.season-item:nth-child(6n+2) {
+  border-radius: 40% 60% 35% 65% / 55% 45% 55% 45%;
+  background: linear-gradient(145deg, #46403a, #2f2a26);
 }
 
-.season-item:nth-child(4n+2) {
-  border-radius: 58% 42% 28% 72% / 62% 48% 52% 38%;
-  background: linear-gradient(145deg, #423d38, #322e2a);
+/* 3. Gris Ardoise (Bleuté) */
+.season-item:nth-child(6n+3) {
+  border-radius: 60% 40% 70% 30% / 45% 55% 45% 55%;
+  background: linear-gradient(145deg, #3a4146, #262c30);
 }
 
-.season-item:nth-child(4n+3) {
-  border-radius: 71% 29% 53% 47% / 44% 56% 46% 54%;
-  background: linear-gradient(145deg, #383d42, #2a2e32);
+/* 4. Sable Clair (Minéral clair) */
+.season-item:nth-child(6n+4) {
+  border-radius: 50% 50% 65% 35% / 60% 40% 60% 40%;
+  background: linear-gradient(145deg, #53585e, #3a3f44);
 }
 
-.season-item:nth-child(4n+4) {
-  border-radius: 63% 37% 72% 28% / 59% 41% 61% 39%;
-  background: linear-gradient(145deg, #4a4f55, #383d42);
-  color: rgba(255, 255, 255, 0.95); /* Texte un peu plus contrasté */
-}
-}
-
-.season-item:nth-child(odd) {
-  transform: rotate(-1.2deg);
+/* 5. Galet Allongé (Ovale) */
+.season-item:nth-child(6n+5) {
+  border-radius: 80% 20% 75% 25% / 40% 40% 60% 60%;
+  background: linear-gradient(145deg, #3f444b, #2a2e33);
 }
 
-.season-item:nth-child(even) {
-  transform: rotate(1deg);
+/* 6. Galet Rond Trapu */
+.season-item:nth-child(6n+6) {
+  border-radius: 45% 55% 50% 50% / 50% 50% 60% 40%;
+  background: linear-gradient(145deg, #443e38, #2d2925);
 }
 
-/* --- Animation plus calme --- */
+/* --- EFFETS --- */
+.season-item:hover {
+  transform: translateY(-5px) scale(1.04);
+  filter: brightness(1.1);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.2);
+}
+
+.season-item.active {
+  background: var(--primary) !important;
+  color: #0b0e14 !important;
+  transform: scale(0.95) !important;
+  box-shadow: 0 10px 20px rgba(243, 195, 0, 0.3);
+  animation: none !important;
+}
+
 @keyframes float-organic {
   0%   { transform: translate(0, 0) rotate(0deg); }
-  25%  { transform: translate(-2px, -3px) rotate(-2deg); }
-  50%  { transform: translate(1px, -6px) rotate(1.6deg); }
-  75%  { transform: translate(3px, -2px) rotate(1.4deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(2px, -4px) rotate(1deg); }
+  100% { transform: translate(-1px, -2px) rotate(-1deg); }
 }
-
-.season-item.active,
-.season-item[style*="border-color: var(--primary)"] {
-  background: var(--primary);
-  color: #0b0e14;
-  border-color: transparent;
-  animation: none !important;
-  transform: scale(0.96) translateY(2px);
-  box-shadow: 0 10px 20px rgba(243, 195, 0, 0.3);
-}
-
 
 /* ===================== */
 /*      ÉPISODES         */
