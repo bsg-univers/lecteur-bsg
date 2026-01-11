@@ -1124,8 +1124,9 @@ async function loadPlaylists() {
     const seasons = [...new Set(allPlaylists.map(p => p.season))].sort().reverse();
     const grid = document.getElementById('seasons_grid');
 
+    // Remplace cette partie :
     grid.innerHTML = seasons.map(s =>
-        `<div class="season-item" onclick="showPlaylistsBySeason('${s}')">${s}</div>`
+        `<div class="season-item" onclick="showPlaylistsBySeason('${s}')">${s.replace(/saison\s?/i, '')}</div>`
     ).join('');
         // --- Désynchronisation des galets (float organique) ---
     const seasonItems = grid.querySelectorAll('.season-item');
