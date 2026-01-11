@@ -335,49 +335,38 @@ h2,h3{
   }
 }
 
-/* --- BASE COMMUNE --- */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
+
+/* Modification du texte à l'intérieur du galet */
 .season-item {
-  position: relative;
-  padding: 20px 15px;
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.9);
-  text-align: center;
-  cursor: pointer;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 65px;
-  border: none !important;
-  outline: none;
-  
-  /* Volume massif et mat */
-  box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.45),
-    inset 0 1px 1px rgba(255, 255, 255, 0.15),
-    inset 0 -15px 25px rgba(0, 0, 0, 0.3),
-    inset 10px 10px 30px rgba(255, 255, 255, 0.03) !important;
+    font-family: 'Caveat', cursive; /* Style écriture main */
+    font-size: 2.2rem; /* Plus grand car c'est juste un chiffre */
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Effet d'écriture sur relief */
+position: relative;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px; /* Un peu plus grand pour le volume */
+    border: none !important;
+    outline: none;
+    
+    /* OMBRES PORTÉES RENFORCÉES (Multi-couches pour le poids) */
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.6),     /* Ombre portée principale */
+        0 10px 15px rgba(0, 0, 0, 0.4),      /* Ombre de proximité */
+        inset 0 1px 1px rgba(255, 255, 255, 0.1), 
+        inset 0 -18px 30px rgba(0, 0, 0, 0.5), /* Ombre interne fond du galet */
+        inset 10px 15px 35px rgba(255, 255, 255, 0.04) !important;
 
-  will-change: transform;
-  animation: float-organic infinite alternate ease-in-out;
-  animation-duration: calc(8s + var(--i, 0) * 1s);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  overflow: hidden; /* Important pour contenir les textures */
-}
-
-/* COUCHE 1 : Le Grain (Porosité) */
-.season-item::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  /* SVG de bruit haute fréquence pour le grain */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.12; /* Ajustez pour plus ou moins de grain */
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  z-index: -1;
+    will-change: transform;
+    animation: float-organic infinite alternate ease-in-out;
+    animation-duration: calc(8s + var(--i, 0) * 1s);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
 }
 
 /* COUCHE 2 : Les Veines de la pierre (Marbrure) */
@@ -394,47 +383,55 @@ h2,h3{
   z-index: -1;
 }
 
-/* --- VARIATIONS DE COULEURS RADIALES (Look Minéral) --- */
+/* TEXTURES (Grain et Marbrure) */
+.season-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.18; /* Texture plus brute */
+    mix-blend-mode: overlay;
+    z-index: -1;
+}
 
+/* VARIATIONS (Couleurs plus denses et sombres) */
 .season-item:nth-child(6n+1) {
-  border-radius: 70% 30% 60% 40% / 50% 60% 40% 50% !important;
-  background: radial-gradient(circle at 40% 40%, #4a515a, #23272d) !important;
+    border-radius: 65% 35% 62% 38% / 48% 62% 38% 52% !important;
+    background: radial-gradient(circle at 35% 35%, #424952, #16181b) !important;
 }
-
 .season-item:nth-child(6n+2) {
-  border-radius: 40% 60% 35% 65% / 55% 45% 55% 45% !important;
-  background: radial-gradient(circle at 40% 40%, #e0dcd0, #b2ad9d) !important;
-  color: #333 !important;
+    border-radius: 42% 58% 38% 62% / 58% 42% 58% 42% !important;
+    background: radial-gradient(circle at 35% 35%, #d1cdc0, #8a8576) !important;
+    color: #2a2a2a !important; /* Marqueur noir sur pierre claire */
 }
-
 .season-item:nth-child(6n+3) {
-  border-radius: 60% 40% 70% 30% / 45% 55% 45% 55% !important;
-  background: radial-gradient(circle at 40% 40%, #635a52, #3d3631) !important;
+    border-radius: 62% 38% 68% 32% / 42% 58% 42% 58% !important;
+    background: radial-gradient(circle at 35% 35%, #59514a, #2b2622) !important;
 }
-
 .season-item:nth-child(6n+4) {
-  border-radius: 50% 50% 65% 35% / 60% 40% 60% 40% !important;
-  background: radial-gradient(circle at 40% 40%, #4c555e, #2d343b) !important;
+    border-radius: 48% 52% 62% 38% / 62% 38% 62% 38% !important;
+    background: radial-gradient(circle at 35% 35%, #424c56, #21262b) !important;
 }
-
 .season-item:nth-child(6n+5) {
-  border-radius: 80% 20% 75% 25% / 40% 40% 60% 60% !important;
-  background: radial-gradient(circle at 40% 40%, #3e443f, #1e221f) !important;
+    border-radius: 75% 25% 72% 28% / 38% 38% 62% 62% !important;
+    background: radial-gradient(circle at 35% 35%, #353b36, #141614) !important;
 }
-
 .season-item:nth-child(6n+6) {
-  border-radius: 45% 55% 50% 50% / 50% 50% 60% 40% !important;
-  background: radial-gradient(circle at 40% 40%, #858a91, #5a5e65) !important;
+    border-radius: 48% 52% 48% 52% / 48% 48% 58% 42% !important;
+    background: radial-gradient(circle at 35% 35%, #767b82, #3e4146) !important;
 }
-
-/* ÉTAT ACTIF : On garde la texture même en couleur */
+        
+/* ÉTAT ACTIF : Ombre Jaune Lumineuse */
 .season-item.active {
-  background: var(--primary) !important;
-  color: #000 !important;
-  box-shadow: 
-    0 10px 25px rgba(243, 195, 0, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.4),
-    inset 0 -5px 10px rgba(0, 0, 0, 0.15) !important;
+    background: var(--primary) !important;
+    color: #0b0e14 !important;
+    transform: scale(0.94) translateY(5px) !important;
+    animation: none !important;
+    box-shadow: 
+        0 15px 35px rgba(210, 179, 71, 0.4), /* Lueur jaune */
+        inset 0 3px 6px rgba(255, 255, 255, 0.6),
+        inset 0 -6px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* --- ÉTAT ACTIF (Volume Lumineux) --- */
