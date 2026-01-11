@@ -25,6 +25,9 @@
     <meta property="twitter:title" content="Baleine sous gravillon — Les podcasts">
     <meta property="twitter:description" content="Plongez dans les profondeurs du Vivant.">
     <meta property="twitter:image" content="https://baleinesousgravillon.com/wp-content/uploads/2022/05/Banniere_fb_orditel_FG_8-scaled.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Rock+Salt&display=swap" rel="stylesheet">
 
     <style>
 * {
@@ -335,23 +338,22 @@ h2,h3{
   }
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Rock+Salt&display=swap');
 
 /* Modification du texte à l'intérieur du galet */
 .season-item {
-    font-family: 'Gloria Hallelujah', cursive; /* Plus brut, type écolier/crayon */
+    font-family: 'Gloria Hallelujah', cursive !important;
     /* Alternative encore plus sauvage : 'Rock Salt', cursive; */
-    font-size: 1.5rem; /* Plus grand car c'est juste un chiffre */
+    font-size: 1.2rem; /* Plus grand car c'est juste un chiffre */
     color: rgba(255, 255, 255, 0.7);
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Effet d'écriture sur relief */
     position: relative;
-    padding: 10px;
+    padding: 8px;
     cursor: pointer;
     z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 80px; /* Un peu plus grand pour le volume */
+    min-height: 70px; /* Un peu plus grand pour le volume */
     border: none !important;
     outline: none;
     
@@ -368,6 +370,7 @@ h2,h3{
     animation-duration: calc(8s + var(--i, 0) * 1s);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* COUCHE 2 : Les Veines de la pierre (Marbrure) */
