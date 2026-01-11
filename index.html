@@ -336,8 +336,6 @@ h2,h3{
 }
 
 /* --- BASE COMMUNE --- */
-
-/* --- BASE COMMUNE --- */
 .season-item {
   position: relative;
   padding: 20px 15px;
@@ -354,74 +352,83 @@ h2,h3{
   -webkit-tap-highlight-color: transparent;
   outline: none;
   
-  /* On enlève la bordure maladroite */
+  /* On supprime la bordure CSS classique */
   border: none !important;
 
-  /* OMBRE NATURELLE SOMBRE (État par défaut)
-     1. Ombre portée au sol (très diffuse)
-     2. Lueur de contour interne (remplace la bordure)
-     3. Ombre de volume en bas
-     4. Lumière de volume en haut */
+  /* LE NOUVEAU VOLUME 3D :
+     1. Ombre portée (0 15px 30px) : Profondeur par rapport au sol
+     2. Lueur de crête (inset 0 2px 1px) : Le bord supérieur qui accroche la lumière
+     3. Biseau latéral (inset 4px 0 8px) : Donne l'impression que le galet est bombé
+     4. Ombre de base (inset 0 -12px 20px) : Le "poids" de la pierre en bas
+  */
   box-shadow: 
-    0 12px 25px rgba(0, 0, 0, 0.45),
-    inset 0 1px 2px rgba(255, 255, 255, 0.2), 
-    inset 0 -10px 20px rgba(0, 0, 0, 0.4),
-    inset 6px 10px 20px rgba(255, 255, 255, 0.05) !important;
+    0 15px 35px rgba(0, 0, 0, 0.45),
+    inset 0 2px 2px rgba(255, 255, 255, 0.25),
+    inset 0 -12px 20px rgba(0, 0, 0, 0.4),
+    inset 8px 10px 25px rgba(255, 255, 255, 0.05) !important;
 
   will-change: transform;
-  animation: float-organic infinite alternate;
-  animation-timing-function: ease-in-out;
+  animation: float-organic infinite alternate ease-in-out;
   animation-duration: calc(8s + var(--i, 0) * 1s);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* --- ÉTAT ACTIF (Look Lumineux) --- */
-.season-item.active,
-.season-item[style*="border-color: var(--primary)"] {
-  background: var(--primary) !important;
-  color: #0b0e14 !important;
-  transform: scale(0.94) translateY(2px) !important;
-  animation: none !important;
-  
-  /* Ombre jaune lumineuse spécifique */
-  box-shadow: 
-    0 10px 25px rgba(243, 195, 0, 0.5),
-    inset 0 2px 4px rgba(255, 255, 255, 0.6),
-    inset 0 -4px 8px rgba(0, 0, 0, 0.15) !important;
+/* LE SECRET DU LOOK SOIGNÉ : Un contour interne ultra-fin */
+.season-item::after {
+  content: "";
+  position: absolute;
+  inset: 1px; /* Décale d'un pixel vers l'intérieur */
+  border-radius: inherit;
+  /* Ce gradient crée une ligne de lumière "fantôme" beaucoup plus fine qu'une bordure */
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
+  pointer-events: none;
 }
 
-/* --- VARIATIONS RÉELLES (Formes & Couleurs) --- */
+/* --- ÉTAT ACTIF (Volume Lumineux) --- */
+.season-item.active {
+  background: var(--primary) !important;
+  color: #0b0e14 !important;
+  transform: scale(0.96) !important;
+  animation: none !important;
+  /* Ombre portée jaune + Ombre interne pour garder le volume même en couleur */
+  box-shadow: 
+    0 10px 25px rgba(243, 195, 0, 0.4),
+    inset 0 3px 5px rgba(255, 255, 255, 0.5),
+    inset 0 -5px 10px rgba(0, 0, 0, 0.2) !important;
+}
 
+/* --- VOS VARIATIONS (Accentuation des contrastes) --- */
 .season-item:nth-child(6n+1) {
   border-radius: 70% 30% 60% 40% / 50% 60% 40% 50% !important;
-  background: linear-gradient(145deg, #3a3f47, #1c1f24) !important;
+  background: radial-gradient(circle at 30% 30%, #4a505a, #1c1f24) !important;
 }
 
 .season-item:nth-child(6n+2) {
   border-radius: 40% 60% 35% 65% / 55% 45% 55% 45% !important;
-  background: linear-gradient(145deg, #d4d4d4, #a8a8a8) !important;
+  background: radial-gradient(circle at 30% 30%, #e8e8e8, #a8a8a8) !important;
   color: #222 !important;
 }
 
 .season-item:nth-child(6n+3) {
   border-radius: 60% 40% 70% 30% / 45% 55% 45% 55% !important;
-  background: linear-gradient(145deg, #5c534a, #3b352f) !important;
+  background: radial-gradient(circle at 30% 30%, #6e655d, #3b352f) !important;
 }
 
 .season-item:nth-child(6n+4) {
   border-radius: 50% 50% 65% 35% / 60% 40% 60% 40% !important;
-  background: linear-gradient(145deg, #444e59, #2b323a) !important;
+  background: radial-gradient(circle at 30% 30%, #545e69, #2b323a) !important;
 }
 
 .season-item:nth-child(6n+5) {
   border-radius: 80% 20% 75% 25% / 40% 40% 60% 60% !important;
-  background: linear-gradient(145deg, #2f3530, #1a1d1a) !important;
+  background: radial-gradient(circle at 30% 30%, #3a423b, #1a1d1a) !important;
 }
 
 .season-item:nth-child(6n+6) {
   border-radius: 45% 55% 50% 50% / 50% 50% 60% 40% !important;
-  background: linear-gradient(145deg, #7a7e85, #51545a) !important;
+  background: radial-gradient(circle at 30% 30%, #8c9199, #51545a) !important;
 }
+
 
 /* On garde le grain de pierre sur tous */
 .season-item::before {
