@@ -329,6 +329,7 @@ h2,h3{
 }
 
 .season-item {
+  aspect-ratio: 1.15 / 1; /* légèrement écrasé */
   position: relative;
   padding: 20px 15px;
   font-weight: 700;
@@ -354,30 +355,35 @@ h2,h3{
   /* Ombre très douce pour éviter l'aspect lourd */
   box-shadow: 
     0 8px 15px rgba(0, 0, 0, 0.2),
-    inset 0 0 10px rgba(255, 255, 255, 0.05);
+    inset 0 0 10px rgba(255, 255, 255, 0.3);
 
   transition: all 0.3s ease-in-out;
   animation: float-organic 7s ease-in-out infinite;
 }
 
 /* --- Formes de galets plus subtiles pour petits formats --- */
-.season-item:nth-child(4n+1) { 
-  border-radius: 55% 45% 65% 35% / 45% 40% 60% 55%; 
-  animation-delay: 0s;
+.season-item:nth-child(4n+1) {
+  border-radius: 82% 18% 64% 36% / 58% 66% 34% 42%;
 }
-.season-item:nth-child(4n+2) { 
-  border-radius: 45% 55% 45% 55% / 50% 55% 45% 50%; 
-  animation-delay: -1.5s;
-  animation-duration: 8s;
+
+.season-item:nth-child(4n+2) {
+  border-radius: 58% 42% 28% 72% / 62% 48% 52% 38%;
 }
-.season-item:nth-child(4n+3) { 
-  border-radius: 60% 40% 50% 50% / 40% 45% 55% 60%; 
-  animation-delay: -3s;
+
+.season-item:nth-child(4n+3) {
+  border-radius: 71% 29% 53% 47% / 44% 56% 46% 54%;
 }
-.season-item:nth-child(4n+4) { 
-  border-radius: 45% 50% 40% 60% / 55% 45% 55% 45%; 
-  animation-delay: -4.5s;
-  animation-duration: 9s;
+
+.season-item:nth-child(4n+4) {
+  border-radius: 63% 37% 72% 28% / 59% 41% 61% 39%;
+}
+
+.season-item:nth-child(odd) {
+  transform: rotate(-1.2deg);
+}
+
+.season-item:nth-child(even) {
+  transform: rotate(1deg);
 }
 
 /* --- Animation plus calme --- */
