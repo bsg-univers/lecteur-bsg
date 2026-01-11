@@ -344,17 +344,11 @@ h2,h3{
     font-family: 'Gloria Hallelujah', cursive !important;
     font-size: 2rem; 
     font-weight: 800;
-    
     /* --- EFFET CRAYON GRAPHITE --- */
     /* On utilise une couleur gris anthracite très foncé plutôt que noir pur */
     color: rgba(40, 40, 40, 0.85); 
-    
-    /* Le secret : un léger flou + un masque pour simuler le grain de la pierre */
-    filter: contrast(1.5) grayscale(1);
-    
     /* Ombre très fine pour simuler l'épaisseur du trait de crayon dans le relief */
     text-shadow: 
-        0.5px 0.5px 0px rgba(255,255,255,0.2), 
         -0.5px -0.5px 0px rgba(0,0,0,0.3);
     position: relative;
     padding: 8px;
