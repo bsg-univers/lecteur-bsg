@@ -347,57 +347,65 @@ h2,h3{
   padding: 20px 15px;
   font-weight: 700;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.85);
   text-align: center;
   cursor: pointer;
   z-index: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 60px;
-
   -webkit-tap-highlight-color: transparent;
   outline: none;
 
-  /* --- LE SECRET DU VOLUME --- */
-  /* 1. Fond en dégradé radial pour l'effet "bombé" */
-  background: radial-gradient(circle at 30% 30%, 
-                rgba(60, 65, 75, 0.9) 0%, 
-                rgba(30, 35, 45, 0.95) 100%);
+  /* --- RENDU MINÉRAL AVANCÉ --- */
   
-  /* 2. Bordure subtile pour simuler l'épaisseur du bord */
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  /* Fond : Dégradé très subtil pour la base */
+  background: linear-gradient(145deg, #323842, #242932);
 
-  /* 3. Ombres empilées : 
-     - La 1ère (0 10px 20px) : l'ombre portée au sol
-     - La 2ème (inset 0 4px 6px) : la lumière sur le dessus du galet
-     - La 3ème (inset 0 -5px 10px) : l'ombre propre en bas du galet */
+  /* Bordure : On simule un biseau très fin */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* Empilement d'ombres pour le volume réaliste :
+     1. Ombre portée douce (maintient le galet au sol)
+     2. Lueur de contour (Rim light) très fine en haut
+     3. Ombre interne profonde en bas pour le "poids"
+     4. Lumière diffuse (pas de tache blanche) sur le haut gauche */
   box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.4),
-    inset 0 6px 10px rgba(255, 255, 255, 0.1),
-    inset 0 -6px 12px rgba(0, 0, 0, 0.3);
+    0 12px 24px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -10px 20px rgba(0, 0, 0, 0.4),
+    inset 6px 10px 20px rgba(255, 255, 255, 0.05);
 
-  will-change: transform;
-  animation: float-organic infinite;
-  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
-  animation-duration: calc(9s + var(--i, 0) * 0.8s);
-  animation-direction: alternate;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-/* Le reflet de brillance sur le dessus */
+/* Texture de roche (Grain subtil) */
+.season-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* Simule le grain de la pierre avec un bruit statique */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3 Oper%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.04; /* Très discret */
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Suppression de l'ancienne tache blanche trop vive */
 .season-item::after {
   content: "";
   position: absolute;
-  top: 10%;
-  left: 15%;
-  width: 40%;
-  height: 25%;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
-  border-radius: 50%; /* Crée une tache lumineuse */
+  inset: 0;
+  border-radius: inherit;
+  /* Un simple voile de lumière directionnel et large */
+  background: radial-gradient(
+    circle at 35% 30%, 
+    rgba(255, 255, 255, 0.08) 0%, 
+    transparent 60%
+  );
   pointer-events: none;
-  filter: blur(2px);
 }
 
 /* --- Formes de galets plus subtiles pour petits formats --- */
@@ -434,14 +442,6 @@ h2,h3{
   100% { transform: translate(0, 0) rotate(0deg); }
 }
 
-
-/* --- Hover & Active --- */
-
-  
-  box-shadow: 
-    0 4px 10px rgba(0, 0, 0, 0.3),
-    inset 0 2px 5px rgba(0, 0, 0, 0.5); /* L'ombre s'inverse */
-}
 .season-item.active,
 .season-item[style*="border-color: var(--primary)"] {
   background: var(--primary);
