@@ -373,11 +373,18 @@ h2,h3{
      4. Lumière diffuse (pas de tache blanche) sur le haut gauche */
   box-shadow: 
     0 12px 24px rgba(0, 0, 0, 0.35),
-    inset 0 1px 1px rgba(255, 255, 255, 0.15),
-    inset 0 -10px 20px rgba(0, 0, 0, 0.4),
-    inset 6px 10px 20px rgba(255, 255, 255, 0.05);
+    inset 0 1px 1px rgba(255, 255, 255, 0.12),
+    inset 0 -10px 20px rgba(0, 0, 0, 0.3),
+    inset 6px 10px 20px rgba(255, 255, 255, 0.03);
 
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  will-change: transform;
+
+  animation: float-organic infinite;
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  animation-duration: calc(9s + var(--i, 0) * 0.8s);
+  animation-direction: alternate;
+
+  transition: transform 0.25s ease;
 }
 
 /* Texture de roche (Grain subtil) */
@@ -411,18 +418,24 @@ h2,h3{
 /* --- Formes de galets plus subtiles pour petits formats --- */
 .season-item:nth-child(4n+1) {
   border-radius: 82% 18% 64% 36% / 58% 66% 34% 42%;
+  background: linear-gradient(145deg, #383e48, #2a2f37);
 }
 
 .season-item:nth-child(4n+2) {
   border-radius: 58% 42% 28% 72% / 62% 48% 52% 38%;
+  background: linear-gradient(145deg, #423d38, #322e2a);
 }
 
 .season-item:nth-child(4n+3) {
   border-radius: 71% 29% 53% 47% / 44% 56% 46% 54%;
+  background: linear-gradient(145deg, #383d42, #2a2e32);
 }
 
 .season-item:nth-child(4n+4) {
   border-radius: 63% 37% 72% 28% / 59% 41% 61% 39%;
+  background: linear-gradient(145deg, #4a4f55, #383d42);
+  color: rgba(255, 255, 255, 0.95); /* Texte un peu plus contrasté */
+}
 }
 
 .season-item:nth-child(odd) {
