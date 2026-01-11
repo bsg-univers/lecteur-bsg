@@ -355,45 +355,49 @@ h2,h3{
   display: flex;
   align-items: center;
   justify-content: center;
-
   min-height: 60px;
 
   -webkit-tap-highlight-color: transparent;
   outline: none;
 
-  /* Look Verre Poli */
-  background: rgba(40, 45, 55, 0.8); 
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  /* --- LE SECRET DU VOLUME --- */
+  /* 1. Fond en dégradé radial pour l'effet "bombé" */
+  background: radial-gradient(circle at 30% 30%, 
+                rgba(60, 65, 75, 0.9) 0%, 
+                rgba(30, 35, 45, 0.95) 100%);
+  
+  /* 2. Bordure subtile pour simuler l'épaisseur du bord */
+  border: 1px solid rgba(255, 255, 255, 0.15);
 
-  /* Ombre très douce pour éviter l'aspect lourd */
+  /* 3. Ombres empilées : 
+     - La 1ère (0 10px 20px) : l'ombre portée au sol
+     - La 2ème (inset 0 4px 6px) : la lumière sur le dessus du galet
+     - La 3ème (inset 0 -5px 10px) : l'ombre propre en bas du galet */
   box-shadow: 
-    0 8px 15px rgba(0, 0, 0, 0.2),
-    inset 0 0 10px rgba(255, 255, 255, 0.05);
+    0 10px 25px rgba(0, 0, 0, 0.4),
+    inset 0 6px 10px rgba(255, 255, 255, 0.1),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.3);
 
   will-change: transform;
-
   animation: float-organic infinite;
   animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
   animation-duration: calc(9s + var(--i, 0) * 0.8s);
   animation-direction: alternate;
-
-  transition: transform 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-
+/* Le reflet de brillance sur le dessus */
 .season-item::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background:
-    radial-gradient(
-      90% 120% at 70% 65%,
-      rgba(255,255,255,0.04),
-      transparent 60%
-    );
+  top: 10%;
+  left: 15%;
+  width: 40%;
+  height: 25%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+  border-radius: 50%; /* Crée une tache lumineuse */
   pointer-events: none;
-  mix-blend-mode: overlay;
+  filter: blur(2px);
 }
 
 /* --- Formes de galets plus subtiles pour petits formats --- */
@@ -432,19 +436,19 @@ h2,h3{
 
 
 /* --- Hover & Active --- */
-.season-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
-}
 
+  
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    inset 0 2px 5px rgba(0, 0, 0, 0.5); /* L'ombre s'inverse */
+}
 .season-item.active,
 .season-item[style*="border-color: var(--primary)"] {
   background: var(--primary);
   color: #0b0e14;
   border-color: transparent;
   animation: none !important;
-  transform: scale(1) !important;
+  transform: scale(0.96) translateY(2px);
   box-shadow: 0 10px 20px rgba(243, 195, 0, 0.3);
 }
 
