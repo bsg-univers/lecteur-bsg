@@ -1406,14 +1406,15 @@ async function loadEpisodes(pid, encoded = false) {
 const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
 // On récupère les hashtags (on utilise 'currentPl' qui est déjà défini au dessus dans votre code)
 // Dans ta fonction qui affiche la playlist détaillée :
-const hashtagsHtml = playlist.hashtags 
-    ? `<div class="playlist-tags-area">
-        ${playlist.hashtags.split(' ').filter(t => t.trim() !== "").map(tag => 
-            `<span class="tag-mini" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
-        ).join('')}
-       </div>`
-    : '';
-
+const hashtagsHtml = (currentPl && currentPl.hashtags) 
+    ? `<div class="hashtag-container" style="margin-top: -10px; margin-bottom: 20px; -webkit-mask-image:none; mask-image:none; overflow:visible; white-space: normal;">
+        <div class="hashtag-track" style="display: flex; flex-wrap: wrap; gap: 8px;">
+            ${currentPl.hashtags.split(' ').map(tag => 
+                `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
+            ).join('')}
+        </div>
+       </div>` 
+    : "";
 // Ensuite, insère cette variable hashtagsHtml là où tu veux qu'elle apparaisse
 // (Généralement juste après le titre ou avant la description)
 
