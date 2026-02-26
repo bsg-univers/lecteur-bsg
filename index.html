@@ -1282,31 +1282,6 @@ function toggleHashtagLibrary() {
 
     library.style.display = 'block';
 }
-
-function initHashtagMarquees(root = document) {
-    root.querySelectorAll('.hashtag-container').forEach(container => {
-        const track = container.querySelector('.hashtag-track');
-        if (!track || track.dataset.duplicated === "true") return;
-
-        const baseWidth = track.scrollWidth;
-        
-        if (baseWidth > container.offsetWidth) {
-            // On double le contenu pour la boucle
-            track.innerHTML += track.innerHTML; 
-            track.dataset.duplicated = "true";
-
-            // Vitesse ultra-lente demandée
-            const speed = 8; 
-            
-            // La durée est calculée sur la moitié de la largeur totale 
-            // (puisqu'on a doublé le contenu)
-            const duration = baseWidth / speed;
-            
-            container.style.setProperty('--scroll-duration', `${duration}s`);
-            container.classList.add('is-animated');
-        }
-    });
-}
     
 function filterByHashtag(event, tag) {
     if (event) event.stopPropagation(); // Empêche d'ouvrir la playlist si on clique sur un tag
@@ -1430,15 +1405,17 @@ async function loadEpisodes(pid, encoded = false) {
         // On prépare l'ID encodé pour le bouton de partage
 const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
 // On récupère les hashtags (on utilise 'currentPl' qui est déjà défini au dessus dans votre code)
-const hashtagsHtml = (currentPl && currentPl.hashtags) 
-    ? `<div class="hashtag-container" style="margin-top: -10px; margin-bottom: 20px; -webkit-mask-image:none; mask-image:none; overflow:visible; white-space: normal;">
-        <div class="hashtag-track" style="display: flex; flex-wrap: wrap; gap: 8px;">
-            ${currentPl.hashtags.split(' ').map(tag => 
-                `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
-            ).join('')}
-        </div>
-       </div>` 
-    : "";
+// Dans ta fonction qui affiche la playlist détaillée :
+const hashtagsHtml = playlist.hashtags 
+    ? `<div class="playlist-tags-area">
+        ${playlist.hashtags.split(' ').filter(t => t.trim() !== "").map(tag => 
+            `<span class="tag-mini" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
+        ).join('')}
+       </div>`
+    : '';
+
+// Ensuite, insère cette variable hashtagsHtml là où tu veux qu'elle apparaisse
+// (Généralement juste après le titre ou avant la description)
 
 let html = `
 <div class="playlist-header-container">
