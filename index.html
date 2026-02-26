@@ -1369,11 +1369,11 @@ function showToast() {
 
 // --- ÉPISODES ---
 async function loadEpisodes(pid, encoded = false) {
-    // Le dock ne doit plus coller au scroll, il reste au sommet de la page
+    // Le dock ne doit plus coller au scroll
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.add('is-static');
     
-    // Décodage de l'ID si provenant d'un lien de partage
+    // Décodage de l'ID
     const cleanId = encoded 
         ? decodeURIComponent(escape(atob(pid))) 
         : pid;
@@ -1382,12 +1382,11 @@ async function loadEpisodes(pid, encoded = false) {
     div.innerHTML = '<div class="loader">Plongée...</div>';
 
     try {
-        // 1. Récupérer la description de la playlist depuis la mémoire
-        // (allPlaylists a été rempli au chargement de la page via playlists.json)
+        // 1. Récupérer la playlist dans la mémoire
         const currentPl = allPlaylists.find(p => String(p.id).trim() === cleanId.trim());
         const playlistDesc = currentPl ? currentPl.description : "";
 
-        // 2. Charger les épisodes depuis le fichier JSON statique
+        // 2. Charger les épisodes
         const res = await fetch(`data/episodes.json?v=${new Date().getTime()}`);
         const allEpisodes = await res.json();
 
@@ -1402,30 +1401,27 @@ async function loadEpisodes(pid, encoded = false) {
         }
 
         // 3. Construction du HTML
-        // On prépare l'ID encodé pour le bouton de partage
-const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
-// On récupère les hashtags (on utilise 'currentPl' qui est déjà défini au dessus dans votre code)
-// Dans ta fonction qui affiche la playlist détaillée :
-const hashtagsHtml = (currentPl && currentPl.hashtags) 
-    ? `<div class="hashtag-container" style="margin-top: -10px; margin-bottom: 20px; -webkit-mask-image:none; mask-image:none; overflow:visible; white-space: normal;">
-        <div class="hashtag-track" style="display: flex; flex-wrap: wrap; gap: 8px;">
-            ${currentPl.hashtags.split(' ').map(tag => 
-                `<span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
-            ).join('')}
-        </div>
-       </div>` 
-    : "";
-// Ensuite, insère cette variable hashtagsHtml là où tu veux qu'elle apparaisse
-// (Généralement juste après le titre ou avant la description)
+        const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
 
-let html = `
-<div class="playlist-header-container">
-    <h2>${cleanId}</h2>
-    <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">🔗</button>
-</div>
-${hashtagsHtml}`; // <-- On insère les hashtags ici
+        // --- CORRECTION DES HASHTAGS ICI ---
+        // On utilise la nouvelle structure pour que le style s'applique
+        const hashtagsHtml = (currentPl && currentPl.hashtags) 
+            ? `<div class="playlist-tags-area">
+                ${currentPl.hashtags.split(' ').filter(t => t.trim() !== "").map(tag => 
+                    `<span class="tag-mini" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
+                ).join('')}
+               </div>` 
+            : "";
 
-        // Affichage de la description avec l'effet "Lire la suite"
+        let html = `
+            <div class="playlist-header-container">
+                <h2>${cleanId}</h2>
+                <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">🔗</button>
+            </div>
+            ${hashtagsHtml} 
+        `;
+
+        // Affichage de la description
         if (playlistDesc && playlistDesc.trim() !== "") {
             html += `
             <div class="playlist-description-container" id="desc-container" onclick="this.classList.toggle('expanded')">
@@ -1436,7 +1432,7 @@ ${hashtagsHtml}`; // <-- On insère les hashtags ici
             </div>`;
         }
 
-        // Liste des épisodes (votre code existant)
+        // Liste des épisodes
         html += `<h3>Épisodes</h3>` +
             episodes.map((e, i) => `
                 <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
@@ -1446,21 +1442,20 @@ ${hashtagsHtml}`; // <-- On insère les hashtags ici
             `).join('');
 
         div.innerHTML = html;
-        // On attend un tout petit peu que le navigateur dessine le HTML
-setTimeout(() => {
-    const titleSection = div.querySelector('.playlist-header-container');
-    if (titleSection) {
-        titleSection.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
-        });
-    }
-}, 50);
-// --- AJOUT ICI : Correction des liens ---
+
+        // Effet de scroll doux vers le titre
+        setTimeout(() => {
+            const titleSection = div.querySelector('.playlist-header-container');
+            if (titleSection) {
+                titleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 50);
+
+        // Correction des liens pour l'ouverture externe
         const descLinks = div.querySelectorAll('.playlist-description-content a');
         descLinks.forEach(link => {
             link.setAttribute('target', '_blank');
-            link.setAttribute('rel', 'noopener noreferrer'); // Sécurité
+            link.setAttribute('rel', 'noopener noreferrer');
         });        
 
         // Lecture auto du premier épisode
