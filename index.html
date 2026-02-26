@@ -710,25 +710,34 @@ h2,h3{
 
 /* Style du bouton retour en haut à côté du titre principal */
 .btn-go-up {
-    background: rgba(210, 179, 71, 0.1);
-    border: 1px solid var(--primary);
+    background: rgba(210, 179, 71, 0.15);
+    border: 1.5px solid var(--primary);
     color: var(--primary);
     border-radius: 50%;
-    width: 35px;
-    height: 35px;
+    width: 40px;  /* On l'agrandit un peu pour le mobile */
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 0.9rem;
     transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.btn-go-up span {
+    font-style: normal !important; /* Force le retrait de l'italique */
+    font-size: 22px;               /* Taille de la flèche */
+    font-weight: bold;
+    display: inline-block;
+    transform: translateY(-1px);   /* Ajustement optique pour le centrage */
 }
 
 .btn-go-up:hover {
     background: var(--primary);
     color: #000;
 }
-        
 .episode-item{
   margin-bottom:10px;
   padding:16px 20px;
@@ -1449,8 +1458,10 @@ async function loadEpisodes(pid, encoded = false) {
         let html = `
             <div class="playlist-header-container">
                 <h2>${cleanId}</h2>
-                <button class="btn-go-up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Remonter en haut">
-                    <i>↑</i>
+                <button class="btn-go-up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 19V5M5 12l7-7 7 7"/>
+                    </svg>
                 </button>
             </div>
             ${hashtagsHtml} 
