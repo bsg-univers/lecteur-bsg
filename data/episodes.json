@@ -6874,5 +6874,257 @@
     "order": 1,
     "guid": "5e06c50b71f83ba6959d59713d810368fc13d11b",
     "image": "https://image.ausha.co/joyvYKOb1VFaFpnMC3UJWHl9vPb8BYs7FdxVrPIq_1400x1400.jpeg?t=1765536827"
+  },
+  {
+    "episodeId": "5",
+    "playlistId": "Vous avez dit bizarre ? ",
+    "title": "S07E96 Vous avez dit bizarre ? Attributs 5/5 : Le Moloch, un sujet... épineux",
+    "audio": "https://audio.ausha.co/BMJYefxEdrvk.mp3?t=1771520778",
+    "order": 5,
+    "guid": "a906ea22d783d7cd3a7a8bd46b973ee6c9cb901c",
+    "image": "https://image.ausha.co/cLkgnbRnTlIeid9VRn4XOsDTB45KGOPf7urjvjOW_1400x1400.jpeg?t=1771186667"
+  },
+  {
+    "episodeId": "4",
+    "playlistId": "Vous avez dit bizarre ? ",
+    "title": "S07E95 Vous avez dit bizarre ? Attributs 4/5 : La Grenouille de verre... en toute transparence",
+    "audio": "https://audio.ausha.co/o9vxjf0knV5g.mp3?t=1771510709",
+    "order": 4,
+    "guid": "e11372d5a178bf4acf4724540ae72fd8cb2d99e5",
+    "image": "https://image.ausha.co/15jMb6JWaSTo6OboFQKdHBiGXc7XhZgxw4wsZP0z_1400x1400.jpeg?t=1771186653"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "Vous avez dit bizarre ? ",
+    "title": "S07E94 Vous avez dit bizarre ? Attributs 3/5 : L'Araponga blanc, la drague à 125 dB",
+    "audio": "https://audio.ausha.co/y0PL6uXkZRLq.mp3?t=1771365720",
+    "order": 3,
+    "guid": "6c2570aeaa7bee534b73f1e569738cffc562b9c9",
+    "image": "https://image.ausha.co/AP0EOA70Jfu9TCLTQxYzK49aXAECzAZsqYCGKPMp_1400x1400.jpeg?t=1771239360"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "Vous avez dit bizarre ? ",
+    "title": "S07E93 Vous avez dit bizarre ? Attributs 2/5 : Le Fulgore porte-lanterne, un insecte déguisé... en alligator",
+    "audio": "https://audio.ausha.co/y8eK9fpA1AY7.mp3?t=1771263388",
+    "order": 2,
+    "guid": "674412e06427c0cbe82b0c4f0c105715a2e50099",
+    "image": "https://image.ausha.co/VMrgBYM69qF74lOXXNhNeauHC4QqbxMgRBX4hoVe_1400x1400.jpeg?t=1771186633"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "Vous avez dit bizarre ? ",
+    "title": "S07E92 Vous avez dit bizarre ? Attributs 1/5 : Le Chevrotain montre les crocs",
+    "audio": "https://audio.ausha.co/y0PL6uYE6Q7A.mp3?t=1771185095",
+    "order": 1,
+    "guid": "b37a39dc39ad96780e7fcd1439ce394e180df9c6",
+    "image": "https://image.ausha.co/O7rJqcoZeYHBtGA3MF93W6O9ubFuwtOrPux2enbf_1400x1400.jpeg?t=1771186620"
+  },
+  {
+    "episodeId": "4",
+    "playlistId": "Fake, IA et bullshit",
+    "title": "S07E91 Fake, IA et bullshit 4/4 : C'est vrai ça ? (Sylvain Tillon)",
+    "audio": "https://audio.ausha.co/bWwpOcr8DnlW.mp3?t=1770581992",
+    "order": 4,
+    "guid": "718245b5426b3885e127aebf6ed6b8bdffec3936",
+    "image": "https://image.ausha.co/K788xPkP8XxjT0E1d48EcIFJ2LfyvX4fftCNTmZL_1400x1400.jpeg?t=1770765468"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "Fake, IA et bullshit",
+    "title": "S07E90 Fake, IA et bullshit 3/4 : S'armer ou se ridiculiser (Sylvain Tillon)",
+    "audio": "https://audio.ausha.co/bY4YAuPG5wq8.mp3?t=1770581967",
+    "order": 3,
+    "guid": "f5b3ac8fc9d111dedbf2f96ed032134ed4b38cc2",
+    "image": "https://image.ausha.co/b27KUuwUYZRyvXTmBA5a2nGB9BNRb7e1arqhGsdg_1400x1400.jpeg?t=1770765450"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "Fake, IA et bullshit",
+    "title": "S07E89 Fake, IA et bullshit 2/4 : Des pièges à cons aux boomertraps (Sylvain Tillon)",
+    "audio": "https://audio.ausha.co/brpdWuYxgWWn.mp3?t=1770581948",
+    "order": 2,
+    "guid": "e43acd629d8c96fb17b72e8123563dcea99cb085",
+    "image": "https://image.ausha.co/TDFITc9rHZ6gBLEyTh1zI4NX3VgzIReqra1fjnOJ_1400x1400.jpeg?t=1770765434"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "Fake, IA et bullshit",
+    "title": "S07E88 Fake, IA et bullshit 1/4 : Les tendances et les classiques (Sylvain Tillon)",
+    "audio": "https://audio.ausha.co/B1GKECOqeGL0.mp3?t=1770581915",
+    "order": 1,
+    "guid": "dce2814940c52d56db6a1d65a4831175404194fc",
+    "image": "https://image.ausha.co/r17m7JaeIw0pboN6ZZhy49ovYZ5WvZE57l9H5ktU_1400x1400.jpeg?t=1770765398"
+  },
+  {
+    "episodeId": "6",
+    "playlistId": "La Planète bleue",
+    "title": "S07E87 La Planète bleue 6/6 : Je te dirai les mots bleus... des civilisations",
+    "audio": "https://audio.ausha.co/ykpLruzNKgZb.mp3?t=1769774444",
+    "order": 6,
+    "guid": "37271cce45b558486ba5e3b2ddc70aefb5fe6d6c",
+    "image": "https://image.ausha.co/DbYIMmGZLER6cmZx2ol7i5Xd6QSETZEjZESHuY2a_1400x1400.jpeg?t=1769775240"
+  },
+  {
+    "episodeId": "5",
+    "playlistId": "La Planète bleue",
+    "title": "S07E86 La Schtroumpfe bleue 5/6 : Pourquoi les Schtroumpfs sont bleus ?",
+    "audio": "https://audio.ausha.co/bVP6wujmdm8o.mp3?t=1769774408",
+    "order": 5,
+    "guid": "6dd592aeb95fd4cc223a8b8eca4a6420a100cdcc",
+    "image": "https://image.ausha.co/L1GQy225qgy3iq33sVXbliVdtURdNydzMJ7x1FQD_1400x1400.jpeg?t=1769775972"
+  },
+  {
+    "episodeId": "4",
+    "playlistId": "La Planète bleue",
+    "title": "S07E85 La Planète bleue 4/6 : Du violet à l'ultraviolet",
+    "audio": "https://audio.ausha.co/bzZW3s1XJLxx.mp3?t=1769774390",
+    "order": 4,
+    "guid": "6666a4b8ffa0e34eb3e1fa5294a32d20ac585406",
+    "image": "https://image.ausha.co/MCrBc5h3hYaBckI9hghfpGQbvBY2kXu44LVEdbgh_1400x1400.jpeg?t=1769775034"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "La Planète bleue",
+    "title": "S07E84 La Planète bleue 3/6 : T'as d'beaux yeux bleus, tu sais ?",
+    "audio": "https://audio.ausha.co/oadvRtE5KrYM.mp3?t=1769774358",
+    "order": 3,
+    "guid": "3d12436a34b22cd9ba29e8629307cfe8654e506b",
+    "image": "https://image.ausha.co/bDVc5HdpWh13kOHw5d6AQMyqBt0xq240YAyG3Zxd_1400x1400.jpeg?t=1769774965"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "La Planète bleue",
+    "title": "S07E83 La Planète bleue 2/6 : Les animaux bleus",
+    "audio": "https://audio.ausha.co/B6epXfnewjZN.mp3?t=1769774323",
+    "order": 2,
+    "guid": "04e2cefaeb48a4c7b3161cd5b29ead0a90c566ac",
+    "image": "https://image.ausha.co/NFTmCeCnvS8H7csiX9DU1J3XUQb7OtXbcuWtMPD3_1400x1400.jpeg?t=1769774905"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "La Planète bleue",
+    "title": "S07E82 La Planète bleue 1/6 : une couleur rare... donc précieuse",
+    "audio": "https://audio.ausha.co/bPRYvumpnDWl.mp3?t=1769774284",
+    "order": 1,
+    "guid": "eac04dd5cefe08188ac6753007a93eb378b832c7",
+    "image": "https://image.ausha.co/SdqRCwnE4PzCI2zI8e7XwoSQ06LK2LOOuPVBld2f_1400x1400.jpeg?t=1769774829"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "Balade en basse-cour",
+    "title": "S07E81 Balade en basse-cour 3/3 : Petit poussin deviendra Poule (Rémi Dupouy)",
+    "audio": "https://audio.ausha.co/o9vxjf0E4L1z.mp3?t=1757240956",
+    "order": 3,
+    "guid": "9df343b4e9105bcff8196f80f85ad65ba5e4daa6",
+    "image": "https://image.ausha.co/irqVz5TLWW3Jaox0xgJ9NboqWuvqDDE6ZsVO4lx4_1400x1400.jpeg?t=1757242854"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "Balade en basse-cour",
+    "title": "S07E80 Balade en basse-cour 2/3 : C'est qui la patronne ? La Grue couronnée ! (Rémi Dupouy)",
+    "audio": "https://audio.ausha.co/b33AMtVlwqLb.mp3?t=1757240909",
+    "order": 2,
+    "guid": "26abe5a9a9a0b71b1765f986b8ffa0f8d7d3cea2",
+    "image": "https://image.ausha.co/rhwpXQJ2SA43VfYuvYDc5hvmECSISiCnDEFMXUhZ_1400x1400.jpeg?t=1757242948"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "Balade en basse-cour",
+    "title": "S07E79 Balade en basse-cour 1/3 : Nos ancêtres les (poules) Gauloises (Rémi Dupouy)",
+    "audio": "https://audio.ausha.co/b5eD2fPW6O4Q.mp3?t=1757240725",
+    "order": 1,
+    "guid": "be515be3a181246547c074dab665d78f21f06472",
+    "image": "https://image.ausha.co/goU00r8iEI7dmq0RXI20p1V2ygGbry5FYtHUkgch_1400x1400.jpeg?t=1757242905"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "Triple blues",
+    "title": "Triple blues : Le bad des gendarmes (EXTRAIT du podcast COMBATS)",
+    "audio": "https://audio.ausha.co/oZwA6cpWJrwy.mp3?t=1768686745",
+    "order": 3,
+    "guid": "489f6fa41e97651e6917cb0aa2a33fbfaa1f74c0",
+    "image": "https://image.ausha.co/v4rgLrFRPnwQj9LfqPom59GOZI53Xn03k3O3uhMV_1400x1400.jpeg?t=1768686858"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "Triple blues",
+    "title": "Triple blues : Le crash des agriculteurs (EXTRAIT du podcast COMBATS)",
+    "audio": "https://audio.ausha.co/oadvRtG23Q2K.mp3?t=1768686606",
+    "order": 2,
+    "guid": "b9a6be9c985346e5666c4385c3b11881cf0ca16e",
+    "image": "https://image.ausha.co/d6tFmdnpYxWZZwlUUvb6Z7gRvJ8AvZIN6KZWQG3I_1400x1400.jpeg?t=1768686726"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "Triple blues",
+    "title": "Triple blues : Le burn-out des vétérinaires (EXTRAIT du podcast COMBATS)",
+    "audio": "https://audio.ausha.co/oRjOKsRQ4q4K.mp3?t=1768686200",
+    "order": 1,
+    "guid": "055cad5303608f04ccb760d2d5a7184649c4a8c3",
+    "image": "https://image.ausha.co/no8eOi6G7HPJ54B75SqtQHoPWHcTkBcTVpaE5Awq_1400x1400.jpeg?t=1768686584"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "HORS-SÉRIE Vincent Verzat (Le VIVANT qui se défend)",
+    "title": "HORS-SÉRIE Vincent Verzat (Le VIVANT qui se défend) : Partager, c'est sympa !",
+    "audio": "https://audio.ausha.co/bjLNDugPGGm6.mp3?t=1767646246",
+    "order": 1,
+    "guid": "8cba912d19419d0cc8142bd7dfa499d60d883611",
+    "image": "https://image.ausha.co/YVgbCGa6QnmmaAqkfwsrUnNteLAFrOFL540GalVZ_1400x1400.jpeg?t=1767647017"
+  },
+  {
+    "episodeId": "6",
+    "playlistId": "Allez les Verts !",
+    "title": "S07E78 Allez les Verts ! 6/6 : Le Quetzal (et autres verts célèbres...)",
+    "audio": "https://audio.ausha.co/B4eDJfp4MQnD.mp3?t=1768741361",
+    "order": 6,
+    "guid": "99eaea4d8ab1c0ad93a84a79ec604475485ad0db",
+    "image": "https://image.ausha.co/w6gcHElTirRiQxTJECiE4NaKon3eyzQspBeNmU9z_1400x1400.jpeg?t=1767784420"
+  },
+  {
+    "episodeId": "5",
+    "playlistId": "Allez les Verts !",
+    "title": "S07E77 Allez les Verts ! 5/6 : Bleu = vert − jaune",
+    "audio": "https://audio.ausha.co/oZwA6cZKwkRE.mp3?t=1768740277",
+    "order": 5,
+    "guid": "3763e9966bd9ff3c51cbd7e9e06ed522a7d45d2c",
+    "image": "https://image.ausha.co/ZNgTpi6O0ZHlmlhq5BEJcUj08dNK03PZ6hmmDHmw_1400x1400.jpeg?t=1767784416"
+  },
+  {
+    "episodeId": "4",
+    "playlistId": "Allez les Verts !",
+    "title": "S07E76 Allez les Verts ! 4/6 : Le lichen, une fascinante coloc ancestrale",
+    "audio": "https://audio.ausha.co/b73DRtONNj71.mp3?t=1767777306",
+    "order": 4,
+    "guid": "8de44650a1d9aeceb2ee4e1f862f925e4dda4d9d",
+    "image": "https://image.ausha.co/59nl6w2npYtX50LMlxmftTsudzOmqacRObKuscP2_1400x1400.jpeg?t=1767784413"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "Allez les Verts !",
+    "title": "S07E75 Et le Vivant se mit au vert 3/6 : Les feuilles, des mini-centrales d'énergie",
+    "audio": "https://audio.ausha.co/yEVzLfEkNn1k.mp3?t=1767777272",
+    "order": 3,
+    "guid": "ccf6bf98b75431dd04925283e22652185429cf69",
+    "image": "https://image.ausha.co/sNiDPzHTPSYt1peajVczi0q8uZRykXPTycnlaa4t_1400x1400.jpeg?t=1767784413"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "Allez les Verts !",
+    "title": "S07E74 Et le Vivant se mit au vert 2/6 : La \"grande oxygénation\" de la Terre",
+    "audio": "https://audio.ausha.co/b33AMtjMagjL.mp3?t=1767777135",
+    "order": 2,
+    "guid": "f65de86aebe52265a80fe4c8e9644879f95e0069",
+    "image": "https://image.ausha.co/fSndC6un5MEAuYmnQ9S4ZqrJcNiGBsmtoapZPRia_1400x1400.jpeg?t=1767784410"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "Allez les Verts !",
+    "title": "S07E73 Et le Vivant se mit au vert 1/6 : La photosynthèse fut !",
+    "audio": "https://audio.ausha.co/Bx4g0uwQJEZO.mp3?t=1767776978",
+    "order": 1,
+    "guid": "3d59d7e0544edf321ffbe2b97e39cecbbf907952",
+    "image": "https://image.ausha.co/40hzf38dvsZuTSf6cUGAOgBbxn8CoDlemI4kzG3V_1400x1400.jpeg?t=1767784407"
   }
 ]
