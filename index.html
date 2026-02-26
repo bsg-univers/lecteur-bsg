@@ -1450,7 +1450,7 @@ async function loadEpisodes(pid, encoded = false) {
             <div class="playlist-header-container">
                 <h2>${cleanId}</h2>
                 <button class="btn-go-up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Remonter en haut">
-                    <i class="fas fa-arrow-up"></i>
+                    <i>↑</i>
                 </button>
             </div>
             ${hashtagsHtml} 
@@ -1471,8 +1471,7 @@ async function loadEpisodes(pid, encoded = false) {
         html += `
             <div class="episodes-header-row">
                 <h3>Épisodes</h3>
-                <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">
-                    🔗 Partager
+                <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">🔗
                 </button>
             </div>` +
             episodes.map((e, i) => `
