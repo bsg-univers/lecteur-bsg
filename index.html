@@ -186,8 +186,25 @@ header {
 /*       CONTENU         */
 /* ===================== */
 
+/* Le conteneur qui contient le titre et le bouton plongeur */
+.season-title-container {
+    display: flex;
+    align-items: center;      /* Aligne verticalement au centre */
+    justify-content: flex-start; /* Aligne à gauche */
+    gap: 15px;                /* Espace entre le texte et le bouton */
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* On enlève les marges par défaut du H2 qui pourraient décaler la ligne */
+.season-title-container h2 {
+    margin: 0 !important; 
+    padding: 0 !important;
+    font-size: 1.4rem;
+}
+
 .btn-explore-themes {
-    width: 42px; /* Un peu plus grand que les boutons de partage */
+    width: 42px;
     height: 42px;
     border-radius: 50%;
     background: rgba(210, 179, 71, 0.1);
@@ -198,17 +215,12 @@ header {
     justify-content: center;
     cursor: pointer;
     font-size: 1.2rem;
-    transition: all 0.3s ease;
     flex-shrink: 0;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    margin-right: 14.5px;
-    margin-top: 12px;
-    transition: all .3s ease;
+    /* Retrait du margin-top qui le poussait vers le bas */
+    margin: 0; 
     animation: pulse-border 12s infinite ease-in-out;
-        /* Supprime le rectangle bleu sur mobile */
     -webkit-tap-highlight-color: transparent;
-      
-    /* Supprime le contour de sélection au focus (clavier/accessibilité) */
     outline: none;
 }
 
@@ -245,7 +257,7 @@ header {
     flex: 1;
     font-weight: bold;
     font-size: 1.05rem;
-    color: var(--primary);
+    color: white;
     /* On garde la sécurité de coupe si vraiment c'est trop long */
     display: -webkit-box;
     -webkit-line-clamp: 2;
