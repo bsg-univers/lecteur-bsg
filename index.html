@@ -1269,40 +1269,46 @@ function initHashtagMarquees(root = document) {
 }
     
 function filterByHashtag(event, tag) {
-    event.stopPropagation(); // Empêche d'ouvrir la playlist en cliquant sur le tag
+    if (event) event.stopPropagation(); // Empêche d'ouvrir la playlist si on clique sur un tag
     
-    const dock = document.querySelector('.nav-dock');
-    if (dock) dock.classList.remove('is-static');
-    
-    // On désactive la sélection visuelle des saisons
-    document.querySelectorAll('.season-item').forEach(btn => {
-        btn.style.borderColor = "rgba(243,195,0,0.2)";
-        btn.style.background = "rgba(255,255,255,0.03)";
-    });
-
     const div = document.getElementById('episodes_list');
-    
-    // Filtrage dans TOUTES les playlists (toutes saisons confondues)
+    // On change le titre pour indiquer le filtre actif
+    div.innerHTML = `
+        <div class="season-title-container">
+            <h2>#${tag}</h2>
+            <div class="btn-explore-themes" onclick="showPlaylistsBySeason(allPlaylists[0].season)" title="Retour">
+                ✕
+            </div>
+        </div>
+    `;
+
+    // On filtre les playlists qui contiennent ce hashtag
     const filtered = allPlaylists.filter(p => p.hashtags && p.hashtags.includes(tag));
 
-    let html = `
-    <div class="filter-header">
-        <span style="color:var(--primary); font-weight:bold;"># Thème : ${tag}</span>
-        <button class="btn-close-filter" onclick="showPlaylistsBySeason(allPlaylists[0].season)">X</button>
-    </div>`;
-
-    html += filtered.map(p => {
+    div.innerHTML += filtered.map(p => {
         const encoded = btoa(unescape(encodeURIComponent(p.id)));
+
+        // On prépare les hashtags pour la ligne du bas
+        const hashtagsHtml = p.hashtags
+            ? `<div class="playlist-tags-area">
+                ${p.hashtags.split(' ').filter(t => t.trim() !== "").map(t =>
+                    `<span class="tag-mini ${t === tag ? 'active-tag' : ''}" onclick="filterByHashtag(event, '${t}')">#${t}</span>`
+                ).join('')}
+               </div>`
+            : "";
+
         return `
-        <div class="episode-item" onclick="loadEpisodes('${encoded}', true)" style="display:block; margin-bottom:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span class="episode-title"><strong>${p.name}</strong> <small style="opacity:0.5; font-size:0.7em;">(${p.season})</small></span>
-                <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
-            </div>
-        </div>`;
+            <div class="playlist-banner" onclick="loadEpisodes('${encoded}', true)">
+                <div class="playlist-top-row">
+                    <img src="${p.image || ''}" class="playlist-thumb" alt="thumbnail">
+                    <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                    <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+                </div>
+                
+                ${hashtagsHtml}
+            </div>`;
     }).join('');
 
-    div.innerHTML = html;
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
     
