@@ -694,6 +694,41 @@ h2,h3{
 /* ===================== */
 /*      ÉPISODES         */
 /* ===================== */
+
+/* Container pour le titre Épisodes et son bouton partage */
+.episodes-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.episodes-header-row h3 {
+    margin: 0 !important;
+}
+
+/* Style du bouton retour en haut à côté du titre principal */
+.btn-go-up {
+    background: rgba(210, 179, 71, 0.1);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-go-up:hover {
+    background: var(--primary);
+    color: #000;
+}
+        
 .episode-item{
   margin-bottom:10px;
   padding:16px 20px;
@@ -1402,9 +1437,7 @@ async function loadEpisodes(pid, encoded = false) {
 
         // 3. Construction du HTML
         const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
-
-        // --- CORRECTION DES HASHTAGS ICI ---
-        // On utilise la nouvelle structure pour que le style s'applique
+        
         const hashtagsHtml = (currentPl && currentPl.hashtags) 
             ? `<div class="playlist-tags-area">
                 ${currentPl.hashtags.split(' ').filter(t => t.trim() !== "").map(tag => 
@@ -1412,15 +1445,17 @@ async function loadEpisodes(pid, encoded = false) {
                 ).join('')}
                </div>` 
             : "";
-
+        
         let html = `
             <div class="playlist-header-container">
                 <h2>${cleanId}</h2>
-                <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">🔗</button>
+                <button class="btn-go-up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Remonter en haut">
+                    <i class="fas fa-arrow-up"></i>
+                </button>
             </div>
             ${hashtagsHtml} 
         `;
-
+        
         // Affichage de la description
         if (playlistDesc && playlistDesc.trim() !== "") {
             html += `
@@ -1431,9 +1466,15 @@ async function loadEpisodes(pid, encoded = false) {
                 <span class="read-more-hint">Lire la suite...</span>
             </div>`;
         }
-
-        // Liste des épisodes
-        html += `<h3>Épisodes</h3>` +
+        
+        // LIGNE ÉPISODES : On déplace le bouton Partage ici
+        html += `
+            <div class="episodes-header-row">
+                <h3>Épisodes</h3>
+                <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">
+                    🔗 Partager
+                </button>
+            </div>` +
             episodes.map((e, i) => `
                 <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
                     <span class="episode-title">${e.title}</span>
