@@ -228,6 +228,22 @@ header {
     text-overflow: ellipsis;
 }
 
+#hashtag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Plus d'espace entre les tags dans la bibliothèque */
+    justify-content: center; /* Centre les tags pour un look "nuage" */
+    padding: 10px 0;
+}
+
+/* On s'assure que les tags réagissent bien au survol dans la bibliothèque */
+#hashtag-cloud .tag-mini:hover {
+    background: var(--primary);
+    color: #000;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
 /* Le conteneur global de la playlist */
 .playlist-banner {
     display: flex;
@@ -1244,16 +1260,20 @@ function toggleHashtagLibrary() {
     let allTags = [];
     allPlaylists.forEach(p => {
         if (p.hashtags) {
-            const tags = p.hashtags.split(' ');
+            // On sépare par espace et on nettoie les tags vides
+            const tags = p.hashtags.split(' ').filter(t => t.trim() !== "");
             allTags = allTags.concat(tags);
         }
     });
 
-    // Nettoyage : on enlève les espaces vides, on dédoublonne et on trie
-    const uniqueTags = [...new Set(allTags.filter(t => t.trim() !== ""))].sort((a, b) => a.localeCompare(b));
+    // Nettoyage : dédoublonnage et tri alphabétique
+    const uniqueTags = [...new Set(allTags)].sort((a, b) => a.localeCompare(b));
 
+    // Utilisation de la classe .tag-mini pour la cohérence visuelle
     cloud.innerHTML = uniqueTags.map(tag => `
-        <span class="hashtag-badge" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>
+        <span class="tag-mini" style="cursor:pointer; padding: 5px 12px; font-size: 0.85rem;" onclick="filterByHashtag(event, '${tag}')">
+            #${tag}
+        </span>
     `).join('');
 
     library.style.display = 'block';
