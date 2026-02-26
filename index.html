@@ -186,25 +186,8 @@ header {
 /*       CONTENU         */
 /* ===================== */
 
-/* Le conteneur qui contient le titre et le bouton plongeur */
-.season-title-container {
-    display: flex;
-    align-items: center;      /* Aligne verticalement au centre */
-    justify-content: flex-start; /* Aligne à gauche */
-    gap: 15px;                /* Espace entre le texte et le bouton */
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-/* On enlève les marges par défaut du H2 qui pourraient décaler la ligne */
-.season-title-container h2 {
-    margin: 0 !important; 
-    padding: 0 !important;
-    font-size: 1.4rem;
-}
-
 .btn-explore-themes {
-    width: 42px;
+    width: 42px; /* Un peu plus grand que les boutons de partage */
     height: 42px;
     border-radius: 50%;
     background: rgba(210, 179, 71, 0.1);
@@ -215,13 +198,34 @@ header {
     justify-content: center;
     cursor: pointer;
     font-size: 1.2rem;
+    transition: all 0.3s ease;
     flex-shrink: 0;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    /* Retrait du margin-top qui le poussait vers le bas */
-    margin: 0; 
+    margin-right: 14.5px;
+    margin-top: 12px;
+    transition: all .3s ease;
     animation: pulse-border 12s infinite ease-in-out;
+        /* Supprime le rectangle bleu sur mobile */
     -webkit-tap-highlight-color: transparent;
+      
+    /* Supprime le contour de sélection au focus (clavier/accessibilité) */
     outline: none;
+}
+
+/* Conteneur pour aligner Titre + Bouton */
+.season-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Changez flex-start par space-between */
+    margin: 0 0 18px;
+    width: 100%;
+}
+/* On ajuste le H2 pour qu'il ne prenne pas toute la place et qu'il n'ait plus sa propre marge */
+.season-title-container h2 {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Le conteneur global de la playlist */
