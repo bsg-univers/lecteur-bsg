@@ -1491,7 +1491,7 @@ function showToast() {
 // --- ÉPISODES ---
 
 // --- TA FONCTION loadEpisodes MISE À JOUR ---
-// 2. FONCTION CHARGEMENT ÉPISODES (VERSION CORRIGÉE)
+// --- 2. LA FONCTION DE CHARGEMENT CORRIGÉE ---
 async function loadEpisodes(pid, encoded = false) {
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.add('is-static');
@@ -1501,7 +1501,7 @@ async function loadEpisodes(pid, encoded = false) {
     div.innerHTML = '<div class="loader">Plongée...</div>';
 
     try {
-        // Récupération de la playlist
+        // Récupération de la description
         const currentPl = (window.allPlaylists || []).find(p => String(p.id).trim() === cleanId.trim());
         const playlistDesc = currentPl ? currentPl.description : "";
 
@@ -1509,12 +1509,12 @@ async function loadEpisodes(pid, encoded = false) {
         const res = await fetch(`data/episodes.json?v=${new Date().getTime()}`);
         const allEpisodes = await res.json();
 
-        // Filtrage
-        const filteredEpisodes = allEpisodes
+        // Filtrage des épisodes de cette playlist
+        const episodesToShow = allEpisodes
             .filter(e => String(e.playlistId).trim() === cleanId.trim())
             .sort((a, b) => (a.order || 0) - (b.order || 0));
 
-        if (!filteredEpisodes.length) {
+        if (!episodesToShow.length) {
             div.innerHTML = '<p>Aucun épisode trouvé.</p>';
             return;
         }
@@ -1523,7 +1523,7 @@ async function loadEpisodes(pid, encoded = false) {
         const isFav = getStoredList('bsg_favs').includes(cleanId);
         const isLater = getStoredList('bsg_later').includes(cleanId);
 
-        // Construction du HTML
+        // Construction du HTML sans erreurs de syntaxe
         let html = `
             <div class="playlist-header-container">
                 <h2>${cleanId}</h2>
@@ -1564,27 +1564,31 @@ async function loadEpisodes(pid, encoded = false) {
             </div>
         `;
 
-        // LISTE DES ÉPISODES
-        html += filteredEpisodes.map((e, i) => `
-            <div class="episode-item list-item-ep" id="ep-${i}" onclick="playEpisodeFromList(${i})">
+        // Génération de la liste des épisodes
+        const episodesHtml = episodesToShow.map((e, i) => `
+            <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
                 <span class="episode-title">${e.title}</span>
                 <span style="color:var(--primary); font-size:0.8em;">▶</span>
             </div>
         `).join('');
 
-        div.innerHTML = html;
+        div.innerHTML = html + episodesHtml;
         
-        // On rend les épisodes accessibles au lecteur global
-        window.currentEpisodes = filteredEpisodes;
+        // On met à jour les épisodes pour le lecteur global
+        window.episodes = episodesToShow; 
         
-        // Scroll automatique vers le haut de la liste
+        // Lance le premier épisode
+        play(0);
+
+        // Scroll automatique
         setTimeout(() => {
-            div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const target = document.querySelector('.playlist-header-container');
+            if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
 
     } catch (err) {
-        console.error("Erreur détaillée:", err);
-        div.innerHTML = `<p>Erreur de chargement. Vérifiez votre console (F12).</p>`;
+        console.error("Détails de l'erreur:", err);
+        div.innerHTML = '<p>Erreur de chargement. Vérifiez la console.</p>';
     }
 }
 
