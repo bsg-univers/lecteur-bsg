@@ -1408,19 +1408,19 @@ function filterByHashtag(event, tag) {
 async function sharePlaylist(e, encodedPid) {
     if (e) e.stopPropagation();
     
-    // 1. On récupère l'URL de base (sans les anciens paramètres)
+    // On décode l'ID pour avoir le nom en clair (ex: "Les Baleines")
+    const pid = decodeURIComponent(escape(atob(encodedPid)));
+    
+    // On construit l'URL proprement
     const url = new URL(window.location.origin + window.location.pathname);
     
-    // 2. On ajoute l'ID encodé de la playlist
-    // Note : On utilise 'playlistId' car c'est ce que votre script cherche au démarrage
-    url.searchParams.set('playlistId', encodedPid); 
-    
+    // IMPORTANT : On utilise le nom en clair 'pid' comme dans votre version originale
+    url.searchParams.set('playlistId', pid); 
     const shareUrl = url.toString();
-    const pidDecoded = decodeURIComponent(escape(atob(encodedPid)));
 
     const shareData = {
         title: 'Baleine sous gravillon',
-        text: `Découvrez cette série : ${pidDecoded}`,
+        text: `Écoutez cette série : ${pid}`,
         url: shareUrl
     };
 
@@ -1432,8 +1432,9 @@ async function sharePlaylist(e, encodedPid) {
             showToast("Lien de la série copié !");
         }
     } catch (err) {
+        // En cas d'erreur ou d'annulation sur mobile, on copie en secours
+        await navigator.clipboard.writeText(shareUrl);
         if (err.name !== 'AbortError') {
-            await navigator.clipboard.writeText(shareUrl);
             showToast("Lien copié dans le presse-papier");
         }
     }
