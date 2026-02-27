@@ -1486,31 +1486,45 @@ function toggleSave(listType, playlistId, btn) {
 
 function showSavedList(listType) {
     const key = 'bsg_' + listType;
-    const savedIds = JSON.parse(localStorage.getItem(key));
+    const savedIds = JSON.parse(localStorage.getItem(key) || "[]");
     const div = document.getElementById('episodes_list');
     const title = listType === 'favorites' ? 'Mes Favoris ❤️' : 'À regarder plus tard 🕒';
     
-    // On réutilise la structure de filtrage
+    // Entête de la liste avec bouton retour
     div.innerHTML = `
         <div class="season-title-container">
             <h2 id="view-title">${title}</h2>
-            <div class="btn-explore-themes" onclick="showPlaylistsBySeason(allPlaylists[0].season)" title="Retour">
-                ✕
-            </div>
+            <div class="btn-explore-themes" onclick="loadPlaylists()" title="Retour">✕</div>
         </div>
     `;
 
-    const filtered = allPlaylists.filter(p => savedIds.includes(p.id));
+    // On cherche les objets playlist correspondants aux IDs sauvés
+    const filtered = allPlaylists.filter(p => savedIds.includes(String(p.id)));
 
     if (filtered.length === 0) {
-        div.innerHTML += `<p style="text-align:center; padding:20px; opacity:0.6;">Votre liste est vide pour le moment.</p>`;
+        div.innerHTML += `<p style="text-align:center; padding:40px; opacity:0.5;">Votre liste est vide.</p>`;
         return;
     }
 
-    div.innerHTML += filtered.map(p => {
+    // Affichage des cartes
+    filtered.forEach(p => {
         const encoded = btoa(unescape(encodeURIComponent(p.id)));
-        return renderPlaylistCard(p, encoded);
-    }).join('');
+        div.innerHTML += `
+            <div class="playlist-banner" onclick="loadEpisodes('${encoded}', true)">
+                <div class="playlist-top-row">
+                    <img src="${p.image || ''}" class="playlist-thumb">
+                    <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                    <div style="display:flex; gap:5px;">
+                         <button class="btn-share" onclick="event.stopPropagation(); toggleSave('${listType}', '${p.id}', this)">
+                            ${listType === 'favorites' ? '❤️' : '🕒'}
+                         </button>
+                         <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+                    </div>
+                </div>
+            </div>`;
+    });
+    
+    window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 // Fonction utilitaire pour générer le HTML d'une carte (pour éviter la répétition)
