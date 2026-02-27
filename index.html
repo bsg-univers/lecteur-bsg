@@ -1408,30 +1408,30 @@ function filterByHashtag(event, tag) {
 async function sharePlaylist(e, encodedPid) {
     if (e) e.stopPropagation();
     
-    // Décodage pour reconstruire l'URL propre
-    const pid = decodeURIComponent(escape(atob(encodedPid)));
+    // 1. On récupère l'URL de base (sans les anciens paramètres)
     const url = new URL(window.location.origin + window.location.pathname);
-    url.searchParams.set('p', encodedPid); // On garde le paramètre 'p' pour la compatibilité
+    
+    // 2. On ajoute l'ID encodé de la playlist
+    // Note : On utilise 'playlistId' car c'est ce que votre script cherche au démarrage
+    url.searchParams.set('playlistId', encodedPid); 
+    
     const shareUrl = url.toString();
+    const pidDecoded = decodeURIComponent(escape(atob(encodedPid)));
 
     const shareData = {
         title: 'Baleine sous gravillon',
-        text: `Découvrez cette série : ${pid}`,
+        text: `Découvrez cette série : ${pidDecoded}`,
         url: shareUrl
     };
 
     try {
-        // Tentative de partage natif (Mobile / Tablette)
         if (navigator.share) {
             await navigator.share(shareData);
         } else {
-            // Backup pour Ordinateur : Copie dans le presse-papier
             await navigator.clipboard.writeText(shareUrl);
             showToast("Lien de la série copié !");
         }
     } catch (err) {
-        // Si l'utilisateur annule le partage natif (AbortError), on ne fait rien.
-        // Sinon, on propose la copie manuelle en secours.
         if (err.name !== 'AbortError') {
             await navigator.clipboard.writeText(shareUrl);
             showToast("Lien copié dans le presse-papier");
