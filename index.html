@@ -1282,7 +1282,7 @@ function showPlaylistsBySeason(season) {
     // En-tête de la section
     div.innerHTML = `
         <div class="season-title-container">
-            <h2 id="view-title">Séries — ${season}</h2>
+            <h2 id="view-title">${season}</h2>
             <div style="display: flex; gap: 8px; align-items: center;">
                 <div class="btn-explore-themes" onclick="showSavedList('favorites')" title="Mes Favoris" 
                      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
@@ -1506,7 +1506,7 @@ function showSavedList(listType) {
     div.innerHTML = `
         <div class="season-title-container">
             <h2 id="view-title">${title}</h2>
-            <div class="btn-explore-themes" onclick="loadPlaylists()" title="Retour">✕</div>
+            <div class="btn-explore-themes" onclick="showPlaylistsBySeason(season)" title="Retour">✕</div>
         </div>
     `;
 
