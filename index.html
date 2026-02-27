@@ -1396,42 +1396,48 @@ function filterByHashtag(event, tag) {
     
 // --- PARTAGE NATIF + COPIE ---
 async function sharePlaylist(e, encodedPid) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
+    
+    // Décodage pour reconstruire l'URL propre
     const pid = decodeURIComponent(escape(atob(encodedPid)));
-    const url = new URL(location.origin + location.pathname);
-    url.searchParams.set('playlistId', pid);
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set('p', encodedPid); // On garde le paramètre 'p' pour la compatibilité
     const shareUrl = url.toString();
 
-    // Données à partager
     const shareData = {
         title: 'Baleine sous gravillon',
-        text: `Écoutez cette série : ${pid}`,
+        text: `Découvrez cette série : ${pid}`,
         url: shareUrl
     };
 
     try {
-        // On vérifie si le navigateur supporte le partage natif (Mobile)
+        // Tentative de partage natif (Mobile / Tablette)
         if (navigator.share) {
             await navigator.share(shareData);
         } else {
-            // Sinon (Ordinateur), on copie juste le lien
+            // Backup pour Ordinateur : Copie dans le presse-papier
             await navigator.clipboard.writeText(shareUrl);
-            showToast();
+            showToast("Lien de la série copié !");
         }
     } catch (err) {
-        // Si l'utilisateur annule le partage natif, on peut quand même copier le lien en secours
-        await navigator.clipboard.writeText(shareUrl);
-        // On n'affiche le toast que si ce n'est pas une simple annulation
+        // Si l'utilisateur annule le partage natif (AbortError), on ne fait rien.
+        // Sinon, on propose la copie manuelle en secours.
         if (err.name !== 'AbortError') {
-            showToast();
+            await navigator.clipboard.writeText(shareUrl);
+            showToast("Lien copié dans le presse-papier");
         }
     }
 }
 
-function showToast() {
+function showToast(message) {
     const toast = document.getElementById("toast");
+    // On met à jour le texte du toast avec le message reçu
+    toast.innerText = message;
     toast.className = "show";
-    setTimeout(() => toast.className = "", 3000);
+    
+    setTimeout(() => { 
+        toast.className = ""; 
+    }, 3000);
 }
 
 // --- GESTION DES LISTES LOCALES ---
@@ -1440,25 +1446,40 @@ function showToast() {
 if (!localStorage.getItem('bsg_favorites')) localStorage.setItem('bsg_favorites', JSON.stringify([]));
 if (!localStorage.getItem('bsg_later')) localStorage.setItem('bsg_later', JSON.stringify([]));
 
-function toggleSave(listType, playlistId) {
+function toggleSave(listType, playlistId, btn) {
     const key = 'bsg_' + listType;
-    let items = JSON.parse(localStorage.getItem(key));
+    let items = JSON.parse(localStorage.getItem(key) || "[]");
     const index = items.indexOf(playlistId);
+    let message = "";
 
     if (index > -1) {
-        items.splice(index, 1); // Retirer si déjà présent
+        // SUPPRESSION
+        items.splice(index, 1);
+        if (listType === 'favorites') {
+            btn.innerText = '♡';
+            message = "Retiré des favoris";
+        } else {
+            btn.innerText = '➕';
+            message = "Retiré de 'À regarder plus tard'";
+        }
     } else {
-        items.push(playlistId); // Ajouter
+        // AJOUT
+        items.push(playlistId);
+        if (listType === 'favorites') {
+            btn.innerText = '❤️';
+            message = "Ajouté aux favoris !";
+        } else {
+            btn.innerText = '🕒';
+            message = "Ajouté à 'À regarder plus tard'";
+        }
     }
 
     localStorage.setItem(key, JSON.stringify(items));
-    
-    // Feedback visuel (Toast)
-    const msg = index > -1 ? "Retiré de la liste" : "Ajouté à la liste !";
-    showToast(msg);
-    
-    // Si on est déjà en train de visualiser une liste, on rafraîchit l'affichage
-    if (document.getElementById('view-title').innerText.includes('Mes')) {
+    showToast(message);
+
+    // Si on est dans la vue "Liste", on rafraîchit pour masquer l'élément supprimé
+    const currentTitle = document.getElementById('view-title')?.innerText || "";
+    if (currentTitle.includes("Mes") || currentTitle.includes("Regarder")) {
         showSavedList(listType);
     }
 }
@@ -1498,8 +1519,16 @@ function renderPlaylistCard(p, encoded) {
         <div class="playlist-banner" onclick="loadEpisodes('${encoded}', true)">
             <div class="playlist-top-row">
                 <img src="${p.image || ''}" class="playlist-thumb" alt="thumbnail">
-                <span class="playlist-name-text"><strong>${p.name}</strong></span>
-                <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+                <div class="playlist-info" style="flex:1; margin-left:10px;">
+                    <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                </div>
+                <div style="display: flex; gap: 5px;">
+                    <button class="btn-share" style="background: rgba(255,255,255,0.1);" 
+                        onclick="event.stopPropagation(); toggleSave('favorites', '${p.id}', this)">
+                        ${JSON.parse(localStorage.getItem('bsg_favorites')).includes(p.id) ? '❤️' : '♡'}
+                    </button>
+                    <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+                </div>
             </div>
         </div>`;
 }
