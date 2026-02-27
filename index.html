@@ -1163,31 +1163,37 @@ function toggleStorage(key, id) {
     localStorage.setItem(key, JSON.stringify(list));
 }
 
-// CETTE FONCTION EST LA CLÉ : elle utilise votre logique d'affichage existante
+// Cette fonction va afficher vos favoris dans la grille principale
 function displaySavedList(key, title) {
     const savedIds = getStoredList(key);
-    const div = document.getElementById('playlists_list');
-    const titleSection = document.getElementById('main-title');
+    const container = document.getElementById('playlists_list');
+    const titleElement = document.getElementById('main-title');
     
-    if (titleSection) titleSection.innerText = title;
+    if (titleElement) titleElement.innerText = title;
+    
+    // Fermer la vue épisode si elle est ouverte
+    document.getElementById('episodes_list').classList.remove('active');
     
     if (savedIds.length === 0) {
-        div.innerHTML = '<p style="text-align:center; color:gray; padding:20px;">Votre liste est vide.</p>';
+        container.innerHTML = '<p style="padding:20px; color:gray;">Votre liste est vide.</p>';
         return;
     }
 
-    // On filtre allPlaylists selon les IDs sauvegardés
+    // On filtre allPlaylists (votre variable globale chargée au démarrage)
     const filtered = allPlaylists.filter(p => savedIds.includes(String(p.id).trim()));
     
-    // On génère le HTML exactement comme le fait votre fonction renderSaison
-    div.innerHTML = filtered.map(p => `
-        <div class="playlist-item" onclick="loadEpisodes('${btoa(unescape(encodeURIComponent(p.id)))}', true)">
-            <img src="${p.image || 'media/default-cover.png'}" alt="${p.name}">
-            <div class="playlist-item-info">
-                <div class="playlist-item-title">${p.name}</div>
+    // On génère les cartes (format exact de votre grille)
+    container.innerHTML = filtered.map(p => {
+        const pidEncoded = btoa(unescape(encodeURIComponent(p.id)));
+        return `
+            <div class="playlist-item" onclick="loadEpisodes('${pidEncoded}', true)">
+                <img src="${p.image || 'media/logo-BSG.png'}" alt="${p.name}">
+                <div class="playlist-item-info">
+                    <div class="playlist-item-title">${p.name}</div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
     
 /* --- Play / Pause --- */
@@ -1504,16 +1510,17 @@ async function loadEpisodes(pid, encoded = false) {
     
     const cleanId = encoded ? decodeURIComponent(escape(atob(pid))) : pid;
     const div = document.getElementById('episodes_list');
+    div.classList.add('active'); // On affiche la section
     div.innerHTML = '<div class="loader">Plongée...</div>';
 
     try {
-        const currentPl = (allPlaylists || []).find(p => String(p.id).trim() === cleanId.trim());
+        const currentPl = (window.allPlaylists || []).find(p => String(p.id).trim() === cleanId.trim());
         const playlistDesc = currentPl ? currentPl.description : "";
 
         const res = await fetch(`data/episodes.json?v=${new Date().getTime()}`);
         const allEpisodes = await res.json();
 
-        // On remplit la variable globale 'episodes' que votre fonction play() utilise
+        // Variable globale 'episodes' pour votre fonction play()
         episodes = allEpisodes
             .filter(e => String(e.playlistId).trim() === cleanId.trim())
             .sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -1539,8 +1546,7 @@ async function loadEpisodes(pid, encoded = false) {
         `;
 
         if (playlistDesc) {
-            html += `
-            <div class="playlist-description-container" onclick="this.classList.toggle('expanded')">
+            html += `<div class="playlist-description-container" onclick="this.classList.toggle('expanded')">
                 <div class="playlist-description-content">${playlistDesc}</div>
                 <span class="read-more-hint">Lire la suite...</span>
             </div>`;
@@ -1551,12 +1557,12 @@ async function loadEpisodes(pid, encoded = false) {
                 <h3>Épisodes</h3>
                 <div class="playlist-actions">
                     <button class="btn-share ${isFav ? 'active' : ''}" 
-                            onclick="toggleStorage('bsg_favs', '${cleanId.replace(/'/g, "\\'")}'); this.classList.toggle('active'); this.innerText = this.classList.contains('active') ? '⭐' : '☆';" 
+                            onclick="toggleStorage('bsg_favs', '${cleanId.replace(/'/g, "\\'")}'); this.classList.toggle('active'); this.innerText = this.classList.contains('active') ? '⭐' : '☆'; event.stopPropagation();" 
                             title="Favoris">
                         ${isFav ? '⭐' : '☆'}
                     </button>
                     <button class="btn-share ${isLater ? 'active' : ''}" 
-                            onclick="toggleStorage('bsg_later', '${cleanId.replace(/'/g, "\\'")}'); this.classList.toggle('active');" 
+                            onclick="toggleStorage('bsg_later', '${cleanId.replace(/'/g, "\\'")}'); this.classList.toggle('active'); event.stopPropagation();" 
                             title="Plus tard">
                         ⏳
                     </button>
@@ -1575,16 +1581,11 @@ async function loadEpisodes(pid, encoded = false) {
         `).join('');
 
         div.innerHTML = html;
-
-        // Lancement automatique et scroll
-        play(0);
-        setTimeout(() => {
-            div.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        play(0); // Lance le premier épisode
 
     } catch (err) {
-        console.error("Erreur:", err);
-        div.innerHTML = '<p>Erreur de chargement des épisodes.</p>';
+        console.error(err);
+        div.innerHTML = '<p>Erreur de chargement.</p>';
     }
 }
 
