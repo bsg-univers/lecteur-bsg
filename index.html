@@ -1275,9 +1275,17 @@ function showPlaylistsBySeason(season) {
     // En-tête de la section
     div.innerHTML = `
         <div class="season-title-container">
-            <h2>Séries — ${season}</h2>
-            <div class="btn-explore-themes" onclick="toggleHashtagLibrary()" title="Explorer par thématiques">
-                🤿
+            <h2 id="view-title">Séries — ${season}</h2>
+            <div style="display: flex; gap: 8px;">
+                <div class="btn-explore-themes" onclick="showSavedList('favorites')" title="Mes Favoris" style="animation: none; background: rgba(255, 50, 50, 0.1);">
+                    ❤️
+                </div>
+                <div class="btn-explore-themes" onclick="showSavedList('later')" title="À regarder plus tard" style="animation: none; background: rgba(50, 150, 255, 0.1);">
+                    🕒
+                </div>
+                <div class="btn-explore-themes" onclick="toggleHashtagLibrary()" title="Explorer par thématiques">
+                    🤿
+                </div>
             </div>
         </div>
         <div id="hashtag-library" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(210, 179, 71, 0.1);">
@@ -1426,13 +1434,83 @@ function showToast() {
     setTimeout(() => toast.className = "", 3000);
 }
 
-// --- ÉPISODES ---
+// --- GESTION DES LISTES LOCALES ---
+
+// Initialisation des données si elles n'existent pas
+if (!localStorage.getItem('bsg_favorites')) localStorage.setItem('bsg_favorites', JSON.stringify([]));
+if (!localStorage.getItem('bsg_later')) localStorage.setItem('bsg_later', JSON.stringify([]));
+
+function toggleSave(listType, playlistId) {
+    const key = 'bsg_' + listType;
+    let items = JSON.parse(localStorage.getItem(key));
+    const index = items.indexOf(playlistId);
+
+    if (index > -1) {
+        items.splice(index, 1); // Retirer si déjà présent
+    } else {
+        items.push(playlistId); // Ajouter
+    }
+
+    localStorage.setItem(key, JSON.stringify(items));
+    
+    // Feedback visuel (Toast)
+    const msg = index > -1 ? "Retiré de la liste" : "Ajouté à la liste !";
+    showToast(msg);
+    
+    // Si on est déjà en train de visualiser une liste, on rafraîchit l'affichage
+    if (document.getElementById('view-title').innerText.includes('Mes')) {
+        showSavedList(listType);
+    }
+}
+
+function showSavedList(listType) {
+    const key = 'bsg_' + listType;
+    const savedIds = JSON.parse(localStorage.getItem(key));
+    const div = document.getElementById('episodes_list');
+    const title = listType === 'favorites' ? 'Mes Favoris ❤️' : 'À regarder plus tard 🕒';
+    
+    // On réutilise la structure de filtrage
+    div.innerHTML = `
+        <div class="season-title-container">
+            <h2 id="view-title">${title}</h2>
+            <div class="btn-explore-themes" onclick="showPlaylistsBySeason(allPlaylists[0].season)" title="Retour">
+                ✕
+            </div>
+        </div>
+    `;
+
+    const filtered = allPlaylists.filter(p => savedIds.includes(p.id));
+
+    if (filtered.length === 0) {
+        div.innerHTML += `<p style="text-align:center; padding:20px; opacity:0.6;">Votre liste est vide pour le moment.</p>`;
+        return;
+    }
+
+    div.innerHTML += filtered.map(p => {
+        const encoded = btoa(unescape(encodeURIComponent(p.id)));
+        return renderPlaylistCard(p, encoded);
+    }).join('');
+}
+
+// Fonction utilitaire pour générer le HTML d'une carte (pour éviter la répétition)
+function renderPlaylistCard(p, encoded) {
+    return `
+        <div class="playlist-banner" onclick="loadEpisodes('${encoded}', true)">
+            <div class="playlist-top-row">
+                <img src="${p.image || ''}" class="playlist-thumb" alt="thumbnail">
+                <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+            </div>
+        </div>`;
+}
+
+// --- FONCTION COMPLÈTE : CHARGEMENT DES ÉPISODES AVEC LISTES PERSO ---
 async function loadEpisodes(pid, encoded = false) {
-    // Le dock ne doit plus coller au scroll
+    // 1. Gestion de l'affichage du dock
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.add('is-static');
     
-    // Décodage de l'ID
+    // 2. Décodage de l'ID de la playlist
     const cleanId = encoded 
         ? decodeURIComponent(escape(atob(pid))) 
         : pid;
@@ -1441,27 +1519,33 @@ async function loadEpisodes(pid, encoded = false) {
     div.innerHTML = '<div class="loader">Plongée...</div>';
 
     try {
-        // 1. Récupérer la playlist dans la mémoire
+        // 3. Récupération des données de la playlist et des listes locales
         const currentPl = allPlaylists.find(p => String(p.id).trim() === cleanId.trim());
         const playlistDesc = currentPl ? currentPl.description : "";
+        
+        // Lecture du localStorage pour l'état des boutons
+        const savedFavs = JSON.parse(localStorage.getItem('bsg_favorites') || "[]");
+        const savedLater = JSON.parse(localStorage.getItem('bsg_later') || "[]");
+        const isFav = savedFavs.includes(cleanId);
+        const isLater = savedLater.includes(cleanId);
 
-        // 2. Charger les épisodes
+        // 4. Charger les épisodes depuis le JSON
         const res = await fetch(`data/episodes.json?v=${new Date().getTime()}`);
         const allEpisodes = await res.json();
 
-        // Filtrer et trier
+        // Filtrer et trier les épisodes de cette playlist
         episodes = allEpisodes
             .filter(e => String(e.playlistId).trim() === cleanId.trim())
             .sort((a, b) => (a.order || 0) - (b.order || 0));
 
         if (!episodes.length) {
-            div.innerHTML = '<p>Aucun épisode trouvé.</p>';
+            div.innerHTML = '<p style="text-align:center; padding:20px;">Aucun épisode trouvé.</p>';
             return;
         }
 
-        // 3. Construction du HTML
         const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
         
+        // 5. Construction des Hashtags
         const hashtagsHtml = (currentPl && currentPl.hashtags) 
             ? `<div class="playlist-tags-area">
                 ${currentPl.hashtags.split(' ').filter(t => t.trim() !== "").map(tag => 
@@ -1470,6 +1554,7 @@ async function loadEpisodes(pid, encoded = false) {
                </div>` 
             : "";
         
+        // 6. Construction du HTML de l'en-tête
         let html = `
             <div class="playlist-header-container">
                 <h2>${cleanId}</h2>
@@ -1482,7 +1567,7 @@ async function loadEpisodes(pid, encoded = false) {
             ${hashtagsHtml} 
         `;
         
-        // Affichage de la description
+        // Bloc Description
         if (playlistDesc && playlistDesc.trim() !== "") {
             html += `
             <div class="playlist-description-container" id="desc-container" onclick="this.classList.toggle('expanded')">
@@ -1493,13 +1578,23 @@ async function loadEpisodes(pid, encoded = false) {
             </div>`;
         }
         
-        // LIGNE ÉPISODES : On déplace le bouton Partage ici
+        // 7. LIGNE DES BOUTONS D'ACTION (Favoris, Plus tard, Partage)
         html += `
             <div class="episodes-header-row">
                 <h3>Épisodes</h3>
-                <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">🔗
-                </button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-share" onclick="toggleSave('favorites', '${cleanId}', this)" title="Ajouter aux favoris">
+                        ${isFav ? '❤️' : '♡'}
+                    </button>
+                    <button class="btn-share" onclick="toggleSave('later', '${cleanId}', this)" title="À regarder plus tard">
+                        ${isLater ? '🕒' : '➕'}
+                    </button>
+                    <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">
+                        🔗
+                    </button>
+                </div>
             </div>` +
+            // Liste des épisodes
             episodes.map((e, i) => `
                 <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
                     <span class="episode-title">${e.title}</span>
@@ -1509,7 +1604,7 @@ async function loadEpisodes(pid, encoded = false) {
 
         div.innerHTML = html;
 
-        // Effet de scroll doux vers le titre
+        // 8. Finalisation (Scroll et corrections de liens)
         setTimeout(() => {
             const titleSection = div.querySelector('.playlist-header-container');
             if (titleSection) {
@@ -1517,7 +1612,6 @@ async function loadEpisodes(pid, encoded = false) {
             }
         }, 50);
 
-        // Correction des liens pour l'ouverture externe
         const descLinks = div.querySelectorAll('.playlist-description-content a');
         descLinks.forEach(link => {
             link.setAttribute('target', '_blank');
