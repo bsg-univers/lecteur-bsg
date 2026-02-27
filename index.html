@@ -1148,6 +1148,40 @@ const uiPlayer = document.querySelector('.bsg-audio-player');
 
 let isScrubbing = false;
 
+// 1. FONCTIONS UTILITAIRES (À mettre en haut du script)
+function getStoredList(key) {
+    try {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function toggleStorage(key, id) {
+    let list = getStoredList(key);
+    const index = list.indexOf(id);
+    if (index > -1) {
+        list.splice(index, 1);
+    } else {
+        list.push(id);
+    }
+    localStorage.setItem(key, JSON.stringify(list));
+}
+
+function displaySavedList(key, title) {
+    const savedIds = getStoredList(key);
+    // On s'assure que allPlaylists existe et n'est pas vide
+    if (!window.allPlaylists) return;
+    
+    const filtered = window.allPlaylists.filter(p => savedIds.includes(String(p.id).trim()));
+    
+    if (filtered.length === 0) {
+        alert("Votre liste est vide.");
+        return;
+    }
+    renderPlaylists(filtered, title);
+}
 
 /* --- Play / Pause --- */
 whaleBtn.addEventListener('click', () => {
@@ -1455,76 +1489,41 @@ function showToast() {
 }
 
 // --- ÉPISODES ---
-// --- FONCTIONS DE STOCKAGE LOCAL (À ajouter dans ton <script>) ---
-
-// Récupère la liste (Favoris ou Plus tard) depuis le navigateur
-function getStoredList(key) {
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : [];
-}
-
-// Ajoute ou retire un ID de la liste
-function toggleStorage(key, id) {
-    let list = getStoredList(key);
-    const index = list.indexOf(id);
-    if (index > -1) {
-        list.splice(index, 1);
-    } else {
-        list.push(id);
-    }
-    localStorage.setItem(key, JSON.stringify(list));
-}
-
-// Affiche les playlists sauvegardées (Favoris ou Plus tard)
-function displaySavedList(key, title) {
-    const savedIds = getStoredList(key);
-    // On filtre toutes les playlists pour ne garder que celles dont l'ID est dans notre liste
-    const filtered = allPlaylists.filter(p => savedIds.includes(String(p.id).trim()));
-    
-    if (filtered.length === 0) {
-        alert("Cette liste est vide pour le moment.");
-        return;
-    }
-    
-    // On utilise ta fonction existante pour afficher les résultats
-    renderPlaylists(filtered, title);
-}
 
 // --- TA FONCTION loadEpisodes MISE À JOUR ---
+// 2. FONCTION CHARGEMENT ÉPISODES (VERSION CORRIGÉE)
 async function loadEpisodes(pid, encoded = false) {
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.add('is-static');
     
-    // Décodage de l'ID si nécessaire
     const cleanId = encoded ? decodeURIComponent(escape(atob(pid))) : pid;
     const div = document.getElementById('episodes_list');
     div.innerHTML = '<div class="loader">Plongée...</div>';
 
     try {
-        // 1. On cherche la description dans les playlists chargées
-        const currentPl = allPlaylists.find(p => String(p.id).trim() === cleanId.trim());
+        // Récupération de la playlist
+        const currentPl = (window.allPlaylists || []).find(p => String(p.id).trim() === cleanId.trim());
         const playlistDesc = currentPl ? currentPl.description : "";
 
-        // 2. On récupère les épisodes
+        // Récupération des épisodes
         const res = await fetch(`data/episodes.json?v=${new Date().getTime()}`);
         const allEpisodes = await res.json();
 
-        // 3. Filtrage et tri
-        const episodesList = allEpisodes
+        // Filtrage
+        const filteredEpisodes = allEpisodes
             .filter(e => String(e.playlistId).trim() === cleanId.trim())
             .sort((a, b) => (a.order || 0) - (b.order || 0));
 
-        if (!episodesList.length) {
+        if (!filteredEpisodes.length) {
             div.innerHTML = '<p>Aucun épisode trouvé.</p>';
             return;
         }
 
-        // 4. Préparation des états (Favoris / Plus tard)
         const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
         const isFav = getStoredList('bsg_favs').includes(cleanId);
         const isLater = getStoredList('bsg_later').includes(cleanId);
 
-        // --- CONSTRUCTION DU HTML ---
+        // Construction du HTML
         let html = `
             <div class="playlist-header-container">
                 <h2>${cleanId}</h2>
@@ -1536,7 +1535,6 @@ async function loadEpisodes(pid, encoded = false) {
             </div>
         `;
 
-        // Ajout de la description si elle existe
         if (playlistDesc) {
             html += `
             <div class="playlist-description-container" onclick="this.classList.toggle('expanded')">
@@ -1545,18 +1543,17 @@ async function loadEpisodes(pid, encoded = false) {
             </div>`;
         }
 
-        // Ligne des titres et boutons d'actions
         html += `
             <div class="episodes-header-row">
                 <h3>Épisodes</h3>
                 <div class="playlist-actions">
                     <button class="btn-share ${isFav ? 'active' : ''}" 
-                            onclick="toggleStorage('bsg_favs', '${cleanId}'); this.classList.toggle('active'); this.innerText = this.classList.contains('active') ? '⭐' : '☆';" 
+                            onclick="toggleStorage('bsg_favs', '${cleanId.replace(/'/g, "\\'")}'); this.classList.toggle('active'); this.innerText = this.classList.contains('active') ? '⭐' : '☆';" 
                             title="Favoris">
                         ${isFav ? '⭐' : '☆'}
                     </button>
                     <button class="btn-share ${isLater ? 'active' : ''}" 
-                            onclick="toggleStorage('bsg_later', '${cleanId}'); this.classList.toggle('active');" 
+                            onclick="toggleStorage('bsg_later', '${cleanId.replace(/'/g, "\\'")}'); this.classList.toggle('active');" 
                             title="Plus tard">
                         ⏳
                     </button>
@@ -1567,9 +1564,9 @@ async function loadEpisodes(pid, encoded = false) {
             </div>
         `;
 
-        // Liste des épisodes
-        html += episodesList.map((e, i) => `
-            <div class="episode-item list-item-ep" id="ep-${i}" onclick="playEpisodeByIndex(${i})">
+        // LISTE DES ÉPISODES
+        html += filteredEpisodes.map((e, i) => `
+            <div class="episode-item list-item-ep" id="ep-${i}" onclick="playEpisodeFromList(${i})">
                 <span class="episode-title">${e.title}</span>
                 <span style="color:var(--primary); font-size:0.8em;">▶</span>
             </div>
@@ -1577,15 +1574,27 @@ async function loadEpisodes(pid, encoded = false) {
 
         div.innerHTML = html;
         
-        // Mise à jour de la file d'attente pour le lecteur
-        window.currentEpisodes = episodesList; 
-        playEpisodeByIndex(0);
+        // On rend les épisodes accessibles au lecteur global
+        window.currentEpisodes = filteredEpisodes;
+        
+        // Scroll automatique vers le haut de la liste
+        setTimeout(() => {
+            div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
 
     } catch (err) {
-        console.error("Erreur de chargement:", err);
-        div.innerHTML = '<p>Erreur lors de la plongée. Veuillez réessayer.</p>';
+        console.error("Erreur détaillée:", err);
+        div.innerHTML = `<p>Erreur de chargement. Vérifiez votre console (F12).</p>`;
     }
 }
+
+// Fonction pour lancer la lecture depuis la liste corrigée
+function playEpisodeFromList(index) {
+    if (typeof play === 'function') {
+        play(index);
+    } else if (typeof playEpisodeByIndex === 'function') {
+        playEpisodeByIndex(index);
+    }
 
 
 async function play(i) {
