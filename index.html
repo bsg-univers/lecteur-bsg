@@ -820,6 +820,13 @@ h2,h3{
   outline: none;
 }
 
+.heart-empty {
+    font-size: 1.3rem; /* Légèrement plus grand */
+    font-weight: 900;  /* Plus gras */
+    display: inline-block;
+    transform: scaleX(1.2); /* Élargit un peu le symbole horizontalement */
+}
+
 @keyframes pulse-border {
   0%, 100% { border-color: rgba(243, 195, 0, 0.25); box-shadow: 0 8px 20px rgba(0,0,0,0.35); }
   50% { border-color: rgba(243, 195, 0, 0.5); box-shadow: 0 0 15px rgba(243, 195, 0, 0.15); }
@@ -1276,14 +1283,17 @@ function showPlaylistsBySeason(season) {
     div.innerHTML = `
         <div class="season-title-container">
             <h2 id="view-title">Séries — ${season}</h2>
-            <div style="display: flex; gap: 8px;">
-                <div class="btn-explore-themes" onclick="showSavedList('favorites')" title="Mes Favoris" style="animation: none; background: rgba(255, 50, 50, 0.1);">
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <div class="btn-explore-themes" onclick="showSavedList('favorites')" title="Mes Favoris" 
+                     style="animation: none; background: rgba(255, 50, 50, 0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     ❤️
                 </div>
-                <div class="btn-explore-themes" onclick="showSavedList('later')" title="À regarder plus tard" style="animation: none; background: rgba(50, 150, 255, 0.1);">
+                <div class="btn-explore-themes" onclick="showSavedList('later')" title="À regarder plus tard" 
+                     style="animation: none; background: rgba(50, 150, 255, 0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     🕒
                 </div>
-                <div class="btn-explore-themes" onclick="toggleHashtagLibrary()" title="Explorer par thématiques">
+                <div class="btn-explore-themes" onclick="toggleHashtagLibrary()" title="Explorer par thématiques"
+                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     🤿
                 </div>
             </div>
@@ -1453,26 +1463,27 @@ function toggleSave(listType, playlistId, btn) {
     let message = "";
 
     if (index > -1) {
-        // SUPPRESSION
-        items.splice(index, 1);
-        if (listType === 'favorites') {
-            btn.innerText = '♡';
-            message = "Retiré des favoris";
+            // SUPPRESSION
+            items.splice(index, 1);
+            if (listType === 'favorites') {
+                // On utilise un span pour appliquer l'élargissement au symbole vide
+                btn.innerHTML = '<span class="heart-empty">♡</span>';
+                message = "Retiré des favoris";
+            } else {
+                btn.innerText = '➕';
+                message = "Retiré de 'À regarder plus tard'";
+            }
         } else {
-            btn.innerText = '➕';
-            message = "Retiré de 'À regarder plus tard'";
+            // AJOUT
+            items.push(playlistId);
+            if (listType === 'favorites') {
+                btn.innerText = '❤️';
+                message = "Ajouté aux favoris !";
+            } else {
+                btn.innerText = '🕒';
+                message = "Ajouté à 'À regarder plus tard'";
+            }
         }
-    } else {
-        // AJOUT
-        items.push(playlistId);
-        if (listType === 'favorites') {
-            btn.innerText = '❤️';
-            message = "Ajouté aux favoris !";
-        } else {
-            btn.innerText = '🕒';
-            message = "Ajouté à 'À regarder plus tard'";
-        }
-    }
 
     localStorage.setItem(key, JSON.stringify(items));
     showToast(message);
@@ -1626,8 +1637,8 @@ async function loadEpisodes(pid, encoded = false) {
             <div class="episodes-header-row">
                 <h3>Épisodes</h3>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn-share" onclick="toggleSave('favorites', '${cleanId}', this)" title="Ajouter aux favoris">
-                        ${isFav ? '❤️' : '♡'}
+                    <button class="btn-share" onclick="event.stopPropagation(); toggleSave('favorites', '${cleanId}', this)" title="Favoris">
+                        ${isFav ? '❤️' : '<span class="heart-empty">♡</span>'}
                     </button>
                     <button class="btn-share" onclick="toggleSave('later', '${cleanId}', this)" title="À regarder plus tard">
                         ${isLater ? '🕒' : '➕'}
