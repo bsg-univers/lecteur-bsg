@@ -1495,17 +1495,21 @@ async function loadEpisodes(pid, encoded = false) {
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.add('is-static');
     
+    // Décodage de l'ID si nécessaire
     const cleanId = encoded ? decodeURIComponent(escape(atob(pid))) : pid;
     const div = document.getElementById('episodes_list');
     div.innerHTML = '<div class="loader">Plongée...</div>';
 
     try {
+        // 1. On cherche la description dans les playlists chargées
         const currentPl = allPlaylists.find(p => String(p.id).trim() === cleanId.trim());
         const playlistDesc = currentPl ? currentPl.description : "";
 
+        // 2. On récupère les épisodes
         const res = await fetch(`data/episodes.json?v=${new Date().getTime()}`);
         const allEpisodes = await res.json();
 
+        // 3. Filtrage et tri
         const episodesList = allEpisodes
             .filter(e => String(e.playlistId).trim() === cleanId.trim())
             .sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -1515,10 +1519,12 @@ async function loadEpisodes(pid, encoded = false) {
             return;
         }
 
+        // 4. Préparation des états (Favoris / Plus tard)
         const headerEncoded = btoa(unescape(encodeURIComponent(cleanId)));
         const isFav = getStoredList('bsg_favs').includes(cleanId);
         const isLater = getStoredList('bsg_later').includes(cleanId);
 
+        // --- CONSTRUCTION DU HTML ---
         let html = `
             <div class="playlist-header-container">
                 <h2>${cleanId}</h2>
@@ -1530,14 +1536,16 @@ async function loadEpisodes(pid, encoded = false) {
             </div>
         `;
 
+        // Ajout de la description si elle existe
         if (playlistDesc) {
             html += `
-            <div class="playlist-description-container" id="desc-container" onclick="this.classList.toggle('expanded')">
+            <div class="playlist-description-container" onclick="this.classList.toggle('expanded')">
                 <div class="playlist-description-content">${playlistDesc}</div>
                 <span class="read-more-hint">Lire la suite...</span>
             </div>`;
         }
 
+        // Ligne des titres et boutons d'actions
         html += `
             <div class="episodes-header-row">
                 <h3>Épisodes</h3>
@@ -1559,6 +1567,7 @@ async function loadEpisodes(pid, encoded = false) {
             </div>
         `;
 
+        // Liste des épisodes
         html += episodesList.map((e, i) => `
             <div class="episode-item list-item-ep" id="ep-${i}" onclick="playEpisodeByIndex(${i})">
                 <span class="episode-title">${e.title}</span>
@@ -1568,13 +1577,13 @@ async function loadEpisodes(pid, encoded = false) {
 
         div.innerHTML = html;
         
-        // On met à jour la file d'attente globale pour le lecteur
+        // Mise à jour de la file d'attente pour le lecteur
         window.currentEpisodes = episodesList; 
         playEpisodeByIndex(0);
 
     } catch (err) {
-        console.error(err);
-        div.innerHTML = '<p>Erreur de chargement.</p>';
+        console.error("Erreur de chargement:", err);
+        div.innerHTML = '<p>Erreur lors de la plongée. Veuillez réessayer.</p>';
     }
 }
 
