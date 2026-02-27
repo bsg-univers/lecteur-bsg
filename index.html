@@ -1347,7 +1347,7 @@ function showPlaylistsBySeason(season) {
     // En-tête de la section
     div.innerHTML = `
         <div class="season-title-container">
-            <h2>${season}</h2>
+            <h2>Séries — ${season}</h2>
             <div class="nav-actions-group">
                 <button class="btn-explore-themes" onclick="displaySavedList('bsg_favs', 'Mes Favoris ⭐')" title="Mes Favoris">⭐</button>
                 <button class="btn-explore-themes" onclick="displaySavedList('bsg_later', 'Regarder plus tard ⏳')" title="À regarder plus tard">⏳</button>
@@ -1424,7 +1424,7 @@ function filterByHashtag(event, tag) {
     // On change le titre pour indiquer le filtre actif
     div.innerHTML = `
         <div class="season-title-container">
-            <h2>${season}</h2>
+            <h2>Séries — ${season}</h2>
             <div class="btn-explore-themes" onclick="showPlaylistsBySeason(allPlaylists[0].season)" title="Retour">
                 ✕
             </div>
