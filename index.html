@@ -285,7 +285,7 @@ header {
     flex: 1;
     font-weight: bold;
     font-size: 1.05rem;
-    color: #d2b347;
+    color: white;
     /* On garde la sécurité de coupe si vraiment c'est trop long */
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -304,12 +304,15 @@ header {
 }
 
 .tag-mini {
+    flex-shrink: 0;
     font-size: 0.75rem;
-    color: #eee;
-    background: rgba(210, 179, 71, 0.15);
-    padding: 3px 10px;
-    border-radius: 6px;
-    border: 1px solid rgba(210, 179, 71, 0.2);
+    color: var(--primary);
+    background: rgba(210, 179, 71, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(210, 179, 71, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
         
 /* Titre spécial pour la vue filtrée */
