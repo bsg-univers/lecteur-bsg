@@ -258,37 +258,43 @@ header {
     flex-grow: 1;
 }
 
-/* Le conteneur du titre et du badge */
+/* Conteneur vertical pour le titre et le badge */
 .playlist-info-header {
     display: flex;
-    align-items: center;  /* Aligne verticalement */
-    justify-content: flex-start;
-    gap: 15px;            /* Espace minimum Garanti entre le titre et le badge */
+    flex-direction: column; /* Aligne le badge SOUS le titre */
+    align-items: flex-start; /* Aligne tout à gauche */
+    gap: 6px;                /* Espace entre le titre et le badge */
+    margin-bottom: 8px;      /* Espace avant les hashtags */
     width: 100%;
-    margin-bottom: 5px;
 }
 
 /* Le titre de la playlist */
 .playlist-name-text {
-    flex: 1;              /* Prend tout l'espace disponible */
-    min-width: 0;         /* TRÈS IMPORTANT : permet au texte de se couper si trop long */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Ajoute "..." si le titre est vraiment trop long */
-    white-space: normal;  /* Permet au titre de passer sur 2 lignes si besoin */
+    font-size: 1rem;
+    line-height: 1.3;
+    color: #fff;
+    /* On ne limite plus forcément à une ligne pour que ce soit lisible */
 }
 
 /* Le badge de saison */
 .season-badge {
-    flex-shrink: 0;       /* INTERDIT au badge de s'écraser ou de rétrécir */
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: bold;
-    background: rgba(243, 195, 0, 0.15);
+    background: rgba(243, 195, 0, 0.12);
     color: var(--primary);
-    padding: 4px 12px;
-    border-radius: 6px;
+    padding: 3px 10px;
+    border-radius: 4px;
     text-transform: uppercase;
-    border: 1px solid rgba(243, 195, 0, 0.4);
+    border: 1px solid rgba(243, 195, 0, 0.3);
     display: inline-block;
+}
+
+/* Zone des hashtags (pour s'assurer qu'ils ne remontent pas) */
+.playlist-tags-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px; /* Petit espace supplémentaire après le badge */
 }
         
 #hashtag-cloud {
@@ -1425,17 +1431,19 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
             : "";
 
         banner.innerHTML = `
-            <div class="playlist-top-row">
-                <img src="${p.image || ''}" class="playlist-thumb">
-                <div class="playlist-info">
+            <div class="playlist-top-row" style="display: flex; align-items: flex-start; gap: 12px;">
+                <img src="${p.image || ''}" class="playlist-thumb" style="flex-shrink: 0;">
+                
+                <div class="playlist-info" style="flex-grow: 1; min-width: 0;">
                     <div class="playlist-info-header">
                         <span class="playlist-name-text"><strong>${p.name}</strong></span>
                         ${isGlobalSearch ? `<span class="season-badge">${p.season}</span>` : ""}
                     </div>
+                    ${hashtagsHtml}
                 </div>
-                <button class="btn-share">🔗</button>
+        
+                <button class="btn-share" style="flex-shrink: 0;">🔗</button>
             </div>
-            ${hashtagsHtml}
         `;
 
         // ... (reste de votre logique de clic share et tags identique) ...
