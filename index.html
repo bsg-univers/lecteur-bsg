@@ -1165,6 +1165,7 @@ const durationEl = document.getElementById('duration');
 const uiPlayer = document.querySelector('.bsg-audio-player');
 
 let isScrubbing = false;
+let currentSeason = null;
 
 /* --- Play / Pause --- */
 whaleBtn.addEventListener('click', () => {
@@ -1294,11 +1295,77 @@ async function loadPlaylists() {
         pImg.classList.add('is-logo');
     }
 }
+function renderFilteredPlaylists(list) {
+    const container = document.getElementById('playlists-container');
+    container.innerHTML = "";
 
+    list.forEach(p => {
+        const encoded = btoa(unescape(encodeURIComponent(p.id)));
+
+        const banner = document.createElement('div');
+        banner.className = 'playlist-banner';
+        banner.onclick = () => loadEpisodes(encoded, true);
+
+        const hashtagsHtml = p.hashtags
+            ? `<div class="playlist-tags-area">
+                ${p.hashtags.split(' ')
+                    .filter(t => t.trim() !== "")
+                    .map(tag =>
+                        `<span class="tag-mini" data-tag="${tag}">#${tag}</span>`
+                    ).join('')}
+               </div>`
+            : "";
+
+        banner.innerHTML = `
+            <div class="playlist-top-row">
+                <img src="${p.image || ''}" class="playlist-thumb">
+                <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                <button class="btn-share">🔗</button>
+            </div>
+            ${hashtagsHtml}
+        `;
+
+        banner.querySelector('.btn-share').onclick = (e) => {
+            e.stopPropagation();
+            sharePlaylist(e, encoded);
+        };
+
+        banner.querySelectorAll('.tag-mini').forEach(tagEl => {
+            tagEl.onclick = (e) => {
+                e.stopPropagation();
+                filterByHashtag(e, tagEl.dataset.tag);
+            };
+        });
+
+        container.appendChild(banner);
+    });
+}
 // Appelez cette fonction au chargement
 window.addEventListener('DOMContentLoaded', resetPlayerImage);   
+function initSearchBar() {
+    const input = document.getElementById('playlist-search');
+
+    if (!input) return;
+
+    input.addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+
+        const filtered = allPlaylists.filter(p => {
+            const matchSeason = p.season === currentSeason;
+
+            const matchText =
+                p.name.toLowerCase().includes(query) ||
+                (p.hashtags && p.hashtags.toLowerCase().includes(query));
+
+            return matchSeason && matchText;
+        });
+
+        renderFilteredPlaylists(filtered);
+    });
+}
 
 function showPlaylistsBySeason(season) {
+    currentSeason = season;
     const dock = document.querySelector('.nav-dock');
     if (dock) dock.classList.remove('is-static');
 
@@ -1369,7 +1436,7 @@ function showPlaylistsBySeason(season) {
             </div>`;
     }).join('');
 
-    // On n'appelle plus initHashtagMarquees car les tags ne défilent plus
+    initSearchBar();
 }
 
 function toggleHashtagLibrary() {
