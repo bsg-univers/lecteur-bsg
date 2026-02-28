@@ -231,21 +231,7 @@ header {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-#search-bar-container {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 0.4s ease;
-    transform: translateY(-10px);
-}
 
-#search-bar-container.search-visible {
-    max-height: 100px;
-    opacity: 1;
-    transform: translateY(0);
-    margin-top: 10px;
-}
-        
 #hashtag-cloud {
     max-height: 300px;           /* hauteur fixe discrète */
     overflow-y: auto; 
@@ -1160,84 +1146,6 @@ const uiPlayer = document.querySelector('.bsg-audio-player');
 
 let isScrubbing = false;
 
-// --- LOGIQUE DE RECHERCHE ---
-
-// Cette fonction sera appelée par ton bouton masque (que tu génères déjà en JS)
-function toggleSearchBar() {
-    const container = document.getElementById('search-bar-container');
-    const input = document.getElementById('search-input');
-    
-    container.classList.toggle('search-visible');
-    if (container.classList.contains('search-visible')) {
-        input.focus();
-    }
-}
-
-// On écoute la saisie dans la barre
-document.getElementById('search-input').addEventListener('input', function(e) {
-    const term = e.target.value.toLowerCase().trim();
-    
-    // Si on efface tout, on revient à l'affichage normal
-    if (term.length === 0) {
-        renderSeasons(); 
-        return;
-    }
-
-    if (term.length < 2) return; // On attend au moins 2 lettres
-
-    const results = [];
-    const seenIds = new Set(); // ANTI-DOUBLON : On stocke les IDs déjà trouvés
-
-    // 'allData' est ta variable globale contenant toutes les saisons
-    allData.seasons.forEach(season => {
-        season.playlists.forEach(playlist => {
-            const inTitle = playlist.name.toLowerCase().includes(term);
-            const inTags = playlist.hashtags && playlist.hashtags.some(tag => tag.toLowerCase().includes(term));
-
-            // Si correspondance ET pas encore dans la liste
-            if ((inTitle || inTags) && !seenIds.has(playlist.id)) {
-                results.push(playlist);
-                seenIds.add(playlist.id); // On enregistre l'ID pour ne pas le reprendre
-            }
-        });
-    });
-
-    displayGlobalSearchResults(results, term);
-});
-
-function displayGlobalSearchResults(results, term) {
-    const episodesList = document.getElementById('episodes_list');
-    const seasonsGrid = document.getElementById('seasons_grid');
-    
-    seasonsGrid.innerHTML = ""; // On vide la grille des galets
-    
-    let html = `
-        <div class="filter-header">
-            <span>Résultats pour "${term}" : ${results.length}</span>
-            <button class="btn-close-filter" onclick="location.reload()">Fermer</button>
-        </div>
-    `;
-
-    if (results.length === 0) {
-        html += `<p class="loader">Aucun résultat trouvé pour "${term}"...</p>`;
-    } else {
-        results.forEach(pl => {
-            html += `
-                <div class="playlist-banner" onclick="loadPlaylist('${pl.id}')">
-                    <div class="playlist-top-row">
-                        <img src="${pl.image}" class="playlist-thumb">
-                        <div class="playlist-name-text">${pl.name}</div>
-                    </div>
-                    <div class="playlist-tags-area">
-                        ${pl.hashtags ? pl.hashtags.map(t => `<span class="tag-mini">#${t}</span>`).join('') : ''}
-                    </div>
-                </div>`;
-        });
-    }
-    
-    episodesList.innerHTML = html;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 /* --- Play / Pause --- */
 whaleBtn.addEventListener('click', () => {
     audio.paused ? audio.play() : audio.pause();
@@ -1399,15 +1307,11 @@ function showPlaylistsBySeason(season) {
                      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     🕒
                 </div>
-                <div class="btn-explore-themes" onclick="toggleHashtagLibrary(); toggleSearchBar()" title="Explorer par thématiques"
+                <div class="btn-explore-themes" onclick="toggleHashtagLibrary()" title="Explorer par thématiques"
                      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     🤿
                 </div>
             </div>
-        </div>
-        <div id="search-bar-container" class="search-hidden" style="text-align: center; margin-bottom: 20px;">
-            <input type="text" id="search-input" placeholder="Chercher un oiseau, un arbre..." autocomplete="off" 
-                   style="width: 100%; padding: 12px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--primary); border-radius: 25px; color: white; outline: none;">
         </div>
         <div id="hashtag-library" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(210, 179, 71, 0.1);">
             <div id="hashtag-cloud" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;"></div>
