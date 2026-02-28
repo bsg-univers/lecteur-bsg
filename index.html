@@ -1431,19 +1431,20 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
             : "";
 
         banner.innerHTML = `
-            <div class="playlist-top-row" style="display: flex; align-items: flex-start; gap: 12px;">
+            <div class="playlist-top-row" style="display: flex; align-items: flex-start; gap: 12px; width: 100%;">
                 <img src="${p.image || ''}" class="playlist-thumb" style="flex-shrink: 0;">
                 
                 <div class="playlist-info" style="flex-grow: 1; min-width: 0;">
-                    <div class="playlist-info-header">
+                    <div class="playlist-info-header" style="display: flex; flex-direction: column; gap: 4px;">
                         <span class="playlist-name-text"><strong>${p.name}</strong></span>
                         ${isGlobalSearch ? `<span class="season-badge">${p.season}</span>` : ""}
                     </div>
-                    ${hashtagsHtml}
                 </div>
         
                 <button class="btn-share" style="flex-shrink: 0;">🔗</button>
             </div>
+        
+            ${hashtagsHtml}
         `;
 
         // ... (reste de votre logique de clic share et tags identique) ...
