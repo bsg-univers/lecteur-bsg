@@ -252,23 +252,33 @@ header {
 }
 
 .season-badge {
-    font-size: 0.7rem;
-    background: rgba(243, 195, 0, 0.2);
+    font-size: 0.65rem;
+    font-weight: bold;
+    background: rgba(243, 195, 0, 0.15);
     color: var(--primary);
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 8px;
+    padding: 4px 10px;    /* Marges intérieures (haut/bas gauche/droite) */
+    border-radius: 6px;
     text-transform: uppercase;
-    border: 1px solid rgba(243, 195, 0, 0.3);
+    border: 1px solid rgba(243, 195, 0, 0.4);
+    display: inline-block;
+    white-space: nowrap;  /* Empêche le badge de se couper en deux */
 }
-
+        
 .playlist-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     flex-grow: 1;
 }
-        
+
+/* Le conteneur qui contient le titre ET le badge */
+.playlist-info-header {
+    display: flex;
+    align-items: center; /* Aligne verticalement au milieu */
+    gap: 12px;           /* Espace entre le titre et le badge */
+    margin-bottom: 4px;  /* Espace avec ce qu'il y a en dessous */
+    flex-wrap: wrap;     /* Permet au badge de passer en dessous sur très petit écran */
+}
 #hashtag-cloud {
     max-height: 300px;           /* hauteur fixe discrète */
     overflow-y: auto; 
@@ -1406,8 +1416,10 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
             <div class="playlist-top-row">
                 <img src="${p.image || ''}" class="playlist-thumb">
                 <div class="playlist-info">
-                    <span class="playlist-name-text"><strong>${p.name}</strong></span>
-                    ${seasonBadge}
+                    <div class="playlist-info-header">
+                        <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                        ${isGlobalSearch ? `<span class="season-badge">${p.season}</span>` : ""}
+                    </div>
                 </div>
                 <button class="btn-share">🔗</button>
             </div>
