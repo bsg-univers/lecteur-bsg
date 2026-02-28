@@ -1110,9 +1110,6 @@ audio {
 
 <div class="container">
     <div id="seasons_grid" class="grid-list"></div>
-    <div id="search-bar-container" class="search-hidden" style="text-align: center; margin-bottom: 20px;">
-        <input type="text" id="search-input" placeholder="Faites une recherche" autocomplete="off" style="width: 100%; padding: 12px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--primary); border-radius: 25px; color: white; outline: none;">
-    </div>
     <div id="episodes_list"></div>
 </div>
 <a href="https://baleinesousgravillon.com/" target="_blank" id="logo-link">
@@ -1402,11 +1399,15 @@ function showPlaylistsBySeason(season) {
                      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     🕒
                 </div>
-                <div class="btn-explore-themes" onclick="toggleHashtagLibrary()" title="Explorer par thématiques"
+                <div class="btn-explore-themes" onclick="toggleHashtagLibrary(); toggleSearchBar()" title="Explorer par thématiques"
                      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     🤿
                 </div>
             </div>
+        </div>
+        <div id="search-bar-container" class="search-hidden" style="text-align: center; margin-bottom: 20px;">
+            <input type="text" id="search-input" placeholder="Chercher un oiseau, un arbre..." autocomplete="off" 
+                   style="width: 100%; padding: 12px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--primary); border-radius: 25px; color: white; outline: none;">
         </div>
         <div id="hashtag-library" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(210, 179, 71, 0.1);">
             <div id="hashtag-cloud" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;"></div>
