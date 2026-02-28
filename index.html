@@ -251,7 +251,24 @@ header {
     border-color: var(--primary);
 }
 
+.season-badge {
+    font-size: 0.7rem;
+    background: rgba(243, 195, 0, 0.2);
+    color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    border: 1px solid rgba(243, 195, 0, 0.3);
+}
 
+.playlist-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-grow: 1;
+}
+        
 #hashtag-cloud {
     max-height: 300px;           /* hauteur fixe discrète */
     overflow-y: auto; 
@@ -1355,55 +1372,52 @@ function showPlaylistsBySeason(season) {
     initSearchBar();
 }
 
-function renderFilteredPlaylists(list) {
+function renderFilteredPlaylists(list, isGlobalSearch = false) {
     const container = document.getElementById('playlists-container');
     if (!container) return;
 
-    container.innerHTML = ""; // On vide la zone de liste
+    container.innerHTML = "";
 
     if (list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 40px; opacity: 0.5;">Aucune playlist trouvée...</div>`;
+        container.innerHTML = `<div style="text-align:center; padding: 40px; opacity: 0.5;">Aucun résultat trouvé dans toutes les saisons...</div>`;
         return;
     }
 
     list.forEach(p => {
         const encoded = btoa(unescape(encodeURIComponent(p.id)));
-
         const banner = document.createElement('div');
         banner.className = 'playlist-banner';
         banner.onclick = () => loadEpisodes(encoded, true);
 
+        // Si c'est une recherche globale, on prépare un petit badge pour la saison
+        const seasonBadge = isGlobalSearch 
+            ? `<span class="season-badge">${p.season}</span>` 
+            : "";
+
         const hashtagsHtml = p.hashtags
             ? `<div class="playlist-tags-area">
-                ${p.hashtags.split(' ')
-                    .filter(t => t.trim() !== "")
-                    .map(tag =>
-                        `<span class="tag-mini" data-tag="${tag}">#${tag}</span>`
-                    ).join('')}
+                ${p.hashtags.split(' ').filter(t => t.trim() !== "").map(tag =>
+                    `<span class="tag-mini" data-tag="${tag}">#${tag}</span>`
+                ).join('')}
                </div>`
             : "";
 
         banner.innerHTML = `
             <div class="playlist-top-row">
                 <img src="${p.image || ''}" class="playlist-thumb">
-                <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                <div class="playlist-info">
+                    <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                    ${seasonBadge}
+                </div>
                 <button class="btn-share">🔗</button>
             </div>
             ${hashtagsHtml}
         `;
 
-        // Gestionnaire du bouton partage
-        banner.querySelector('.btn-share').onclick = (e) => {
-            e.stopPropagation();
-            sharePlaylist(e, encoded);
-        };
-
-        // Gestionnaire des clics sur tags
+        // ... (reste de votre logique de clic share et tags identique) ...
+        banner.querySelector('.btn-share').onclick = (e) => { e.stopPropagation(); sharePlaylist(e, encoded); };
         banner.querySelectorAll('.tag-mini').forEach(tagEl => {
-            tagEl.onclick = (e) => {
-                e.stopPropagation();
-                filterByHashtag(e, tagEl.dataset.tag);
-            };
+            tagEl.onclick = (e) => { e.stopPropagation(); filterByHashtag(e, tagEl.dataset.tag); };
         });
 
         container.appendChild(banner);
@@ -1417,24 +1431,26 @@ function initSearchBar() {
     const performSearch = () => {
         const query = input.value.toLowerCase().trim();
 
+        if (query === "") {
+            // Si la barre est vide, on revient à l'affichage de la saison actuelle
+            const defaultList = allPlaylists.filter(p => p.season === currentSeason);
+            renderFilteredPlaylists(defaultList);
+            return;
+        }
+
+        // RECHERCHE GLOBALE : On filtre sur TOUTES les playlists
         const filtered = allPlaylists.filter(p => {
-            const matchSeason = p.season === currentSeason;
             const matchText =
                 p.name.toLowerCase().includes(query) ||
                 (p.hashtags && p.hashtags.toLowerCase().includes(query));
-
-            return matchSeason && matchText;
+            return matchText;
         });
 
-        // On met à jour uniquement la zone des playlists
-        renderFilteredPlaylists(filtered);
+        renderFilteredPlaylists(filtered, true); // On ajoute un badge "isGlobal"
     };
 
-    // Recherche en temps réel
     input.addEventListener('input', performSearch);
-
-    // Recherche sur Enter
-    input.addEventListener('keydown', function (e) {
+    input.addEventListener('keydown', (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
             performSearch();
