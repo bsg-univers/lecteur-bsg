@@ -232,6 +232,26 @@ header {
     text-overflow: ellipsis;
 }
 
+.search-container {
+    margin: 15px 0;
+}
+
+#playlist-search {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(210, 179, 71, 0.2);
+    background: rgba(255,255,255,0.04);
+    color: white;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+#playlist-search:focus {
+    border-color: var(--primary);
+}
+
+
 #hashtag-cloud {
     max-height: 300px;           /* hauteur fixe discrète */
     overflow-y: auto; 
@@ -1312,6 +1332,14 @@ function showPlaylistsBySeason(season) {
                     🤿
                 </div>
             </div>
+        </div>
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="playlist-search" 
+                placeholder="Rechercher une playlist..."
+                autocomplete="off"
+            >
         </div>
         <div id="hashtag-library" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(210, 179, 71, 0.1);">
             <div id="hashtag-cloud" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;"></div>
