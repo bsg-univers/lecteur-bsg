@@ -1313,7 +1313,8 @@ function showPlaylistsBySeason(season) {
     const list = allPlaylists.filter(p => p.season === season);
     const div = document.getElementById('episodes_list');
 
-    // En-tête de la section
+    // STRUCTURE DE LA PAGE
+    // On crée l'en-tête, la barre de recherche et SURTOUT le conteneur vide pour les playlists
     div.innerHTML = `
         <div class="season-title-container">
             <h2 id="view-title">${season}</h2>
@@ -1343,36 +1344,27 @@ function showPlaylistsBySeason(season) {
         <div id="hashtag-library" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(210, 179, 71, 0.1);">
             <div id="hashtag-cloud" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;"></div>
         </div>
-    ` +
-    list.map(p => {
-        const encoded = btoa(unescape(encodeURIComponent(p.id)));
+        
+        <div id="playlists-container"></div>
+    `;
 
-        // Préparation des hashtags (statiques, plus de ruban défilant)
-        const hashtagsHtml = p.hashtags
-            ? `<div class="playlist-tags-area">
-                ${p.hashtags.split(' ').filter(t => t.trim() !== "").map(tag =>
-                    `<span class="tag-mini" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
-                ).join('')}
-               </div>`
-            : "";
+    // 1. On affiche la liste initiale
+    renderFilteredPlaylists(list);
 
-        return `
-            <div class="playlist-banner" onclick="loadEpisodes('${encoded}', true)">
-                <div class="playlist-top-row">
-                    <img src="${p.image || ''}" class="playlist-thumb" alt="thumbnail">
-                    <span class="playlist-name-text"><strong>${p.name}</strong></span>
-                    <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
-                </div>
-                
-                ${hashtagsHtml}
-            </div>`;
-    }).join('');
-
+    // 2. On active la barre de recherche
     initSearchBar();
 }
+
 function renderFilteredPlaylists(list) {
     const container = document.getElementById('playlists-container');
-    container.innerHTML = "";
+    if (!container) return;
+
+    container.innerHTML = ""; // On vide la zone de liste
+
+    if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 40px; opacity: 0.5;">Aucune playlist trouvée...</div>`;
+        return;
+    }
 
     list.forEach(p => {
         const encoded = btoa(unescape(encodeURIComponent(p.id)));
@@ -1400,11 +1392,13 @@ function renderFilteredPlaylists(list) {
             ${hashtagsHtml}
         `;
 
+        // Gestionnaire du bouton partage
         banner.querySelector('.btn-share').onclick = (e) => {
             e.stopPropagation();
             sharePlaylist(e, encoded);
         };
 
+        // Gestionnaire des clics sur tags
         banner.querySelectorAll('.tag-mini').forEach(tagEl => {
             tagEl.onclick = (e) => {
                 e.stopPropagation();
@@ -1415,9 +1409,7 @@ function renderFilteredPlaylists(list) {
         container.appendChild(banner);
     });
 }
-// Appelez cette fonction au chargement
-window.addEventListener('DOMContentLoaded', resetPlayerImage);   
-    
+
 function initSearchBar() {
     const input = document.getElementById('playlist-search');
     if (!input) return;
@@ -1427,7 +1419,6 @@ function initSearchBar() {
 
         const filtered = allPlaylists.filter(p => {
             const matchSeason = p.season === currentSeason;
-
             const matchText =
                 p.name.toLowerCase().includes(query) ||
                 (p.hashtags && p.hashtags.toLowerCase().includes(query));
@@ -1435,20 +1426,24 @@ function initSearchBar() {
             return matchSeason && matchText;
         });
 
+        // On met à jour uniquement la zone des playlists
         renderFilteredPlaylists(filtered);
     };
 
     // Recherche en temps réel
     input.addEventListener('input', performSearch);
 
-    // 🔥 Recherche sur Enter
+    // Recherche sur Enter
     input.addEventListener('keydown', function (e) {
         if (e.key === "Enter") {
-            e.preventDefault(); // évite comportement bizarre si un <form> existe
+            e.preventDefault();
             performSearch();
         }
     });
 }
+
+// Appelez cette fonction au chargement
+window.addEventListener('DOMContentLoaded', resetPlayerImage);
 function toggleHashtagLibrary() {
     const library = document.getElementById('hashtag-library');
     const cloud = document.getElementById('hashtag-cloud');
