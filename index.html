@@ -250,20 +250,7 @@ header {
 #playlist-search:focus {
     border-color: var(--primary);
 }
-
-.season-badge {
-    font-size: 0.65rem;
-    font-weight: bold;
-    background: rgba(243, 195, 0, 0.15);
-    color: var(--primary);
-    padding: 4px 10px;    /* Marges intérieures (haut/bas gauche/droite) */
-    border-radius: 6px;
-    text-transform: uppercase;
-    border: 1px solid rgba(243, 195, 0, 0.4);
-    display: inline-block;
-    white-space: nowrap;  /* Empêche le badge de se couper en deux */
-}
-        
+       
 .playlist-info {
     display: flex;
     flex-direction: column;
@@ -271,14 +258,39 @@ header {
     flex-grow: 1;
 }
 
-/* Le conteneur qui contient le titre ET le badge */
+/* Le conteneur du titre et du badge */
 .playlist-info-header {
     display: flex;
-    align-items: center; /* Aligne verticalement au milieu */
-    gap: 12px;           /* Espace entre le titre et le badge */
-    margin-bottom: 4px;  /* Espace avec ce qu'il y a en dessous */
-    flex-wrap: wrap;     /* Permet au badge de passer en dessous sur très petit écran */
+    align-items: center;  /* Aligne verticalement */
+    justify-content: flex-start;
+    gap: 15px;            /* Espace minimum Garanti entre le titre et le badge */
+    width: 100%;
+    margin-bottom: 5px;
 }
+
+/* Le titre de la playlist */
+.playlist-name-text {
+    flex: 1;              /* Prend tout l'espace disponible */
+    min-width: 0;         /* TRÈS IMPORTANT : permet au texte de se couper si trop long */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Ajoute "..." si le titre est vraiment trop long */
+    white-space: normal;  /* Permet au titre de passer sur 2 lignes si besoin */
+}
+
+/* Le badge de saison */
+.season-badge {
+    flex-shrink: 0;       /* INTERDIT au badge de s'écraser ou de rétrécir */
+    font-size: 0.65rem;
+    font-weight: bold;
+    background: rgba(243, 195, 0, 0.15);
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    border: 1px solid rgba(243, 195, 0, 0.4);
+    display: inline-block;
+}
+        
 #hashtag-cloud {
     max-height: 300px;           /* hauteur fixe discrète */
     overflow-y: auto; 
