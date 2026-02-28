@@ -232,6 +232,38 @@ header {
     text-overflow: ellipsis;
 }
 
+#search-bar-container {
+    max-width: 400px;
+    margin: 10px auto;
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+.search-hidden {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.search-visible {
+    max-height: 100px;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--primary);
+    border-radius: 25px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+}
+
 #hashtag-cloud {
     max-height: 300px;           /* hauteur fixe discrète */
     overflow-y: auto; 
@@ -1146,6 +1178,88 @@ const uiPlayer = document.querySelector('.bsg-audio-player');
 
 let isScrubbing = false;
 
+// On récupère ton bouton existant (ajuste l'ID si nécessaire)
+const btnSearch = document.querySelector('.btn-explore-themes'); 
+const searchContainer = document.getElementById('search-bar-container');
+const searchInput = document.getElementById('search-input');
+
+// Toggle de la barre de recherche
+btnSearch.addEventListener('click', () => {
+    searchContainer.classList.toggle('search-visible');
+    searchContainer.classList.toggle('search-hidden');
+    if (searchContainer.classList.contains('search-visible')) {
+        searchInput.focus();
+    }
+});
+
+// Écoute de la saisie
+searchInput.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase().trim();
+    
+    if (term.length === 0) {
+        renderSeasons(); // On réaffiche tout si c'est vide
+        return;
+    }
+
+    const results = [];
+    const seenIds = new Set(); // <--- C'EST L'ASTUCE ANTI-DOUBLON
+
+    // On parcourt toutes les saisons de ta base de données (allData)
+    allData.seasons.forEach(season => {
+        season.playlists.forEach(playlist => {
+            
+            // On vérifie le titre
+            const inTitle = playlist.name.toLowerCase().includes(term);
+            
+            // On vérifie les hashtags
+            const inTags = playlist.hashtags && playlist.hashtags.some(tag => 
+                tag.toLowerCase().includes(term)
+            );
+
+            // CONDITION : Si trouvé dans l'un OU l'autre, ET pas encore ajouté
+            if ((inTitle || inTags) && !seenIds.has(playlist.id)) {
+                results.push(playlist);
+                seenIds.add(playlist.id); // On marque cet ID comme "déjà vu"
+            }
+        });
+    });
+
+    displaySearchResults(results, term);
+});
+
+function displaySearchResults(results, term) {
+    const episodesList = document.getElementById('episodes_list');
+    const seasonsGrid = document.getElementById('seasons_grid');
+    
+    seasonsGrid.innerHTML = ""; // On cache les galets des saisons
+    
+    let html = `
+        <div class="filter-header">
+            <span>Résultats pour "${term}" : ${results.length}</span>
+            <button class="btn-close-filter" onclick="location.reload()">Fermer</button>
+        </div>
+    `;
+
+    if (results.length === 0) {
+        html += `<p class="loader">Aucun résultat trouvé...</p>`;
+    } else {
+        results.forEach(pl => {
+            html += `
+                <div class="playlist-banner" onclick="loadPlaylist('${pl.id}')">
+                    <div class="playlist-top-row">
+                        <img src="${pl.image}" class="playlist-thumb">
+                        <div class="playlist-name-text">${pl.name}</div>
+                    </div>
+                    <div class="playlist-tags-area">
+                        ${pl.hashtags ? pl.hashtags.map(t => `<span class="tag-mini">#${t}</span>`).join('') : ''}
+                    </div>
+                </div>`;
+        });
+    }
+    
+    episodesList.innerHTML = html;
+}
+
 /* --- Play / Pause --- */
 whaleBtn.addEventListener('click', () => {
     audio.paused ? audio.play() : audio.pause();
@@ -1312,6 +1426,9 @@ function showPlaylistsBySeason(season) {
                     🤿
                 </div>
             </div>
+        </div>
+        <div id="search-bar-container" class="search-hidden">
+            <input type="text" id="search-input" placeholder="Chercher un oiseau, un arbre..." autocomplete="off">
         </div>
         <div id="hashtag-library" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(210, 179, 71, 0.1);">
             <div id="hashtag-cloud" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;"></div>
