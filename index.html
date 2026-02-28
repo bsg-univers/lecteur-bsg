@@ -1283,7 +1283,7 @@ function showPlaylistsBySeason(season) {
     div.innerHTML = `
         <div class="season-title-container">
             <h2 id="view-title">${season}</h2>
-            <div style="display: flex; gap: 8px; align-items: center;">
+            <div style="display: flex; gap: 6px; align-items: center;">
                 <div class="btn-explore-themes" onclick="showSavedList('favorites')" title="Mes Favoris" 
                      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     ❤️
@@ -1495,7 +1495,15 @@ function toggleSave(listType, playlistId, btn) {
         showSavedList(listType);
     }
 }
-
+function resetMediaState() {
+    audio.pause();
+    audio.src = "";
+    
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = null;
+    }
+}
+    
 function showSavedList(listType) {
     const key = 'bsg_' + listType;
     const savedIds = JSON.parse(localStorage.getItem(key) || "[]");
@@ -1506,7 +1514,7 @@ function showSavedList(listType) {
     div.innerHTML = `
         <div class="season-title-container">
             <h2 id="view-title">${title}</h2>
-            <div class="btn-explore-themes" onclick="loadPlaylists()" title="Retour">✕</div>
+            <div class="btn-explore-themes" onclick="resetMediaState(); loadPlaylists()" title="Retour">✕</div>
         </div>
     `;
 
