@@ -231,7 +231,21 @@ header {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+#search-bar-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    transform: translateY(-10px);
+}
 
+#search-bar-container.search-visible {
+    max-height: 100px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 10px;
+}
+        
 #hashtag-cloud {
     max-height: 300px;           /* hauteur fixe discrète */
     overflow-y: auto; 
@@ -1312,6 +1326,10 @@ function showPlaylistsBySeason(season) {
                     🤿
                 </div>
             </div>
+        </div>
+        <div id="search-bar-container" class="search-hidden" style="text-align: center; margin-bottom: 20px;">
+            <input type="text" id="search-input" placeholder="Faites une recherche" autocomplete="off" 
+                   style="width: 100%; padding: 12px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--primary); border-radius: 25px; color: white; outline: none;">
         </div>
         <div id="hashtag-library" style="display: none; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(210, 179, 71, 0.1);">
             <div id="hashtag-cloud" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;"></div>
