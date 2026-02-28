@@ -233,11 +233,26 @@ header {
 }
 
 #hashtag-cloud {
+    max-height: 300px;           /* hauteur fixe discrète */
+    overflow-y: auto; 
     display: flex;
     flex-wrap: wrap;
     gap: 10px; /* Plus d'espace entre les tags dans la bibliothèque */
     justify-content: center; /* Centre les tags pour un look "nuage" */
     padding: 10px 0;
+}
+
+.hashtags-cloud::-webkit-scrollbar {
+    width: 6px;
+}
+
+.hashtags-cloud::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 6px;
+}
+
+.hashtags-cloud::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 /* On s'assure que les tags réagissent bien au survol dans la bibliothèque */
