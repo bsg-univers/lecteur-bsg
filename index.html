@@ -1443,6 +1443,10 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
         
                 <button class="btn-share" style="flex-shrink: 0;">🔗</button>
             </div>
+            <button class="btn-share" onclick="toggleSave('later', '${cleanId}', this)" title="À regarder plus tard">
+                        ${isLater ? '🕒' : '➕'}
+                    </button>
+            
         
             ${hashtagsHtml}
         `;
@@ -1559,6 +1563,9 @@ function filterByHashtag(event, tag) {
                     <img src="${p.image || ''}" class="playlist-thumb" alt="thumbnail">
                     <span class="playlist-name-text"><strong>${p.name}</strong></span>
                     <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
+                    <button class="btn-share" onclick="toggleSave('later', '${cleanId}', this)" title="À regarder plus tard">
+                        ${isLater ? '🕒' : '➕'}
+                    </button>
                 </div>
                 
                 ${hashtagsHtml}
@@ -1584,7 +1591,7 @@ async function sharePlaylist(e, encodedPid) {
 
     const shareData = {
         title: 'Baleine sous gravillon',
-        text: `Écoutez cette série : ${pid}`,
+        text: `Découvrez cette série : ${pid}`,
         url: shareUrl
     };
 
