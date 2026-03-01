@@ -265,17 +265,18 @@ header {
 .playlist-info {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    justify-content: flex-end; /* POUSSE LE TITRE VERS LE BAS */
     flex-grow: 1;
+    min-height: 60px; /* Doit correspondre à la hauteur de .playlist-thumb */
 }
 
 /* Conteneur vertical pour le titre et le badge */
 .playlist-info-header {
     display: flex;
     flex-direction: column; /* Aligne le badge SOUS le titre */
-    align-items: flex-start; /* Aligne tout à gauche */
+    align-items: flex-end; /* Aligne tout à gauche */
     gap: 6px;                /* Espace entre le titre et le badge */
-    margin-bottom: 8px;      /* Espace avant les hashtags */
+    margin-bottom: 2px;      /* Espace avant les hashtags */
     width: 100%;
 }
 
@@ -359,7 +360,7 @@ header {
 /* La partie haute : Image + Titre */
 .playlist-top-row {
     display: flex;
-    align-items: flex-end; /* Changé de 'center' à 'flex-end' */
+    align-items: stretch; /* Force le bloc texte à faire la même hauteur que l'image (60px) */
     gap: 15px;
     width: 100%;
 }
