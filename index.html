@@ -343,11 +343,11 @@ header {
 .playlist-banner {
     display: flex;
     flex-direction: column; /* On empile les éléments verticalement */
-    gap: 12px;
-    padding: 15px;
+    gap: 6px;
+    padding: 12px 15px;
     background: rgba(255, 255, 255, 0.04);
     border-radius: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     cursor: pointer;
     border: 1px solid transparent;
     -webkit-tap-highlight-color: transparent;
@@ -359,7 +359,7 @@ header {
 /* La partie haute : Image + Titre */
 .playlist-top-row {
     display: flex;
-    align-items: center;
+    align-items: flex-end; /* Changé de 'center' à 'flex-end' */
     gap: 15px;
     width: 100%;
 }
@@ -375,7 +375,7 @@ header {
 .playlist-name-text {
     flex: 1;
     font-weight: bold;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     /* On garde la sécurité de coupe si vraiment c'est trop long */
     display: -webkit-box;
     color:var(--primary);
