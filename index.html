@@ -265,11 +265,15 @@ header {
 .playlist-info {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* POUSSE LE TITRE VERS LE BAS */
-    flex-grow: 1;
-    min-height: 60px; /* Doit correspondre à la hauteur de .playlist-thumb */
+    /* Aligne verticalement en bas */
+    justify-content: flex-end; 
+    /* Aligne horizontalement à gauche (important) */
+    align-items: flex-start;   
+    
+    flex: 1;
+    /* On s'assure que le bloc prend la hauteur de l'image */
+    min-height: 60px; 
 }
-
 /* Conteneur vertical pour le titre et le badge */
 .playlist-info-header {
     display: flex;
@@ -283,6 +287,8 @@ header {
 /* Le titre de la playlist */
 .playlist-name-text {
     font-size: 1rem;
+    margin: 0;
+    text-align: left; /* Force le texte à gauche */
     line-height: 1.3;
     color: #fff;
     /* On ne limite plus forcément à une ligne pour que ce soit lisible */
