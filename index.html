@@ -1413,14 +1413,14 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
 
     list.forEach(p => {
         const encoded = btoa(unescape(encodeURIComponent(p.id)));
+
+        // Lecture des listes locales
+        const savedLater = JSON.parse(localStorage.getItem('bsg_later') || "[]");
+        const isLater = savedLater.includes(String(p.id));
+
         const banner = document.createElement('div');
         banner.className = 'playlist-banner';
         banner.onclick = () => loadEpisodes(encoded, true);
-
-        // Si c'est une recherche globale, on prépare un petit badge pour la saison
-        const seasonBadge = isGlobalSearch 
-            ? `<span class="season-badge">${p.season}</span>` 
-            : "";
 
         const hashtagsHtml = p.hashtags
             ? `<div class="playlist-tags-area">
@@ -1440,19 +1440,31 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
                         ${isGlobalSearch ? `<span class="season-badge">${p.season}</span>` : ""}
                     </div>
                 </div>
-        
-                <button class="btn-share" style="flex-shrink: 0;">🔗</button>
+
+                <!-- COLONNE BOUTONS -->
+                <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
+                    <button class="btn-share"
+                        onclick="event.stopPropagation(); sharePlaylist(event, '${encoded}')"
+                        title="Partager">
+                        🔗
+                    </button>
+
+                    <button class="btn-share"
+                        onclick="event.stopPropagation(); toggleSave('later', '${p.id}', this)"
+                        title="À regarder plus tard">
+                        ${isLater ? '🕒' : '➕'}
+                    </button>
+                </div>
             </div>
-           
             
-        
             ${hashtagsHtml}
         `;
 
-        // ... (reste de votre logique de clic share et tags identique) ...
-        banner.querySelector('.btn-share').onclick = (e) => { e.stopPropagation(); sharePlaylist(e, encoded); };
         banner.querySelectorAll('.tag-mini').forEach(tagEl => {
-            tagEl.onclick = (e) => { e.stopPropagation(); filterByHashtag(e, tagEl.dataset.tag); };
+            tagEl.onclick = (e) => { 
+                e.stopPropagation(); 
+                filterByHashtag(e, tagEl.dataset.tag); 
+            };
         });
 
         container.appendChild(banner);
