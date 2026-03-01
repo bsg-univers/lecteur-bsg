@@ -1539,10 +1539,10 @@ function toggleHashtagLibrary() {
 }
     
 function filterByHashtag(event, tag) {
-    if (event) event.stopPropagation(); // Empêche d'ouvrir la playlist si on clique sur un tag
+    if (event) event.stopPropagation();
     
     const div = document.getElementById('episodes_list');
-    // On change le titre pour indiquer le filtre actif
+
     div.innerHTML = `
         <div class="season-title-container">
             <h2>#${tag}</h2>
@@ -1550,34 +1550,67 @@ function filterByHashtag(event, tag) {
                 ✕
             </div>
         </div>
+        <div id="playlists-container"></div>
     `;
 
-    // On filtre les playlists qui contiennent ce hashtag
-    const filtered = allPlaylists.filter(p => p.hashtags && p.hashtags.includes(tag));
+    const container = document.getElementById('playlists-container');
 
-    div.innerHTML += filtered.map(p => {
+    const filtered = allPlaylists.filter(p => 
+        p.hashtags && p.hashtags.includes(tag)
+    );
+
+    if (!filtered.length) {
+        container.innerHTML = `<p style="text-align:center; padding:40px; opacity:0.5;">Aucun résultat.</p>`;
+        return;
+    }
+
+    filtered.forEach(p => {
         const encoded = btoa(unescape(encodeURIComponent(p.id)));
 
-        // On prépare les hashtags pour la ligne du bas
+        const savedLater = JSON.parse(localStorage.getItem('bsg_later') || "[]");
+        const isLater = savedLater.includes(String(p.id));
+
         const hashtagsHtml = p.hashtags
             ? `<div class="playlist-tags-area">
                 ${p.hashtags.split(' ').filter(t => t.trim() !== "").map(t =>
-                    `<span class="tag-mini ${t === tag ? 'active-tag' : ''}" onclick="filterByHashtag(event, '${t}')">#${t}</span>`
+                    `<span class="tag-mini ${t === tag ? 'active-tag' : ''}" 
+                        onclick="filterByHashtag(event, '${t}')">#${t}</span>`
                 ).join('')}
                </div>`
             : "";
 
-        return `
-            <div class="playlist-banner" onclick="loadEpisodes('${encoded}', true)">
-                <div class="playlist-top-row">
-                    <img src="${p.image || ''}" class="playlist-thumb" alt="thumbnail">
+        const banner = document.createElement('div');
+        banner.className = 'playlist-banner';
+        banner.onclick = () => loadEpisodes(encoded, true);
+
+        banner.innerHTML = `
+            <div class="playlist-top-row" style="display:flex; align-items:flex-start; gap:12px; width:100%;">
+                <img src="${p.image || ''}" class="playlist-thumb">
+
+                <div class="playlist-info" style="flex:1; min-width:0;">
                     <span class="playlist-name-text"><strong>${p.name}</strong></span>
-                    <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
                 </div>
-                
-                ${hashtagsHtml}
-            </div>`;
-    }).join('');
+
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <button class="btn-share"
+                        onclick="event.stopPropagation(); sharePlaylist(event, '${encoded}')"
+                        title="Partager">
+                        🔗
+                    </button>
+
+                    <button class="btn-share"
+                        onclick="event.stopPropagation(); toggleSave('later', '${p.id}', this)"
+                        title="À regarder plus tard">
+                        ${isLater ? '🕒' : '➕'}
+                    </button>
+                </div>
+            </div>
+
+            ${hashtagsHtml}
+        `;
+
+        container.appendChild(banner);
+    });
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
