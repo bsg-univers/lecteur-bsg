@@ -790,20 +790,6 @@ h2,h3{
 /*      ÉPISODES         */
 /* ===================== */
 
-/* Style pour la courte description dans la liste des playlists */
-.playlist-mini-desc {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: rgba(234, 234, 234, 0.5); /* Plus discret que le titre */
-    margin: 4px 0 8px 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limite à 2 lignes */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
 /* Container pour le titre Épisodes et son bouton partage */
 .episodes-header-row {
     display: flex;
@@ -1414,96 +1400,72 @@ function showPlaylistsBySeason(season) {
     initSearchBar();
 }
 
-function renderFilteredPlaylists(season) {
-    const container = document.getElementById('playlist-results');
-    container.innerHTML = '';
+function renderFilteredPlaylists(list, isGlobalSearch = false) {
+    const container = document.getElementById('playlists-container');
+    if (!container) return;
 
-    const filtered = allPlaylists.filter(p => p.season === season);
-    if (filtered.length === 0) {
-        container.innerHTML = '<div class="loader">Aucune playlist pour cette saison.</div>';
+    container.innerHTML = "";
+
+    if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 40px; opacity: 0.5;">Aucun résultat trouvé dans toutes les saisons...</div>`;
         return;
     }
 
-    filtered.forEach(p => {
+    list.forEach(p => {
+        const encoded = btoa(unescape(encodeURIComponent(p.id)));
+
+        // Lecture des listes locales
+        const savedLater = JSON.parse(localStorage.getItem('bsg_later') || "[]");
+        const isLater = savedLater.includes(String(p.id));
+
         const banner = document.createElement('div');
         banner.className = 'playlist-banner';
-        banner.onclick = () => loadPlaylist(p.id);
+        banner.onclick = () => loadEpisodes(encoded, true);
 
-        // --- Ligne du haut : Image + Infos + Actions ---
-        const topRow = document.createElement('div');
-        topRow.className = 'playlist-top-row';
+        const hashtagsHtml = p.hashtags
+            ? `<div class="playlist-tags-area">
+                ${p.hashtags.split(' ').filter(t => t.trim() !== "").map(tag =>
+                    `<span class="tag-mini" data-tag="${tag}">#${tag}</span>`
+                ).join('')}
+               </div>`
+            : "";
 
-        // 1. Image
-        const img = document.createElement('img');
-        img.className = 'playlist-thumb';
-        img.src = p.image;
-        img.loading = "lazy";
-        topRow.appendChild(img);
+        banner.innerHTML = `
+            <div class="playlist-top-row" style="display: flex; align-items: flex-start; gap: 12px; width: 100%;">
+                <img src="${p.image || ''}" class="playlist-thumb" style="flex-shrink: 0;">
+                
+                <div class="playlist-info" style="flex-grow: 1; min-width: 0;">
+                    <div class="playlist-info-header" style="display: flex; flex-direction: column; gap: 4px;">
+                        <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                        ${isGlobalSearch ? `<span class="season-badge">${p.season}</span>` : ""}
+                    </div>
+                </div>
 
-        // 2. Infos (Titre + Mini-description)
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'playlist-info';
+                <!-- COLONNE BOUTONS -->
+                <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
+                    <button class="btn-share"
+                        onclick="event.stopPropagation(); sharePlaylist(event, '${encoded}')"
+                        title="Partager">
+                        🔗
+                    </button>
 
-        const nameDiv = document.createElement('div');
-        nameDiv.className = 'playlist-name-text';
-        nameDiv.textContent = p.name;
-        infoDiv.appendChild(nameDiv);
+                    <button class="btn-share"
+                        onclick="event.stopPropagation(); toggleSave('later', '${p.id}', this)"
+                        title="À regarder plus tard">
+                        ${isLater ? '🕒' : '⏳'}
+                    </button>
+                </div>
+            </div>
+            
+            ${hashtagsHtml}
+        `;
 
-        if (p.description) {
-            const descDiv = document.createElement('div');
-            descDiv.className = 'playlist-mini-desc';
-            const cleanDesc = p.description.replace(/<[^>]*>/g, '');
-            descDiv.textContent = cleanDesc;
-            infoDiv.appendChild(descDiv);
-        }
-        topRow.appendChild(infoDiv);
-
-        // 3. Actions (Boutons Partager et Watch Later) - RÉTABLIS ICI
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'playlist-actions';
-
-        // Bouton Partager
-        const btnShare = document.createElement('button');
-        btnShare.className = 'btn-share';
-        btnShare.innerHTML = '➦';
-        btnShare.title = "Partager la playlist";
-        btnShare.onclick = (e) => {
-            e.stopPropagation();
-            sharePlaylist(p.id, p.name);
-        };
-        actionsDiv.appendChild(btnShare);
-
-        // Bouton Watch Later (Cœur)
-        const btnLater = document.createElement('button');
-        btnLater.className = 'btn-share';
-        const isFav = (localStorage.getItem('watchLater') || '').includes(p.id);
-        btnLater.innerHTML = `<span class="heart-empty">${isFav ? '❤️' : '♡'}</span>`;
-        btnLater.title = isFav ? "Retirer de ma liste" : "Regarder plus tard";
-        btnLater.onclick = (e) => {
-            e.stopPropagation();
-            toggleWatchLater(p.id, btnLater);
-        };
-        actionsDiv.appendChild(btnLater);
-
-        topRow.appendChild(actionsDiv);
-        banner.appendChild(topRow);
-
-        // --- Ligne du bas : Les Hashtags ---
-        if (p.hashtags && p.hashtags.length > 0) {
-            const tagsArea = document.createElement('div');
-            tagsArea.className = 'playlist-tags-area';
-            p.hashtags.forEach(tag => {
-                const span = document.createElement('span');
-                span.className = 'tag-mini';
-                span.textContent = `#${tag}`;
-                span.onclick = (e) => {
-                    e.stopPropagation();
-                    filterByHashtag(tag);
-                };
-                tagsArea.appendChild(span);
-            });
-            banner.appendChild(tagsArea);
-        }
+        banner.querySelectorAll('.tag-mini').forEach(tagEl => {
+            tagEl.onclick = (e) => { 
+                e.stopPropagation(); 
+                filterByHashtag(e, tagEl.dataset.tag); 
+            };
+        });
 
         container.appendChild(banner);
     });
@@ -1576,98 +1538,81 @@ function toggleHashtagLibrary() {
     library.style.display = 'block';
 }
     
-function filterByHashtag(tag) {
-    const container = document.getElementById('playlist-results');
-    container.innerHTML = '';
+function filterByHashtag(event, tag) {
+    if (event) event.stopPropagation();
+    
+    const div = document.getElementById('episodes_list');
 
-    const searchSection = document.getElementById('search-section');
-    if (searchSection) {
-        searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    div.innerHTML = `
+        <div class="season-title-container">
+            <h2>#${tag}</h2>
+            <div class="btn-explore-themes" onclick="showPlaylistsBySeason(allPlaylists[0].season)" title="Retour">
+                ✕
+            </div>
+        </div>
+        <div id="playlists-container"></div>
+    `;
+
+    const container = document.getElementById('playlists-container');
+
+    const filtered = allPlaylists.filter(p => 
+        p.hashtags && p.hashtags.includes(tag)
+    );
+
+    if (!filtered.length) {
+        container.innerHTML = `<p style="text-align:center; padding:40px; opacity:0.5;">Aucun résultat.</p>`;
+        return;
     }
 
-    const header = document.createElement('div');
-    header.className = 'filter-header';
-    header.innerHTML = `
-        <span style="color:var(--primary); font-weight:bold;">#${tag}</span>
-        <button class="btn-close-filter" onclick="renderFilteredPlaylists(currentSeason)">Fermer</button>
-    `;
-    container.appendChild(header);
-
-    const filtered = allPlaylists.filter(p => p.hashtags && p.hashtags.includes(tag));
-
     filtered.forEach(p => {
+        const encoded = btoa(unescape(encodeURIComponent(p.id)));
+
+        const savedLater = JSON.parse(localStorage.getItem('bsg_later') || "[]");
+        const isLater = savedLater.includes(String(p.id));
+
+        const hashtagsHtml = p.hashtags
+            ? `<div class="playlist-tags-area">
+                ${p.hashtags.split(' ').filter(t => t.trim() !== "").map(t =>
+                    `<span class="tag-mini ${t === tag ? 'active-tag' : ''}" 
+                        onclick="filterByHashtag(event, '${t}')">#${t}</span>`
+                ).join('')}
+               </div>`
+            : "";
+
         const banner = document.createElement('div');
         banner.className = 'playlist-banner';
-        banner.onclick = () => loadPlaylist(p.id);
+        banner.onclick = () => loadEpisodes(encoded, true);
 
-        const topRow = document.createElement('div');
-        topRow.className = 'playlist-top-row';
+        banner.innerHTML = `
+            <div class="playlist-top-row" style="display:flex; align-items:flex-start; gap:12px; width:100%;">
+                <img src="${p.image || ''}" class="playlist-thumb">
 
-        const img = document.createElement('img');
-        img.className = 'playlist-thumb';
-        img.src = p.image;
-        topRow.appendChild(img);
+                <div class="playlist-info" style="flex:1; min-width:0;">
+                    <span class="playlist-name-text"><strong>${p.name}</strong></span>
+                </div>
 
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'playlist-info';
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <button class="btn-share"
+                        onclick="event.stopPropagation(); sharePlaylist(event, '${encoded}')"
+                        title="Partager">
+                        🔗
+                    </button>
 
-        const nameDiv = document.createElement('div');
-        nameDiv.className = 'playlist-name-text';
-        nameDiv.textContent = p.name;
-        infoDiv.appendChild(nameDiv);
+                    <button class="btn-share"
+                        onclick="event.stopPropagation(); toggleSave('later', '${p.id}', this)"
+                        title="À regarder plus tard">
+                        ${isLater ? '🕒' : '⏳'}
+                    </button>
+                </div>
+            </div>
 
-        if (p.description) {
-            const descDiv = document.createElement('div');
-            descDiv.className = 'playlist-mini-desc';
-            const cleanDesc = p.description.replace(/<[^>]*>/g, '');
-            descDiv.textContent = cleanDesc;
-            infoDiv.appendChild(descDiv);
-        }
-        topRow.appendChild(infoDiv);
-
-        // --- RÉTABLISSEMENT DES BOUTONS D'ACTION ICI AUSSI ---
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'playlist-actions';
-
-        const btnShare = document.createElement('button');
-        btnShare.className = 'btn-share';
-        btnShare.innerHTML = '➦';
-        btnShare.onclick = (e) => {
-            e.stopPropagation();
-            sharePlaylist(p.id, p.name);
-        };
-        actionsDiv.appendChild(btnShare);
-
-        const btnLater = document.createElement('button');
-        btnLater.className = 'btn-share';
-        const isFav = (localStorage.getItem('watchLater') || '').includes(p.id);
-        btnLater.innerHTML = `<span class="heart-empty">${isFav ? '❤️' : '♡'}</span>`;
-        btnLater.onclick = (e) => {
-            e.stopPropagation();
-            toggleWatchLater(p.id, btnLater);
-        };
-        actionsDiv.appendChild(btnLater);
-
-        topRow.appendChild(actionsDiv);
-        banner.appendChild(topRow);
-
-        const tagsArea = document.createElement('div');
-        tagsArea.className = 'playlist-tags-area';
-        p.hashtags.forEach(t => {
-            const span = document.createElement('span');
-            span.className = 'tag-mini';
-            if (t === tag) span.style.borderColor = "var(--primary)";
-            span.textContent = `#${t}`;
-            span.onclick = (e) => {
-                e.stopPropagation();
-                filterByHashtag(t);
-            };
-            tagsArea.appendChild(span);
-        });
-        banner.appendChild(tagsArea);
+            ${hashtagsHtml}
+        `;
 
         container.appendChild(banner);
     });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
     
 // --- PARTAGE NATIF + COPIE ---
