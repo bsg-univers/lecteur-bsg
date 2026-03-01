@@ -1399,7 +1399,50 @@ function showPlaylistsBySeason(season) {
     // 2. On active la barre de recherche
     initSearchBar();
 }
+// --- GESTION DES LISTES LOCALES ---
 
+// Initialisation des données si elles n'existent pas
+if (!localStorage.getItem('bsg_favorites')) localStorage.setItem('bsg_favorites', JSON.stringify([]));
+if (!localStorage.getItem('bsg_later')) localStorage.setItem('bsg_later', JSON.stringify([]));
+
+function toggleSave(listType, playlistId, btn) {
+    const key = 'bsg_' + listType;
+    let items = JSON.parse(localStorage.getItem(key) || "[]");
+    const index = items.indexOf(playlistId);
+    let message = "";
+
+    if (index > -1) {
+            // SUPPRESSION
+            items.splice(index, 1);
+            if (listType === 'favorites') {
+                // On utilise un span pour appliquer l'élargissement au symbole vide
+                btn.innerHTML = '<span class="heart-empty">♡</span>';
+                message = "Retiré des favoris";
+            } else {
+                btn.innerText = '➕';
+                message = "Retiré de 'À regarder plus tard'";
+            }
+        } else {
+            // AJOUT
+            items.push(playlistId);
+            if (listType === 'favorites') {
+                btn.innerText = '❤️';
+                message = "Ajouté aux favoris !";
+            } else {
+                btn.innerText = '🕒';
+                message = "Ajouté à 'À regarder plus tard'";
+            }
+        }
+
+    localStorage.setItem(key, JSON.stringify(items));
+    showToast(message);
+
+    // Si on est dans la vue "Liste", on rafraîchit pour masquer l'élément supprimé
+    const currentTitle = document.getElementById('view-title')?.innerText || "";
+    if (currentTitle.includes("Mes") || currentTitle.includes("Regarder")) {
+        showSavedList(listType);
+    }
+}
 function renderFilteredPlaylists(list, isGlobalSearch = false) {
     const container = document.getElementById('playlists-container');
     if (!container) return;
@@ -1619,50 +1662,7 @@ function showToast(message) {
     }, 3000);
 }
 
-// --- GESTION DES LISTES LOCALES ---
 
-// Initialisation des données si elles n'existent pas
-if (!localStorage.getItem('bsg_favorites')) localStorage.setItem('bsg_favorites', JSON.stringify([]));
-if (!localStorage.getItem('bsg_later')) localStorage.setItem('bsg_later', JSON.stringify([]));
-
-function toggleSave(listType, playlistId, btn) {
-    const key = 'bsg_' + listType;
-    let items = JSON.parse(localStorage.getItem(key) || "[]");
-    const index = items.indexOf(playlistId);
-    let message = "";
-
-    if (index > -1) {
-            // SUPPRESSION
-            items.splice(index, 1);
-            if (listType === 'favorites') {
-                // On utilise un span pour appliquer l'élargissement au symbole vide
-                btn.innerHTML = '<span class="heart-empty">♡</span>';
-                message = "Retiré des favoris";
-            } else {
-                btn.innerText = '➕';
-                message = "Retiré de 'À regarder plus tard'";
-            }
-        } else {
-            // AJOUT
-            items.push(playlistId);
-            if (listType === 'favorites') {
-                btn.innerText = '❤️';
-                message = "Ajouté aux favoris !";
-            } else {
-                btn.innerText = '🕒';
-                message = "Ajouté à 'À regarder plus tard'";
-            }
-        }
-
-    localStorage.setItem(key, JSON.stringify(items));
-    showToast(message);
-
-    // Si on est dans la vue "Liste", on rafraîchit pour masquer l'élément supprimé
-    const currentTitle = document.getElementById('view-title')?.innerText || "";
-    if (currentTitle.includes("Mes") || currentTitle.includes("Regarder")) {
-        showSavedList(listType);
-    }
-}
 function resetMediaState() {
     audio.pause();
     audio.src = "";
