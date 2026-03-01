@@ -185,7 +185,18 @@ header {
 /* ===================== */
 /*       CONTENU         */
 /* ===================== */
-
+/* --- Extrait description playlist (vue saison) --- */
+.playlist-excerpt {
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: rgba(234, 234, 234, 0.55);
+    margin: 4px 0 2px 75px; /* aligne sous le titre (60px image + gap) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* 2 lignes max */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+        
 .btn-explore-themes {
     width: 40px; /* Un peu plus grand que les boutons de partage */
     height: 40px;
@@ -1414,13 +1425,25 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
     list.forEach(p => {
         const encoded = btoa(unescape(encodeURIComponent(p.id)));
 
-        // Lecture des listes locales
         const savedLater = JSON.parse(localStorage.getItem('bsg_later') || "[]");
         const isLater = savedLater.includes(String(p.id));
 
         const banner = document.createElement('div');
         banner.className = 'playlist-banner';
         banner.onclick = () => loadEpisodes(encoded, true);
+
+        // --- Génération extrait description ---
+        let excerpt = "";
+        if (p.description) {
+            const clean = p.description.replace(/<[^>]+>/g, '').trim();
+            const maxLength = 160;
+            if (clean.length > maxLength) {
+                excerpt = clean.substring(0, maxLength);
+                excerpt = excerpt.substring(0, excerpt.lastIndexOf(" ")) + "…";
+            } else {
+                excerpt = clean;
+            }
+        }
 
         const hashtagsHtml = p.hashtags
             ? `<div class="playlist-tags-area">
@@ -1441,13 +1464,10 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
                     </div>
                 </div>
 
-                <!-- COLONNE BOUTONS -->
                 <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
                     <button class="btn-share"
                         onclick="event.stopPropagation(); sharePlaylist(event, '${encoded}')"
-                        title="Partager">
-                        🔗
-                    </button>
+                        title="Partager">🔗</button>
 
                     <button class="btn-share"
                         onclick="event.stopPropagation(); toggleSave('later', '${p.id}', this)"
@@ -1456,7 +1476,9 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
                     </button>
                 </div>
             </div>
-            
+
+            ${excerpt ? `<div class="playlist-excerpt">${excerpt}</div>` : ""}
+
             ${hashtagsHtml}
         `;
 
@@ -1570,6 +1592,19 @@ function filterByHashtag(event, tag) {
         const savedLater = JSON.parse(localStorage.getItem('bsg_later') || "[]");
         const isLater = savedLater.includes(String(p.id));
 
+        // --- Extrait description ---
+        let excerpt = "";
+        if (p.description) {
+            const clean = p.description.replace(/<[^>]+>/g, '').trim();
+            const maxLength = 160;
+            if (clean.length > maxLength) {
+                excerpt = clean.substring(0, maxLength);
+                excerpt = excerpt.substring(0, excerpt.lastIndexOf(" ")) + "…";
+            } else {
+                excerpt = clean;
+            }
+        }
+
         const hashtagsHtml = p.hashtags
             ? `<div class="playlist-tags-area">
                 ${p.hashtags.split(' ').filter(t => t.trim() !== "").map(t =>
@@ -1594,9 +1629,7 @@ function filterByHashtag(event, tag) {
                 <div style="display:flex; flex-direction:column; gap:6px;">
                     <button class="btn-share"
                         onclick="event.stopPropagation(); sharePlaylist(event, '${encoded}')"
-                        title="Partager">
-                        🔗
-                    </button>
+                        title="Partager">🔗</button>
 
                     <button class="btn-share"
                         onclick="event.stopPropagation(); toggleSave('later', '${p.id}', this)"
@@ -1605,6 +1638,8 @@ function filterByHashtag(event, tag) {
                     </button>
                 </div>
             </div>
+
+            ${excerpt ? `<div class="playlist-excerpt">${excerpt}</div>` : ""}
 
             ${hashtagsHtml}
         `;
