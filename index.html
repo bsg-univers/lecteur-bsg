@@ -265,15 +265,12 @@ header {
 .playlist-info {
     display: flex;
     flex-direction: column;
-    /* Aligne verticalement en bas */
-    justify-content: flex-end; 
-    /* Aligne horizontalement à gauche (important) */
-    align-items: flex-start;   
-    
-    flex: 1;
-    /* On s'assure que le bloc prend la hauteur de l'image */
-    min-height: 60px; 
+    justify-content: flex-end; /* Aligne le contenu en BAS verticalement */
+    align-items: flex-start;    /* Aligne le contenu à GAUCHE horizontalement */
+    flex-grow: 1;
+    min-height: 60px;           /* Doit être égal à la hauteur de votre image .playlist-thumb */
 }
+        
 /* Conteneur vertical pour le titre et le badge */
 .playlist-info-header {
     display: flex;
@@ -286,12 +283,19 @@ header {
 
 /* Le titre de la playlist */
 .playlist-name-text {
-    font-size: 1rem;
-    margin: 0;
-    text-align: left; /* Force le texte à gauche */
-    line-height: 1.3;
-    color: #fff;
-    /* On ne limite plus forcément à une ligne pour que ce soit lisible */
+    width: fit-content;         /* Empêche le titre de prendre toute la largeur inutilement */
+    margin: 0;                  /* Supprime les marges parasites */
+    font-weight: bold;
+    font-size: 1.05rem;
+    color: var(--primary);
+    line-height: 1.2;
+    text-align: left;           /* Garantie l'alignement à gauche */
+    
+    /* Sécurité pour les titres longs */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /* Le badge de saison */
@@ -366,7 +370,7 @@ header {
 /* La partie haute : Image + Titre */
 .playlist-top-row {
     display: flex;
-    align-items: stretch; /* Force le bloc texte à faire la même hauteur que l'image (60px) */
+    align-items: stretch;       /* Très important pour que .playlist-info utilise toute la hauteur */
     gap: 15px;
     width: 100%;
 }
