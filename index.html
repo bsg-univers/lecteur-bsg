@@ -1560,7 +1560,6 @@ function filterByHashtag(event, tag) {
                 <div class="playlist-top-row">
                     <img src="${p.image || ''}" class="playlist-thumb" alt="thumbnail">
                     <span class="playlist-name-text"><strong>${p.name}</strong></span>
-                    <button class="btn-share" onclick="sharePlaylist(event, '${encoded}')">🔗</button>
                     <button class="btn-share" onclick="toggleSave('later', '${cleanId}', this)" title="À regarder plus tard">
                         ${isLater ? '🕒' : '➕'}
                     </button>
