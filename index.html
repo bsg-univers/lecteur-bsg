@@ -220,9 +220,6 @@ header {
     /* On mélange une ombre de profondeur noire et un halo jaune (rgba(210, 179, 71, 0.4)) */
     box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 15px rgba(210, 179, 71, 0.4);
 
-    /* 3. Transition fluide uniquement pour les interactions */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
     -webkit-tap-highlight-color: transparent;
     outline: none;
 }
@@ -313,8 +310,10 @@ header {
     border-radius: 4px;
     text-transform: uppercase;
     border: 1px solid rgba(243, 195, 0, 0.3);
-    display: inline-block;
-    align-items: flex-start;   
+    display: flex; /* Change inline-block en flex si tu veux aligner le contenu interne */
+    align-self: flex-start; /* Aligne le badge lui-même à gauche du parent flex */
+    margin-right: auto; /* Pousse tout le reste vers la droite */
+    margin-left: 0;
 }
 
 /* Zone des hashtags (pour s'assurer qu'ils ne remontent pas) */
@@ -920,8 +919,7 @@ h2,h3{
   justify-content: center;
   cursor: pointer;
   transition: all .3s ease;
-  animation: pulse-border 12s infinite ease-in-out;
-      /* Supprime le rectangle bleu sur mobile */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 15px rgba(210, 179, 71, 0.4);
   -webkit-tap-highlight-color: transparent;
   
   /* Supprime le contour de sélection au focus (clavier/accessibilité) */
