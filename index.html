@@ -1146,15 +1146,22 @@ audio {
     display: flex;
     align-items: center;
     position: relative;
-    /* On s'assure qu'elle est cliquable */
     z-index: 1; 
     -webkit-tap-highlight-color: transparent;
     outline: none;
+
+    /* AJOUT CRUCIAL : On interdit STRICTEMENT à tout élément de dépasser de la ligne à droite ou à gauche */
+    overflow: hidden; 
 }
 
 .bsg-wave svg {
     width: 100%;
-    height: 100%; /* Le SVG prend toute la place du conteneur réduit */
+    height: 100%; 
+    
+    /* MODIFICATION ICI : On agrandit très légèrement le SVG (101%) et on le décale à gauche.
+       Le petit bout bleu à droite se retrouve "poussé" en dehors de la zone visible (overflow: hidden) et disparaît ! */
+    width: 101vw;
+    transform: translateX(-10px);
 }
 
 #wave-bg {
@@ -1173,10 +1180,7 @@ audio {
     stroke-dashoffset: 600;
     transition: stroke-dashoffset 0.12s linear;
 
-    /* L'ASTUCE : On décale TOUTE la ligne bleue de 4 pixels vers la gauche.
-       - Au début : le petit bout bleu de droite est "poussé" en dehors de l'écran et devient invisible.
-       - À la fin : la ligne se remplit et compense le décalage pour toucher le bord droit à 100%. */
-    transform: translateX(-4px); 
+    /* On nettoie le transform d'ici car on l'a appliqué proprement sur le SVG complet au-dessus */
 }
 
 </style>
