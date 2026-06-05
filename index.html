@@ -1076,7 +1076,7 @@ audio {
     
     width: 180px;  /* Augmenté un peu pour l'effet visuel */
     height: 140px;
-    z-index: 10000; /* Passe au-dessus de tout le reste */
+    z-index: 10000; /* Reste au-dessus */
     cursor: pointer;
     outline: none;
     -webkit-tap-highlight-color: transparent;
@@ -1084,8 +1084,10 @@ audio {
     /* Supprimez le margin-bottom pour bien toucher le bord */
     bottom: -10px; 
     padding: 0;
-    /* AJOUT DE LA TRANSPARENCE ICI */
     opacity: 1; /* 1 est opaque, 0 est invisible */
+    
+    /* MODIFICATION ICI : Le clic traverse le rectangle invisible du bouton */
+    pointer-events: none; 
     
     /* Transition pour que le changement de transparence soit fluide au survol */
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -1096,12 +1098,15 @@ audio {
     height: 100%;
     object-fit: contain;
     object-position: bottom; 
+    
+    /* MODIFICATION ICI : On réactive le clic uniquement sur l'image (la queue) */
+    pointer-events: auto;
+    
     /* Ombre blanche douce par défaut pour détacher le noir du fond */
     filter:
     drop-shadow(0 -3px 6px rgba(255, 255, 255, 0.5))
     drop-shadow(0 1px 2px rgba(255, 255, 255, 0.3));
     transition: filter 0.3s ease, transform 0.3s ease;
-
 } 
 
 
@@ -1141,6 +1146,8 @@ audio {
     display: flex;
     align-items: center;
     position: relative;
+    /* On s'assure qu'elle est cliquable */
+    z-index: 1; 
 }
 
 .bsg-wave svg {
@@ -1156,14 +1163,13 @@ audio {
 
 #wave-progress {
     fill: none;
-    stroke: #f3c300;
+    stroke: #0092c7;
     stroke-width: 4;
     stroke-linecap: round;
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
     transition: stroke-dashoffset 0.12s linear;
 }
-
 
 </style>
 </head>
