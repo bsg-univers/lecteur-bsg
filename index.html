@@ -1165,22 +1165,12 @@ audio {
 /* --- Vague : Barre de progression colorée --- */
 #wave-progress {
     fill: none;
-    
-    /* MODIFICATION ICI : Au lieu de bleu, on force la couleur à TRANSPARENT par défaut.
-       Comme ça, même si le JavaScript s'active au chargement, le point bleu est invisible. */
-    stroke: transparent;
-    
+    stroke: #f3c300;
     stroke-width: 4;
-    stroke-linecap: round;
+    stroke-linecap: butt;
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
-    transition: stroke-dashoffset 0.12s linear, stroke 0.1s ease;
-}
-
-/* LA CLÉ : Dès que la lecture commence (la classe 'is-playing' apparaît sur le player),
-   on applique la vraie couleur bleue (#0092c7). Le point apparaît alors à gauche et progresse. */
-.bsg-audio-player.is-playing #wave-progress {
-    stroke: #0092c7;
+    transition: stroke-dashoffset 0.12s linear;
 }
 
 </style>
