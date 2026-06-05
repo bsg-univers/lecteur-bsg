@@ -1149,19 +1149,11 @@ audio {
     z-index: 1; 
     -webkit-tap-highlight-color: transparent;
     outline: none;
-
-    /* AJOUT CRUCIAL : On interdit STRICTEMENT à tout élément de dépasser de la ligne à droite ou à gauche */
-    overflow: hidden; 
 }
 
 .bsg-wave svg {
     width: 100%;
-    height: 100%; 
-    
-    /* MODIFICATION ICI : On agrandit très légèrement le SVG (101%) et on le décale à gauche.
-       Le petit bout bleu à droite se retrouve "poussé" en dehors de la zone visible (overflow: hidden) et disparaît ! */
-    width: 101vw;
-    transform: translateX(-10px);
+    height: 100%; /* On remet le code d'origine, simple et propre */
 }
 
 #wave-bg {
@@ -1176,11 +1168,12 @@ audio {
     stroke: #0092c7;
     stroke-width: 4;
     stroke-linecap: round;
+    
+    /* LA SOLUTION : */
     stroke-dasharray: 600;
-    stroke-dashoffset: 600;
+    stroke-dashoffset: 602; /* On passe de 600 à 602 pour "pousser" le bout bleu hors de vue */
+    
     transition: stroke-dashoffset 0.12s linear;
-
-    /* On nettoie le transform d'ici car on l'a appliqué proprement sur le SVG complet au-dessus */
 }
 
 </style>
