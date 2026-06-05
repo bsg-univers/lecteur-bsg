@@ -1167,9 +1167,7 @@ audio {
     fill: none;
     stroke: #f3c300;
     stroke-width: 4;
-    stroke-linecap: butt;
-    stroke-dasharray: 600;
-    stroke-dashoffset: 600;
+    stroke-linecap: round;
     transition: stroke-dashoffset 0.12s linear;
 }
 
@@ -1294,12 +1292,18 @@ window.addEventListener('pointermove', e => {
 });
 
 
-/* --- UI --- */
+const pathLength = waveProgress.getTotalLength();
+
+waveProgress.style.strokeDasharray = pathLength;
+waveProgress.style.strokeDashoffset = pathLength;
+
 function updateProgress(ratio) {
-    waveProgress.style.strokeDashoffset = 600 - ratio * 600;
+    waveProgress.style.strokeDashoffset =
+        pathLength - ratio * pathLength;
+
     currentTimeEl.textContent = formatTime(audio.currentTime);
 }
-
+    
 function formatTime(t) {
     if (!Number.isFinite(t)) return "0:00";
     const m = Math.floor(t / 60);
