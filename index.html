@@ -1165,25 +1165,18 @@ audio {
 
 /* --- Vague : Barre de progression colorée --- */
 #wave-progress {
-    /* 1. Vos règles d'origine (Couleurs, style et taille 600) */
     fill: none;
     stroke: #0092c7;
     stroke-width: 4;
     stroke-linecap: round;
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
-    
-    /* 2. On cache la barre par défaut au démarrage (opacité à 0) */
-    opacity: 0;
-    
-    /* 3. On gère les transitions pour l'effet visuel */
-    transition: opacity 0.3s ease, stroke-dashoffset 0.12s linear;
-}
+    transition: stroke-dashoffset 0.12s linear;
 
-/* Dès que la lecture commence OU que le JavaScript commence à faire bouger la barre, on la rend visible d'un coup (opacité à 1) */
-.bsg-audio-player.is-playing #wave-progress,
-#wave-progress[style*="stroke-dashoffset"] {
-    opacity: 1;
+    /* L'ASTUCE : On décale TOUTE la ligne bleue de 4 pixels vers la gauche.
+       - Au début : le petit bout bleu de droite est "poussé" en dehors de l'écran et devient invisible.
+       - À la fin : la ligne se remplit et compense le décalage pour toucher le bord droit à 100%. */
+    transform: translateX(-4px); 
 }
 
 </style>
