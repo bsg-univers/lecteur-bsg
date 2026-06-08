@@ -1979,40 +1979,40 @@ async function loadEpisodes(pid, encoded = false) {
 
 
 async function play(i) {
-    current = i;
-    const episode = episodes[i];
-    const pImg = document.getElementById('player-img');
+  current = i;
+  const episode = episodes[i];
+  const pImg = document.getElementById('player-img');
 
-    // 1. Mise à jour immédiate du titre (avant même le chargement audio)
+  // 1. UI : Sélection dans la liste
+  document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
+  document.getElementById(`ep-${i}`)?.classList.add('current');
 
-    // 2. Gestion de l'image
-    if (pImg) {
-        pImg.classList.remove('zoomed');
-        if (episode.image && episode.image.trim() !== "") {
-            pImg.src = episode.image;
-            pImg.classList.replace('is-logo', 'is-episode');
-        } else {
-            pImg.src = "https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/media/logo-BSG.png";
-            pImg.classList.replace('is-episode', 'is-logo');
-        }
+  // 2. Gestion de l'image
+  if (pImg) {
+    pImg.classList.remove('zoomed');
+    if (episode.image && episode.image.trim() !== "") {
+      pImg.src = episode.image;
+      pImg.classList.replace('is-logo', 'is-episode');
+    } else {
+      pImg.src = "https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/media/logo-BSG.png";
+      pImg.classList.replace('is-episode', 'is-logo');
     }
+  }
 
-    // 3. UI : Sélection dans la liste
-    document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
-    document.getElementById(`ep-${i}`)?.classList.add('current');
+  // 3. Chargement Audio EN PREMIER et de manière fluide
+  audio.src = episode.audio;
+  
+  // On met à jour la MediaSession tout de suite pour que l'écran verrouillé se mette à jour
+  updateMediaSession(episode);
 
-    // 4. Chargement Audio
-    audio.src = episode.audio;
-    
-    await new Promise((resolve) => {
-        audio.onloadedmetadata = resolve;
-    });
-    
-    updateMediaSession(episode);
-    
+  // 4. Lecture immédiate sans attendre le 'loadedmetadata' asynchrone
+  try {
     await audio.play();
-
+  } catch (err) {
+    console.error("Échec de la lecture automatique:", err);
+  }
 }
+
 function updateMediaSession(episode) {
     if (!('mediaSession' in navigator)) return;
 
@@ -2057,24 +2057,6 @@ async function requestWakeLock() {
     }
 }
 
-function registerMediaSessionHandlers() {
-    if (!('mediaSession' in navigator)) return;
-
-    navigator.mediaSession.setActionHandler('play', () => audio.play());
-    navigator.mediaSession.setActionHandler('pause', () => audio.pause());
-
-    navigator.mediaSession.setActionHandler('nexttrack', () => {
-        if (current + 1 < episodes.length) {
-            play(current + 1);
-        }
-    });
-
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-        if (current > 0) {
-            play(current - 1);
-        }
-    });
-}
     
 // --- ÉVÉNEMENTS AUDIO ---
 audio.addEventListener('play', () => {
