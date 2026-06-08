@@ -1235,7 +1235,8 @@ audio {
         </button>
 </div>
 
-<audio id="player" preload="metadata" playsinline></audio>
+<audio id="player-a" style="display:none;" preload="auto"></audio>
+<audio id="player-b" style="display:none;" preload="auto"></audio>
 
 <script>
     
@@ -1244,8 +1245,11 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoj1HRP-nYuZW5YHoaN
 let episodes = [];
 let current = 0;
 let allPlaylists = [];
+const audioA = document.getElementById('player-a');
+const audioB = document.getElementById('player-b');
 
-const audio = document.getElementById('player');
+let audio = audioA;       // Devient le lecteur actif
+let nextAudio = audioB;   // Devient le lecteur de secours
 const titleDisplay = document.getElementById('now-playing-title');
 
 const whaleBtn = document.getElementById('whale-btn');
@@ -1978,6 +1982,14 @@ async function loadEpisodes(pid, encoded = false) {
 }
 
 
+// --- Fonction pour basculer les lecteurs ---
+function switchPlayers() {
+  const temp = audio;
+  audio = nextAudio;
+  nextAudio = temp;
+}
+
+// --- TA NOUVELLE FONCTION PLAY ---
 async function play(i) {
   current = i;
   const episode = episodes[i];
@@ -1999,20 +2011,75 @@ async function play(i) {
     }
   }
 
-  // 3. Chargement Audio EN PREMIER et de manière fluide
+  // 3. Assigner la source au lecteur ACTIF et lancer immédiatement
   audio.src = episode.audio;
-  
-  // On met à jour la MediaSession tout de suite pour que l'écran verrouillé se mette à jour
   updateMediaSession(episode);
 
-  // 4. Lecture immédiate sans attendre le 'loadedmetadata' asynchrone
   try {
     await audio.play();
   } catch (err) {
-    console.error("Échec de la lecture automatique:", err);
+    console.error("Échec de la lecture:", err);
+  }
+
+  // 4. L'ASTUCE : Anticiper et précharger l'épisode SUIVANT sur le second lecteur
+  const nextIndex = i + 1;
+  if (nextIndex < episodes.length) {
+    nextAudio.src = episodes[nextIndex].audio;
+    nextAudio.load(); // Force le mobile à mettre le début de l'audio en cache immédiatement
   }
 }
 
+// --- ÉCOUTEURS D'ÉVÉNEMENTS LIÉS À L'UI (À dupliquer pour les deux lecteurs) ---
+function setupAudioListeners(playerElement) {
+  playerElement.addEventListener('play', () => {
+    if (playerElement !== audio) return; // Sécurité : n'agit que si c'est le lecteur actif
+    uiPlayer.classList.add('is-playing');
+    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
+    requestWakeLock();
+  });
+
+  playerElement.addEventListener('pause', () => {
+    if (playerElement !== audio) return;
+    uiPlayer.classList.remove('is-playing');
+    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "paused";
+  });
+
+  playerElement.addEventListener('timeupdate', () => {
+    if (playerElement !== audio || isScrubbing || !audio.duration) return;
+    updateProgress(audio.currentTime / audio.duration);
+    
+    // Mise à jour de la MediaSession pour l'écran verrouillé
+    if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+      navigator.mediaSession.setPositionState({
+        duration: audio.duration,
+        playbackRate: audio.playbackRate,
+        position: audio.currentTime
+      });
+    }
+  });
+
+  playerElement.addEventListener('loadedmetadata', () => {
+    if (playerElement !== audio) return;
+    durationEl.textContent = formatTime(audio.duration);
+  });
+
+  // GESTION DU CHANGEMENT : Quand le morceau se termine
+  playerElement.addEventListener('ended', () => {
+    if (playerElement !== audio) return;
+    
+    if (current + 1 < episodes.length) {
+      // 1. On bascule les rôles des lecteurs de manière synchrone
+      switchPlayers();
+      // 2. On lance directement le morceau préchargé (aucune attente réseau)
+      play(current + 1);
+    }
+  });
+}
+
+// Initialisation des écouteurs sur les deux lecteurs
+setupAudioListeners(audioA);
+setupAudioListeners(audioB);
+    
 function updateMediaSession(episode) {
     if (!('mediaSession' in navigator)) return;
 
