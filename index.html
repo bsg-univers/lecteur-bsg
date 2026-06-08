@@ -1324,15 +1324,25 @@ function formatTime(t) {
 
 
 // --- MEDIA SESSION : handlers déclarés UNE SEULE FOIS ---
+// --- CONFIGURATION MEDIA SESSION (À vérifier/modifier dans votre code) ---
 if ('mediaSession' in navigator) {
     navigator.mediaSession.setActionHandler('play', () => audio.play());
     navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+    
     navigator.mediaSession.setActionHandler('previoustrack', () => {
-        if (current > 0) play(current - 1);
+        if (current > 0) {
+            // On utilise directement la fonction globale play
+            play(current - 1); 
+        }
     });
+    
     navigator.mediaSession.setActionHandler('nexttrack', () => {
-        if (current + 1 < episodes.length) play(current + 1);
+        if (current + 1 < episodes.length) {
+            // On utilise directement la fonction globale play
+            play(current + 1); 
+        }
     });
+
     navigator.mediaSession.setActionHandler('seekbackward', (d) => {
         audio.currentTime -= (d.seekOffset || 10);
     });
@@ -2068,12 +2078,38 @@ audio.addEventListener('pause', () => {
 });
 
 // --- MODIFICATION DE L'ÉVÉNEMENT ENDED ---
-audio.addEventListener('ended', async () => {
+// --- NOUVEL ÉVÉNEMENT ENDED ---
+audio.addEventListener('ended', () => {
     if (current + 1 < episodes.length) {
-        // Petit délai pour laisser le système respirer
-        setTimeout(() => {
-            play(current + 1);
-        }, 500);
+        // 1. On passe à l'index suivant tout de suite
+        current++; 
+        const nextEpisode = episodes[current];
+        
+        // 2. On change la source et on met à jour les métadonnées IMMEDIATEMENT
+        audio.src = nextEpisode.audio;
+        updateMediaSession(nextEpisode.title);
+        
+        // 3. On force le chargement et la lecture instantanée sans timeout
+        audio.load(); 
+        
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                // La lecture a réussi en arrière-plan !
+                if ('mediaSession' in navigator) {
+                    navigator.mediaSession.playbackState = "playing";
+                }
+            }).catch(err => {
+                console.log("Lecture auto bloquée en arrière-plan, tentative de réveil...", err);
+                // Si le navigateur bloque, on essaie de le feinter en re-déclenchant
+                // l'action via la Media Session qui reste active sur l'écran verrouillé
+                navigator.mediaSession.playbackState = "paused";
+            });
+        }
+        
+        // Mettre à jour l'interface du site (au cas où l'utilisateur revient)
+        document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
+        document.getElementById(`ep-${current}`)?.classList.add('current');
     }
 });
 
