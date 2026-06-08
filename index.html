@@ -1324,25 +1324,15 @@ function formatTime(t) {
 
 
 // --- MEDIA SESSION : handlers déclarés UNE SEULE FOIS ---
-// --- CONFIGURATION MEDIA SESSION (À vérifier/modifier dans votre code) ---
 if ('mediaSession' in navigator) {
     navigator.mediaSession.setActionHandler('play', () => audio.play());
     navigator.mediaSession.setActionHandler('pause', () => audio.pause());
-    
     navigator.mediaSession.setActionHandler('previoustrack', () => {
-        if (current > 0) {
-            // On utilise directement la fonction globale play
-            play(current - 1); 
-        }
+        if (current > 0) play(current - 1);
     });
-    
     navigator.mediaSession.setActionHandler('nexttrack', () => {
-        if (current + 1 < episodes.length) {
-            // On utilise directement la fonction globale play
-            play(current + 1); 
-        }
+        if (current + 1 < episodes.length) play(current + 1);
     });
-
     navigator.mediaSession.setActionHandler('seekbackward', (d) => {
         audio.currentTime -= (d.seekOffset || 10);
     });
@@ -2013,48 +2003,48 @@ async function play(i) {
 
     // 4. Chargement Audio
     audio.src = episode.audio;
-
-// FIX 1 : On force la mise à jour de l'écran verrouillé AVANT le play
-  updateMediaSession(episode.title);
-  if ('mediaSession' in navigator) {
-    navigator.mediaSession.playbackState = "playing";
-  }
+    audio.load();
+    updateMediaSession(episode);
+    registerMediaSessionHandlers();
     
     try {
         await audio.play();
-        updateMediaSession(episode.title);
     } catch (err) {
         console.error("Erreur lecture", err);
-        // Si l'autostart est bloqué par Chrome, on laisse le titre mais on prévient
-        titleDisplay.innerText = episode.title;
     }
 
 }
+function updateMediaSession(episode) {
+    if (!('mediaSession' in navigator)) return;
 
-
-// --- MEDIA SESSION METADATA ---
-function updateMediaSession(title) {
-  if (!('mediaSession' in navigator)) return;
-
-  navigator.mediaSession.metadata = new MediaMetadata({
-    title: title,
-    artist: "Baleine sous gravillon",
-    album: "Le podcast du Vivant",
-    artwork: [
-      { src: 'https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/media/logo-BSG.png', sizes: '270x270', type: 'image/png' },
-      { src: 'https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg', sizes: '400x400', type: 'image/jpeg' }
-    ]
-  });
-
-  // FIX 2 : Indiquer au système le tracking de la barre de progression
-  if ('setPositionState' in navigator.mediaSession && audio.duration) {
-    navigator.mediaSession.setPositionState({
-      duration: audio.duration,
-      playbackRate: audio.playbackRate,
-      position: audio.currentTime
+    navigator.mediaSession.metadata = new MediaMetadata({
+        title: episode.title,
+        artist: "Baleine sous gravillon",
+        album: "Le podcast du Vivant",
+        artwork: [
+            {
+                src: episode.image || "https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/media/logo-BSG.png",
+                sizes: "512x512",
+                type: "image/png"
+            }
+        ]
     });
-  }
 }
+audio.addEventListener('timeupdate', () => {
+
+    if ('mediaSession' in navigator &&
+        'setPositionState' in navigator.mediaSession &&
+        !isNaN(audio.duration)) {
+
+        navigator.mediaSession.setPositionState({
+            duration: audio.duration,
+            playbackRate: audio.playbackRate,
+            position: audio.currentTime
+        });
+    }
+
+});
+
 
 // --- GESTION DU WAKE LOCK (Empêcher la mise en veille profonde) ---
 let wakeLock = null;
@@ -2067,6 +2057,25 @@ async function requestWakeLock() {
         console.log("WakeLock non supporté ou refusé");
     }
 }
+
+function registerMediaSessionHandlers() {
+    if (!('mediaSession' in navigator)) return;
+
+    navigator.mediaSession.setActionHandler('play', () => audio.play());
+    navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+        if (current + 1 < episodes.length) {
+            play(current + 1);
+        }
+    });
+
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+        if (current > 0) {
+            play(current - 1);
+        }
+    });
+}
     
 // --- ÉVÉNEMENTS AUDIO ---
 audio.addEventListener('play', () => {
@@ -2078,38 +2087,9 @@ audio.addEventListener('pause', () => {
 });
 
 // --- MODIFICATION DE L'ÉVÉNEMENT ENDED ---
-// --- NOUVEL ÉVÉNEMENT ENDED ---
 audio.addEventListener('ended', () => {
     if (current + 1 < episodes.length) {
-        // 1. On passe à l'index suivant tout de suite
-        current++; 
-        const nextEpisode = episodes[current];
-        
-        // 2. On change la source et on met à jour les métadonnées IMMEDIATEMENT
-        audio.src = nextEpisode.audio;
-        updateMediaSession(nextEpisode.title);
-        
-        // 3. On force le chargement et la lecture instantanée sans timeout
-        audio.load(); 
-        
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                // La lecture a réussi en arrière-plan !
-                if ('mediaSession' in navigator) {
-                    navigator.mediaSession.playbackState = "playing";
-                }
-            }).catch(err => {
-                console.log("Lecture auto bloquée en arrière-plan, tentative de réveil...", err);
-                // Si le navigateur bloque, on essaie de le feinter en re-déclenchant
-                // l'action via la Media Session qui reste active sur l'écran verrouillé
-                navigator.mediaSession.playbackState = "paused";
-            });
-        }
-        
-        // Mettre à jour l'interface du site (au cas où l'utilisateur revient)
-        document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
-        document.getElementById(`ep-${current}`)?.classList.add('current');
+        play(current + 1);
     }
 });
 
@@ -2160,3 +2140,4 @@ document.getElementById('player-img').src = "https://raw.githubusercontent.com/b
     <div id="toast">Lien de la série copié !</div>
 </body>
 </html>
+
