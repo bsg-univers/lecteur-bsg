@@ -2096,20 +2096,7 @@ function updateMediaSession(episode) {
         ]
     });
 }
-audio.addEventListener('timeupdate', () => {
 
-    if ('mediaSession' in navigator &&
-        'setPositionState' in navigator.mediaSession &&
-        !isNaN(audio.duration)) {
-
-        navigator.mediaSession.setPositionState({
-            duration: audio.duration,
-            playbackRate: audio.playbackRate,
-            position: audio.currentTime
-        });
-    }
-
-});
 
 
 // --- GESTION DU WAKE LOCK (Empêcher la mise en veille profonde) ---
@@ -2124,29 +2111,6 @@ async function requestWakeLock() {
     }
 }
 
-    
-// --- ÉVÉNEMENTS AUDIO ---
-audio.addEventListener('play', () => {
-    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
-});
-
-audio.addEventListener('pause', () => {
-    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "paused";
-});
-
-// --- MODIFICATION DE L'ÉVÉNEMENT ENDED ---
-audio.addEventListener('ended', () => {
-    if (current + 1 < episodes.length) {
-        play(current + 1);
-    }
-});
-
-// Relancer le WakeLock quand on reprend la lecture
-audio.addEventListener('play', () => {
-    requestWakeLock();
-    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
-});
-    
 // --- INIT ---
 loadPlaylists();
 
