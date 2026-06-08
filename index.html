@@ -2011,14 +2011,28 @@ async function play(i) {
     }
   }
 
-  // 3. Assigner la source au lecteur ACTIF et lancer immédiatement
-  audio.src = episode.audio;
+ // 3. Assigner la source au lecteur ACTIF et lancer immédiatement
+  // SÉCURITÉ : Si la source a changé mais n'a pas pu charger correctement en arrière-plan, on force le "load"
+  if (audio.src !== episode.audio) {
+    audio.src = episode.audio;
+    audio.load();
+  }
+  
   updateMediaSession(episode);
 
   try {
     await audio.play();
   } catch (err) {
-    console.error("Échec de la lecture:", err);
+    console.error("Échec initial de la lecture, tentative de rechargement...", err);
+    // RECOURS : Si le téléphone refuse de lire (ex: réseau coupé momentanément), on réessaie une fois après un court instant
+    setTimeout(async () => {
+      try {
+        audio.load();
+        await audio.play();
+      } catch (retryErr) {
+        console.error("Échec définitif de la lecture automatique:", retryErr);
+      }
+    }, 1000);
   }
 
   // 4. L'ASTUCE : Anticiper et précharger l'épisode SUIVANT sur le second lecteur
@@ -2072,6 +2086,18 @@ function setupAudioListeners(playerElement) {
       switchPlayers();
       // 2. On lance directement le morceau préchargé (aucune attente réseau)
       play(current + 1);
+    }
+  });
+  // SÉCURITÉ RÉSEAU : Si le lecteur rencontre une erreur de chargement (ex: perte de 4G/Wi-Fi)
+  playerElement.addEventListener('error', (e) => {
+    console.warn("Erreur de chargement détectée sur le lecteur. Tentative de récupération...", playerElement.error);
+    
+    // Si l'erreur arrive sur le lecteur actif ou sur celui en arrière-plan, on tente une reconnexon propre
+    const currentSrc = playerElement.src;
+    if (currentSrc) {
+      setTimeout(() => {
+        playerElement.load(); // Relance le téléchargement du morceau défectueux
+      }, 2000); // Attend 2 secondes que le réseau se stabilise
     }
   });
 }
