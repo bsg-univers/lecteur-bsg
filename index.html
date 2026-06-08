@@ -2003,15 +2003,14 @@ async function play(i) {
 
     // 4. Chargement Audio
     audio.src = episode.audio;
-    audio.load();
-    updateMediaSession(episode);
-    registerMediaSessionHandlers();
     
-    try {
-        await audio.play();
-    } catch (err) {
-        console.error("Erreur lecture", err);
-    }
+    await new Promise((resolve) => {
+        audio.onloadedmetadata = resolve;
+    });
+    
+    updateMediaSession(episode);
+    
+    await audio.play();
 
 }
 function updateMediaSession(episode) {
