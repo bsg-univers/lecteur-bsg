@@ -2003,6 +2003,12 @@ async function play(i) {
 
     // 4. Chargement Audio
     audio.src = episode.audio;
+
+// FIX 1 : On force la mise à jour de l'écran verrouillé AVANT le play
+  updateMediaSession(episode.title);
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.playbackState = "playing";
+  }
     
     try {
         await audio.play();
@@ -2018,17 +2024,26 @@ async function play(i) {
 
 // --- MEDIA SESSION METADATA ---
 function updateMediaSession(title) {
-    if (!('mediaSession' in navigator)) return;
+  if (!('mediaSession' in navigator)) return;
 
-    navigator.mediaSession.metadata = new MediaMetadata({
-        title,
-        artist: "Baleine sous gravillon",
-        album: "Le podcast du Vivant",
-        artwork: [
-            { src: 'https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/media/logo-BSG.png', sizes: '270x270', type: 'image/png' },
-            { src: 'https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg', sizes: '400x400', type: 'image/jpeg' }
-        ]
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: title,
+    artist: "Baleine sous gravillon",
+    album: "Le podcast du Vivant",
+    artwork: [
+      { src: 'https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/media/logo-BSG.png', sizes: '270x270', type: 'image/png' },
+      { src: 'https://image.ausha.co/CQMRa8hZ950ZAamQlgLxjsA38VuxGAXyvYCZXFXK_400x400.jpeg', sizes: '400x400', type: 'image/jpeg' }
+    ]
+  });
+
+  // FIX 2 : Indiquer au système le tracking de la barre de progression
+  if ('setPositionState' in navigator.mediaSession && audio.duration) {
+    navigator.mediaSession.setPositionState({
+      duration: audio.duration,
+      playbackRate: audio.playbackRate,
+      position: audio.currentTime
     });
+  }
 }
 
 // --- GESTION DU WAKE LOCK (Empêcher la mise en veille profonde) ---
