@@ -1869,6 +1869,11 @@ async function loadEpisodes(pid, encoded = false) {
         ? decodeURIComponent(escape(atob(pid))) 
         : pid;
 
+    // ⭐ SÉCURITÉ : On protège le nom de la playlist contre les apostrophes et guillemets pour les attributs HTML onclick
+    const safeCleanId = cleanId
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '&quot;');
+
     const div = document.getElementById('episodes_list');
     div.innerHTML = '<div class="loader">Plongée...</div>';
 
@@ -1902,9 +1907,10 @@ async function loadEpisodes(pid, encoded = false) {
         // 5. Construction des Hashtags
         const hashtagsHtml = (currentPl && currentPl.hashtags) 
             ? `<div class="playlist-tags-area">
-                ${currentPl.hashtags.split(' ').filter(t => t.trim() !== "").map(tag => 
-                    `<span class="tag-mini" onclick="filterByHashtag(event, '${tag}')">#${tag}</span>`
-                ).join('')}
+                ${currentPl.hashtags.split(' ').filter(t => t.trim() !== "").map(tag => {
+                    const safeTag = tag.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    return `<span class="tag-mini" onclick="filterByHashtag(event, '${safeTag}')">#${tag}</span>`;
+                }).join('')}
                </div>` 
             : "";
         
@@ -1933,14 +1939,15 @@ async function loadEpisodes(pid, encoded = false) {
         }
         
         // 7. LIGNE DES BOUTONS D'ACTION (Favoris, Plus tard, Partage)
+        // 👍 MODIFICATION : Utilisation de `safeCleanId` pour éviter de briser le onclick
         html += `
             <div class="episodes-header-row">
                 <h3>Épisodes</h3>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn-share" onclick="event.stopPropagation(); toggleSave('favorites', '${cleanId}', this)" title="Favoris">
+                    <button class="btn-share" onclick="event.stopPropagation(); toggleSave('favorites', '${safeCleanId}', this)" title="Favoris">
                         ${isFav ? '❤️' : '<span class="heart-empty">♡</span>'}
                     </button>
-                    <button class="btn-share" onclick="toggleSave('later', '${cleanId}', this)" title="À regarder plus tard">
+                    <button class="btn-share" onclick="toggleSave('later', '${safeCleanId}', this)" title="À regarder plus tard">
                         ${isLater ? '🕒' : '⏳'}
                     </button>
                     <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">
@@ -1949,12 +1956,18 @@ async function loadEpisodes(pid, encoded = false) {
                 </div>
             </div>` +
             // Liste des épisodes
-            episodes.map((e, i) => `
-                <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
-                    <span class="episode-title">${e.title}</span>
-                    <span class="play-icon"></span>
-                </div>
-            `).join('');
+            episodes.map((e, i) => {
+                // Si à l'avenir vous ajoutez des boutons spécifiques par épisode, 
+                // cette variable protégera également le titre de chaque épisode.
+                const safeTitle = e.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                
+                return `
+                    <div class="episode-item list-item-ep" id="ep-${i}" onclick="play(${i})">
+                        <span class="episode-title">${e.title}</span>
+                        <span class="play-icon"></span>
+                    </div>
+                `;
+            }).join('');
 
         div.innerHTML = html;
 
