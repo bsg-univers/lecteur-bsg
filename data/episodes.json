@@ -307,7 +307,7 @@
   },
   {
     "episodeId": "4",
-    "playlistId": "C'est quoi l'UICN ?",
+    "playlistId": "C'est quoi lUICN ?",
     "title": "S07E46 C'est quoi l'UICN ? 4/4 :  Ma nuit chez Maud... Lelièvre (présidente du comité français de l'UICN)",
     "audio": "https://audio.ausha.co/yEVzLfLx4aX4.mp3?t=1762350241",
     "order": 4,
@@ -316,7 +316,7 @@
   },
   {
     "episodeId": "3",
-    "playlistId": "C'est quoi l'UICN ?",
+    "playlistId": "C'est quoi lUICN ?",
     "title": "S07E45 C'est quoi l'UICN ? 3/4 : La liste rouge à la loupe, \"and the loser is...\" (Maud Lelièvre)",
     "audio": "https://audio.ausha.co/bVP6wuWDGmDr.mp3?t=1762170367",
     "order": 3,
@@ -325,7 +325,7 @@
   },
   {
     "episodeId": "2",
-    "playlistId": "C'est quoi l'UICN ?",
+    "playlistId": "C'est quoi lUICN ?",
     "title": "S07E44 C'est quoi l'UICN ? 2/4 : Ce qu'il faut retenir du congrès 2025 (Maud Lelièvre)",
     "audio": "https://audio.ausha.co/y0PL6uPx3vwd.mp3?t=1762330483",
     "order": 2,
@@ -334,7 +334,7 @@
   },
   {
     "episodeId": "1",
-    "playlistId": "C'est quoi l'UICN ?",
+    "playlistId": "C'est quoi lUICN ?",
     "title": "S07E43 C'est quoi l'UICN ? 1/4 : Dans les coulisses de \"l'ONU de la Nature\" (Maud Lelièvre)",
     "audio": "https://audio.ausha.co/B4eDJf2M8Y70.mp3?t=1762350233",
     "order": 1,
@@ -7129,7 +7129,7 @@
   },
   {
     "episodeId": "3",
-    "playlistId": "L'Ours brun ",
+    "playlistId": "LOurs brun ",
     "title": "S07E155 L'Ours brun 3/6 : Dates, effectifs, attaques... les chiffres clés (Rémi Dupouy)",
     "audio": "https://audio.ausha.co/ypzDYHpxgd2Q.mp3?t=1780413419",
     "order": 3,
@@ -7138,7 +7138,7 @@
   },
   {
     "episodeId": "2",
-    "playlistId": "L'Ours brun ",
+    "playlistId": "LOurs brun ",
     "title": "S07E154 L'Ours brun 2/6 : Grizzly, kodiak, européen... les différentes sous-espèces (Rémi Dupouy)",
     "audio": "https://audio.ausha.co/blLApu5ERD4b.mp3?t=1780439227",
     "order": 2,
@@ -7147,7 +7147,7 @@
   },
   {
     "episodeId": "1",
-    "playlistId": "L'Ours brun ",
+    "playlistId": "LOurs brun ",
     "title": "S07E153 L'Ours brun 1/6... et ses cousins du monde entier (Rémi Dupouy)",
     "audio": "https://audio.ausha.co/BN2Y0s2pepwx.mp3?t=1780462126",
     "order": 1,
@@ -7156,7 +7156,7 @@
   },
   {
     "episodeId": "4",
-    "playlistId": "L'ADN environnemental ",
+    "playlistId": "LADN environnemental ",
     "title": "S07E152 L'ADN environnemental 4/4 : Pister les espèces... via leurs traces d'ADN ! (Benjamin Allegrini)",
     "audio": "https://audio.ausha.co/yeDNktxLO9go.mp3?t=1779285076",
     "order": 4,
@@ -7165,7 +7165,7 @@
   },
   {
     "episodeId": "3",
-    "playlistId": "L'ADN environnemental ",
+    "playlistId": "LADN environnemental ",
     "title": "S07E151 L'ADN environnemental 3/4 : Pister les espèces... via leurs traces d'ADN ! (Benjamin Allegrini)",
     "audio": "https://audio.ausha.co/BQ9OzIggQW5E.mp3?t=1779285048",
     "order": 3,
@@ -7174,7 +7174,7 @@
   },
   {
     "episodeId": "2",
-    "playlistId": "L'ADN environnemental ",
+    "playlistId": "LADN environnemental ",
     "title": "S07E150 L'ADN environnemental 2/4 : Pister les espèces... via leurs traces d'ADN ! (Benjamin Allegrini)",
     "audio": "https://audio.ausha.co/owZDesqKqqrN.mp3?t=1779285020",
     "order": 2,
@@ -7183,7 +7183,7 @@
   },
   {
     "episodeId": "1",
-    "playlistId": "L'ADN environnemental ",
+    "playlistId": "LADN environnemental ",
     "title": "S07E149 L'ADN environnemental 1/4 : Pister les espèces... via leurs traces d'ADN ! (Benjamin Allegrini)",
     "audio": "https://audio.ausha.co/bY4YAu0M8Zgy.mp3?t=1779285000",
     "order": 1,
@@ -7237,7 +7237,7 @@
   },
   {
     "episodeId": "1",
-    "playlistId": "Ce que vous ne saviez pas sur l'arc-en-ciel",
+    "playlistId": "Ce que vous ne saviez pas sur larc-en-ciel",
     "title": "S07E143 Ce que vous ne saviez pas sur l'arc-en-ciel...",
     "audio": "https://audio.ausha.co/bWwpOcjeOLjA.mp3?t=1777124762",
     "order": 1,
@@ -7264,7 +7264,7 @@
   },
   {
     "episodeId": "3",
-    "playlistId": "Faire \"-scence\" : Iridescence ",
+    "playlistId": "Iridescence ",
     "title": "S07E140 Faire \"-scence\" : Être fluorescent, comment ça marche, à quoi ça sert ?",
     "audio": "https://audio.ausha.co/BMJYefNZq1xQ.mp3?t=1777124631",
     "order": 3,
@@ -7273,7 +7273,7 @@
   },
   {
     "episodeId": "2",
-    "playlistId": "Faire \"-scence\" : Iridescence ",
+    "playlistId": "Iridescence ",
     "title": "S07E139 Faire \"-scence\" : Iridescence 2/2, la \"choré\" de l'Araignée-Paon",
     "audio": "https://audio.ausha.co/bjLNDu6W3mrO.mp3?t=1777124605",
     "order": 2,
@@ -7282,7 +7282,7 @@
   },
   {
     "episodeId": "1",
-    "playlistId": "Faire \"-scence\" : Iridescence ",
+    "playlistId": "Iridescence ",
     "title": "S07E138 Faire \"-scence\" : Iridescence 1/2, le Pigeon de Nicobar",
     "audio": "https://audio.ausha.co/y8eK9fqvG141.mp3?t=1777124597",
     "order": 1,
@@ -7354,7 +7354,7 @@
   },
   {
     "episodeId": "1",
-    "playlistId": "Les pionniers de l'évolution",
+    "playlistId": "Les pionniers de lévolution",
     "title": "Mécaniques du vivant, saison 8 : Les pionniers de l'évolution",
     "audio": "https://audio.ausha.co/yvzq7H2DKp3m.mp3?t=1751634131",
     "order": 1,
@@ -7561,7 +7561,7 @@
   },
   {
     "episodeId": "4",
-    "playlistId": "Poissons davril ",
+    "playlistId": "Poissons d'avril ",
     "title": "SPÉCIAL Poissons d'avril 4/4 :  Les migrations sous-marines",
     "audio": "https://audio.ausha.co/b73DRtEgPJ20.mp3?t=1774524367",
     "order": 4,
@@ -7570,7 +7570,7 @@
   },
   {
     "episodeId": "3",
-    "playlistId": "Poissons davril ",
+    "playlistId": "Poissons d'avril ",
     "title": "SPÉCIAL Poissons d'avril 3/4 : Les sprinters des océans",
     "audio": "https://audio.ausha.co/bY4YAuP3pZ3E.mp3?t=1774524452",
     "order": 3,
@@ -7579,7 +7579,7 @@
   },
   {
     "episodeId": "2",
-    "playlistId": "Poissons davril ",
+    "playlistId": "Poissons d'avril ",
     "title": "SPÉCIAL Poissons d'avril 2/4 : Les mathusalems des océans",
     "audio": "https://audio.ausha.co/Bx4g0u9kP9Pr.mp3?t=1774524417",
     "order": 2,
@@ -7588,7 +7588,7 @@
   },
   {
     "episodeId": "1",
-    "playlistId": "Poissons davril ",
+    "playlistId": "Poissons d'avril ",
     "title": "SPÉCIAL Poissons d'avril 1/4 : 20 000 chants sous les mers (Bill François)",
     "audio": "https://audio.ausha.co/b73DRtV50M0X.mp3?t=1774524461",
     "order": 1,
