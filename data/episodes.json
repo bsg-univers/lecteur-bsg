@@ -7129,7 +7129,7 @@
   },
   {
     "episodeId": "3",
-    "playlistId": "LOurs brun ",
+    "playlistId": "L'ours brun ",
     "title": "S07E155 L'Ours brun 3/6 : Dates, effectifs, attaques... les chiffres clés (Rémi Dupouy)",
     "audio": "https://audio.ausha.co/ypzDYHpxgd2Q.mp3?t=1780413419",
     "order": 3,
@@ -7138,7 +7138,7 @@
   },
   {
     "episodeId": "2",
-    "playlistId": "LOurs brun ",
+    "playlistId": "L'ours brun ",
     "title": "S07E154 L'Ours brun 2/6 : Grizzly, kodiak, européen... les différentes sous-espèces (Rémi Dupouy)",
     "audio": "https://audio.ausha.co/blLApu5ERD4b.mp3?t=1780439227",
     "order": 2,
@@ -7147,7 +7147,7 @@
   },
   {
     "episodeId": "1",
-    "playlistId": "LOurs brun ",
+    "playlistId": "L'ours brun ",
     "title": "S07E153 L'Ours brun 1/6... et ses cousins du monde entier (Rémi Dupouy)",
     "audio": "https://audio.ausha.co/BN2Y0s2pepwx.mp3?t=1780462126",
     "order": 1,
@@ -7810,5 +7810,86 @@
     "order": 1,
     "guid": "30ed71cecaeabb04d35bc5ff5cbbd5481504e85b",
     "image": "https://image.ausha.co/QK70lMCGPzisxKFgAao9Q2bfQ6b7shqxaBfu6FUs_1400x1400.jpeg?t=1737370371"
+  },
+  {
+    "episodeId": "6",
+    "playlistId": "L'ours brun ",
+    "title": "S07E158 L'Ours brun 6/6 : Idées reçues et fakes (Rémi Dupouy)",
+    "audio": "https://audio.ausha.co/oRjOKsJLJpaX.mp3?t=1780770409",
+    "order": 877,
+    "guid": "c888d94a51fc52a06d67be035861d8cc35c6b163",
+    "image": "https://image.ausha.co/KF7hNnDk2D3GSwTTciQX9E8mGxPDFd5ebhYZuXFu_1400x1400.jpeg?t=1780737733"
+  },
+  {
+    "episodeId": "5",
+    "playlistId": "L'ours brun ",
+    "title": "S07E157 L'Ours brun 5/6 : Comment cohabiter ? (Rémi Dupouy)",
+    "audio": "https://audio.ausha.co/ypzDYH8g7O20.mp3?t=1780764197",
+    "order": 878,
+    "guid": "9c648dbacba453ef0db14123da24d6307f3a3470",
+    "image": "https://image.ausha.co/5TsgzHP8JAZhtxZWggDEl4KOMgndNrHOoIm0rozl_1400x1400.jpeg?t=1780736969"
+  },
+  {
+    "episodeId": "4",
+    "playlistId": "L'ours brun ",
+    "title": "S07E156 L'Ours brun 4/6 : Les bons gestes en cas de rencontre (Rémi Dupouy)",
+    "audio": "https://audio.ausha.co/B4eDJfDqw4M4.mp3?t=1780822128",
+    "order": 879,
+    "guid": "af721f03cc075446b1a0420f9254f932e17d5f2b",
+    "image": "https://image.ausha.co/W4q3gGwNnjJ9OWig2voWaTQjFiUNVaK6L23eQPxt_1400x1400.jpeg?t=1780650372"
+  },
+  {
+    "episodeId": "4",
+    "playlistId": "Épigénétique",
+    "title": "S07E162 Épigénétique, quand le milieu modifie l'expression des gènes 4/4 (Renaud Pourpre, Exaltia)",
+    "audio": "https://audio.ausha.co/bzZW3sqnORxr.mp3?t=1780310613",
+    "order": 880,
+    "guid": "2f6c4cc7555ea79307f73409428ffece0249b18a",
+    "image": "https://image.ausha.co/NKekTHzGnQO272oi8aUEcECzmgnzIBdWyG6fWSEh_1400x1400.jpeg?t=1780312104"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "Épigénétique",
+    "title": "S07E161 Épigénétique, quand le milieu modifie l'expression des gènes 3/4",
+    "audio": "https://audio.ausha.co/oZwA6cxNpVWx.mp3?t=1780310579",
+    "order": 881,
+    "guid": "4cca4df18d7b5126dffb8958a907c339da2420b9",
+    "image": "https://image.ausha.co/WHlxsl9fiQ2lhodEKMlaBQjVxYJXcO13p7tEZFz7_1400x1400.jpeg?t=1780312102"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "Épigénétique",
+    "title": "S07E160 Épigénétique, quand le milieu modifie l'expression des gènes 2/4",
+    "audio": "https://audio.ausha.co/b33AMtjpad0k.mp3?t=1780310554",
+    "order": 882,
+    "guid": "b32da27d2e4c78c39bf523b784f8748636db5aba",
+    "image": "https://image.ausha.co/FTV7R9s3hqrchMwcPEwZmfF6SXjd6dSHC5lmK6JA_1400x1400.jpeg?t=1780312100"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "Épigénétique",
+    "title": "S07E159 Épigénétique, quand le milieu modifie l'expression des gènes 1/4 (Renaud Pourpre, Exaltia)",
+    "audio": "https://audio.ausha.co/yeDNktz9Laa8.mp3?t=1780310498",
+    "order": 883,
+    "guid": "db7f367e0b1f7010b1c8ca47b44c9bed9e027108",
+    "image": "https://image.ausha.co/QCmt1VyQwByGDVseGwZJHWQdCC9W1R1lTiXsENtx_1400x1400.jpeg?t=1780312097"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "SPÉCIAL Rats, souris & cie ",
+    "title": "SPÉCIAL Rats, souris & cie 2/5 : La petite souris, de l'oreiller à la tapette",
+    "audio": "https://audio.ausha.co/y0PL6uK23rPy.mp3?t=1774540559",
+    "order": 884,
+    "guid": "2fbfada0c5d488c1a112d7a27b33aedbd600a84c",
+    "image": "https://image.ausha.co/KwhfIF6a4plAZXh7oWqXmJATnsUIHWdMX4WSQPXp_1400x1400.jpeg?t=1774540591"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "SPÉCIAL Rats, souris & cie ",
+    "title": "SPÉCIAL Rats, souris & cie 1/5 : Des champs à la ville, l'empire des rats (Hélène Dupuy)",
+    "audio": "https://audio.ausha.co/b73DRt9wZ1jd.mp3?t=1774540285",
+    "order": 885,
+    "guid": "263c2652cfddc7398ce14a48e02c33fe61dfde42",
+    "image": "https://image.ausha.co/D22KZ1k2NEpOlEoICN7leE9MmCdFRicuLoaW2vW3_1400x1400.jpeg?t=1774540429"
   }
 ]
