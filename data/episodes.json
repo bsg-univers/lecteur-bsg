@@ -7891,5 +7891,32 @@
     "order": 1,
     "guid": "263c2652cfddc7398ce14a48e02c33fe61dfde42",
     "image": "https://image.ausha.co/D22KZ1k2NEpOlEoICN7leE9MmCdFRicuLoaW2vW3_1400x1400.jpeg?t=1774540429"
+  },
+  {
+    "episodeId": "5",
+    "playlistId": "SPÉCIAL Rats, souris & cie ",
+    "title": "SPÉCIAL Rats, souris & cie 5/5 : Mickey, Jerry, Stuart, Ratatouille et les autres...",
+    "audio": "https://audio.ausha.co/oadvRtNP4WPd.mp3?t=1774540936",
+    "order": 5,
+    "guid": "e453675ebc0cfa00c89d61d529299112af52720d",
+    "image": "https://image.ausha.co/hvui6VGOtabZBE9jAW9vKWljSaZUTvDVsNwJOTEZ_1400x1400.jpeg?t=1774541006"
+  },
+  {
+    "episodeId": "4",
+    "playlistId": "SPÉCIAL Rats, souris & cie ",
+    "title": "SPÉCIAL Rats, souris & cie 4/5 : L'extension du domaine de la lutte",
+    "audio": "https://audio.ausha.co/oK5agsgALge4.mp3?t=1774540775",
+    "order": 4,
+    "guid": "014e41ad29290895125aa989851426f8e33a9df5",
+    "image": "https://image.ausha.co/BH3bAlyZB5cyfe51tcsezdRG7NsnnM3VHSfb8UvE_1400x1400.jpeg?t=1774540869"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "SPÉCIAL Rats, souris & cie ",
+    "title": "SPÉCIAL Rats, souris & cie 3/5 : Le boom des campagnols",
+    "audio": "https://audio.ausha.co/yeDNktvWOAZm.mp3?t=1774540656",
+    "order": 3,
+    "guid": "cd4a1102fd9c6d993d193a66bfc3766072a71d62",
+    "image": "https://image.ausha.co/o79a1NJEj0rLwSSAVP6TdHu2j2GEJ0ihZyim2yVr_1400x1400.jpeg?t=1774540709"
   }
 ]
