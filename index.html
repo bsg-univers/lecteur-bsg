@@ -1425,7 +1425,7 @@ function showPlaylistsBySeason(season) {
                      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     ❤️
                 </div>
-                <div class="btn-explore-themes" onclick="showSavedList('later')" title="À regarder plus tard" 
+                <div class="btn-explore-themes" onclick="showSavedList('later')" title="À écouter plus tard" 
                      style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 1.2rem;">
                     🕒
                 </div>
@@ -1517,7 +1517,7 @@ function renderFilteredPlaylists(list, isGlobalSearch = false) {
 
                     <button class="btn-share"
                         onclick="event.stopPropagation(); toggleSave('later', '${p.id}', this)"
-                        title="À regarder plus tard">
+                        title="À écouter plus tard">
                         ${isLater ? '🕒' : '⏳'}
                     </button>
                 </div>
@@ -1679,7 +1679,7 @@ function filterByHashtag(event, tag) {
 
                     <button class="btn-share"
                         onclick="event.stopPropagation(); toggleSave('later', '${p.id}', this)"
-                        title="À regarder plus tard">
+                        title="À écouter plus tard">
                         ${isLater ? '🕒' : '⏳'}
                     </button>
                 </div>
@@ -1764,7 +1764,7 @@ function toggleSave(listType, playlistId, btn) {
                 message = "Retiré des favoris";
             } else {
                 btn.innerText = '⏳';
-                message = "Retiré de 'À regarder plus tard'";
+                message = "Retiré de 'À écouter plus tard'";
             }
         } else {
             // AJOUT
@@ -1774,7 +1774,7 @@ function toggleSave(listType, playlistId, btn) {
                 message = "Ajouté aux favoris !";
             } else {
                 btn.innerText = '🕒';
-                message = "Ajouté à 'À regarder plus tard'";
+                message = "Ajouté à 'À écouter plus tard'";
             }
         }
 
@@ -1800,7 +1800,7 @@ function showSavedList(listType) {
     const key = 'bsg_' + listType;
     const savedIds = JSON.parse(localStorage.getItem(key) || "[]");
     const div = document.getElementById('episodes_list');
-    const title = listType === 'favorites' ? 'Mes Favoris ❤️' : 'À regarder plus tard 🕒';
+    const title = listType === 'favorites' ? 'Mes Favoris ❤️' : 'À écouter plus tard 🕒';
     
     // Entête de la liste avec bouton retour
     div.innerHTML = `
@@ -1948,7 +1948,7 @@ async function loadEpisodes(pid, encoded = false) {
                     <button class="btn-share" onclick="event.stopPropagation(); toggleSave('favorites', '${safeCleanId}', this)" title="Favoris">
                         ${isFav ? '❤️' : '<span class="heart-empty">♡</span>'}
                     </button>
-                    <button class="btn-share" onclick="toggleSave('later', '${safeCleanId}', this)" title="À regarder plus tard">
+                    <button class="btn-share" onclick="toggleSave('later', '${safeCleanId}', this)" title="À écouter plus tard">
                         ${isLater ? '🕒' : '⏳'}
                     </button>
                     <button class="btn-share" onclick="sharePlaylist(event, '${headerEncoded}')" title="Partager cette série">
