@@ -7918,5 +7918,59 @@
     "order": 3,
     "guid": "cd4a1102fd9c6d993d193a66bfc3766072a71d62",
     "image": "https://image.ausha.co/o79a1NJEj0rLwSSAVP6TdHu2j2GEJ0ihZyim2yVr_1400x1400.jpeg?t=1774540709"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "S07E163 Les as du camouflage",
+    "title": "S07E165 Les as du camouflage 3/3 : L'Hermine... de rien",
+    "audio": "https://audio.ausha.co/ykpLru4JkxlX.mp3?t=1778348630",
+    "order": 3,
+    "guid": "921fb1a41c4addc92d88fbced0c066057af9a3ac",
+    "image": "https://image.ausha.co/4p9qjkcVAkTUEXMsAksHCLTVIgFJHmrgoryWQ5eB_1400x1400.jpeg?t=1780687140"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "S07E163 Les as du camouflage",
+    "title": "S07E164 Les as du camouflage 2/3 : Le show du Caméléon",
+    "audio": "https://audio.ausha.co/B4eDJfrGkPO5.mp3?t=1778348531",
+    "order": 2,
+    "guid": "4ca9924b44f15701be60700bdbaab7a4b4abe546",
+    "image": "https://image.ausha.co/ElShRHc3hUFY7p1hjKsutNeHcD8HafKQo00rVQUf_1400x1400.jpeg?t=1780686334"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "S07E163 Les as du camouflage",
+    "title": "S07E163 Les as du camouflage 1/3 : Le \"quickchange\" du Poulpe",
+    "audio": "https://audio.ausha.co/yvzq7HX71XZW.mp3?t=1778348465",
+    "order": 1,
+    "guid": "b7c6d6dc86fe08578094bb023b6df1275eb7657b",
+    "image": "https://image.ausha.co/KWsskw9zqKtmwE6K1BJq7ufvbpEhTllt3KR0I4np_1400x1400.jpeg?t=1780686331"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "S07E168 Annoncer SA couleur",
+    "title": "S07E168 Annoncer SA couleur 3/3 : Quand et pourquoi le Vivant s'est emparé des couleurs ?",
+    "audio": "https://audio.ausha.co/yXw14cpZ5lN4.mp3?t=1780683080",
+    "order": 3,
+    "guid": "a3b54ee1f3bd0755e03973c1aefb851e919ee774",
+    "image": "https://image.ausha.co/UFYuuDiIJWQNsFzxbRpsmvnCCqCy8UFohk12cxBk_1400x1400.jpeg?t=1780687360"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "S07E168 Annoncer SA couleur",
+    "title": "S07E167 Annoncer SA couleur 2/3 : Ces ♀ plus colorées que les ♂",
+    "audio": "https://audio.ausha.co/o9vxjfDKrEKl.mp3?t=1780683002",
+    "order": 2,
+    "guid": "9d62df76a72e30f9943f4cad1d6ff75af1ec8e8a",
+    "image": "https://image.ausha.co/72zbtcdjIUd9tZdckx2nBtb0lfNky8JDji572KUa_1400x1400.jpeg?t=1780687435"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "S07E168 Annoncer SA couleur",
+    "title": "S07E166 Annoncer SA couleur 1/3 : Qui c'est Raoul ?",
+    "audio": "https://audio.ausha.co/B1GKECrVa185.mp3?t=1780682932",
+    "order": 1,
+    "guid": "9fdb5fe526c5bb8362a3c20160099ffcdd63d397",
+    "image": "https://image.ausha.co/6MDB3KNdl3tFhhfwmMTWA2ivsBxbkTvtxs87hUCi_1400x1400.jpeg?t=1780687234"
   }
 ]
