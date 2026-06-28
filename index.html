@@ -2001,86 +2001,22 @@ async function loadEpisodes(pid, encoded = false) {
     }
 }
 
-// Fonction pour gérer la fin d'un épisode sur n'importe quel lecteur
-function handleEpisodeEnded() {
-  if (current + 1 < episodes.length) {
-    // 1. On bascule les rôles des lecteurs A et B
-    switchPlayers();
-    // 2. On lance l'épisode suivant (qui est déjà préchargé dans le nouvel activePlayer)
-    play(current + 1);
-  } else {
-    uiPlayer.classList.remove('is-playing');
-  }
-}
 
-// On attache l'événement de fin sur les deux lecteurs physiques
-audioA.addEventListener('ended', handleEpisodeEnded);
-audioB.addEventListener('ended', handleEpisodeEnded);
-
-
-// --- GESTION DU TEMPS ET DE LA BARRE DE PROGRESSION ---
-// Ces événements vérifient si le lecteur qui émet l'alerte est bien le lecteur actif
-
-function handleTimeUpdate(e) {
-  if (e.target !== activePlayer || isScrubbing || !activePlayer.duration) return;
-  updateProgress(activePlayer.currentTime / activePlayer.duration);
-}
-
-function handleLoadedMetadata(e) {
-  if (e.target !== activePlayer) return;
-  durationEl.textContent = formatTime(activePlayer.duration);
-}
-
-audioA.addEventListener('timeupdate', handleTimeUpdate);
-audioB.addEventListener('timeupdate', handleTimeUpdate);
-audioA.addEventListener('loadedmetadata', handleLoadedMetadata);
-audioB.addEventListener('loadedmetadata', handleLoadedMetadata);
-
-
-// --- ÉTATS PLAY / PAUSE POUR L'INTERFACE ---
-const handlePlayState = (e) => {
-  if (e.target !== activePlayer) return;
-  uiPlayer.classList.add('is-playing');
-  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
-};
-
-const handlePauseState = (e) => {
-  if (e.target !== activePlayer) return;
-  uiPlayer.classList.remove('is-playing');
-  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "paused";
-};
-
-audioA.addEventListener('play', handlePlayState);
-audioB.addEventListener('play', handlePlayState);
-audioA.addEventListener('pause', handlePauseState);
-audioB.addEventListener('pause', handlePauseState);
-    
-// --- Fonction pour basculer les lecteurs ---
-function switchPlayers() {
-  // On stoppe proprement l'ancien lecteur actif
-  activePlayer.pause();
-  
-  // Pivotement des variables : le suivant devient l'actif, et vice-versa
-  const temp = activePlayer;
-  activePlayer = nextPlayer;
-  nextPlayer = temp;
-
-  // On nettoie l'ancien morceau du nouveau lecteur fantôme pour libérer de la mémoire
-  nextPlayer.removeAttribute('src');
-  nextPlayer.load();
-}
-
-// --- TA NOUVELLE FONCTION PLAY ---
+// =========================================================================
+// 2. FONCTION DE LECTURE AVEC PRÉCHARGEMENT DE L'ÉPISODE SUIVANT
+// =========================================================================
 async function play(i) {
   current = i;
   const episode = episodes[i];
+  if (!episode) return;
+
   const pImg = document.getElementById('player-img');
 
-  // 1. Mise à jour de l'UI de la liste
+  // Mise à jour de la classe active dans la liste
   document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
   document.getElementById(`ep-${i}`)?.classList.add('current');
 
-  // 2. Gestion de l'image de l'épisode actuel
+  // Gestion dynamique de l'image de la jaquette
   if (pImg) {
     pImg.classList.remove('zoomed');
     if (episode.image && episode.image.trim() !== "") {
@@ -2092,43 +2028,114 @@ async function play(i) {
     }
   }
 
-  // 3. Forcer la source sur le lecteur ACTIF s'il a changé (ex: clic direct dans la liste)
+  // Assignation du fichier audio au lecteur actif (si elle diffère)
   const cleanSrc = new URL(episode.audio, window.location.href).href;
   if (activePlayer.src !== cleanSrc) {
     activePlayer.src = episode.audio;
     activePlayer.load();
   }
 
-  // Mettre à jour l'écran de verrouillage
-  updateMediaSession(episode);
+  // Mise à jour des métadonnées système (Média Session)
+  if (typeof updateMediaSession === 'function') {
+    updateMediaSession(episode);
+  }
 
-  // 4. Lancement de la lecture sur le lecteur actif
+  // Tentative de lecture (gestion du blocage autoplay des mobiles)
   try {
     await activePlayer.play();
   } catch (err) {
-    console.warn("Échec autoplay mobile, attente interaction...", err);
+    console.warn("Autoplay bloqué par le navigateur, en attente d'une interaction utilisateur.");
     const retryPlay = () => {
-      activePlayer.play().catch(e => console.log(e));
+      activePlayer.play().catch(e => console.error("Échec de la lecture forcée :", e));
       window.removeEventListener('click', retryPlay);
     };
     window.addEventListener('click', retryPlay);
   }
 
-  // 5. ANTICIPATION / PRÉCHARGEMENT DE L'ÉPISODE SUIVANT (i + 1)
+  // --- ANTICIPATION CYCLIQUE : Préchargement de l'épisode i + 1 ---
   const nextIndex = i + 1;
-  if (nextIndex < episodes.length) {
+  if (nextIndex < episodes.length && nextPlayer) {
     const nextEpisode = episodes[nextIndex];
-    // On injecte le flux dans le lecteur FANTÔME en mode 'auto' pour qu'il le télécharge en tâche de fond
     nextPlayer.src = nextEpisode.audio;
     nextPlayer.preload = "auto";
     nextPlayer.load(); 
 
-    // Préchargement de l'image suivante en cache
+    // Préchargement de la jaquette suivante en cache mémoire
     if (nextEpisode.image && nextEpisode.image.trim() !== "") {
       const imgCache = new Image();
       imgCache.src = nextEpisode.image;
     }
   }
+}
+
+// =========================================================================
+// 3. FONCTION DE BASCULE DES LECTEURS (SWITCH)
+// =========================================================================
+function switchPlayers() {
+  if (!activePlayer || !nextPlayer) return;
+
+  activePlayer.pause();
+  
+  // Interversion des rôles des deux variables de pointage
+  const temp = activePlayer;
+  activePlayer = nextPlayer;
+  nextPlayer = temp;
+
+  // On nettoie l'ancien morceau du lecteur qui passe en tâche de fond
+  nextPlayer.removeAttribute('src');
+  nextPlayer.load();
+}
+
+// =========================================================================
+// 4. ÉCOUTEURS D'ÉVÉNEMENTS SYNCHRONISÉS SUR LE LECTEUR ACTIF
+// =========================================================================
+function handleEpisodeEnded() {
+  if (current + 1 < episodes.length) {
+    switchPlayers();   // Étape 1 : Le lecteur B (qui a préchargé l'épisode) passe devant
+    play(current + 1);  // Étape 2 : Lancement immédiat + mise en cache de l'épisode d'après sur le lecteur A
+  } else {
+    if (uiPlayer) uiPlayer.classList.remove('is-playing');
+  }
+}
+
+// Enregistrement des écouteurs sur les deux éléments HTML physiques
+if (audioA && audioB) {
+  audioA.addEventListener('ended', handleEpisodeEnded);
+  audioB.addEventListener('ended', handleEpisodeEnded);
+
+  // Synchronisation de la barre de progression
+  const handleTimeUpdate = (e) => {
+    if (e.target !== activePlayer || isScrubbing || !activePlayer.duration) return;
+    if (typeof updateProgress === 'function') {
+      updateProgress(activePlayer.currentTime / activePlayer.duration);
+    }
+  };
+
+  const handleLoadedMetadata = (e) => {
+    if (e.target !== activePlayer) return;
+    if (durationEl) durationEl.textContent = formatTime(activePlayer.duration);
+  };
+
+  audioA.addEventListener('timeupdate', handleTimeUpdate);
+  audioB.addEventListener('timeupdate', handleTimeUpdate);
+  audioA.addEventListener('loadedmetadata', handleLoadedMetadata);
+  audioB.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+  // Synchronisation des états visuels Play/Pause du widget
+  const handlePlayState = (e) => {
+    if (e.target !== activePlayer) return;
+    if (uiPlayer) uiPlayer.classList.add('is-playing');
+  };
+
+  const handlePauseState = (e) => {
+    if (e.target !== activePlayer) return;
+    if (uiPlayer) uiPlayer.classList.remove('is-playing');
+  };
+
+  audioA.addEventListener('play', handlePlayState);
+  audioB.addEventListener('play', handlePlayState);
+  audioA.addEventListener('pause', handlePauseState);
+  audioB.addEventListener('pause', handlePauseState);
 }
 
 // --- ÉCOUTEURS D'ÉVÉNEMENTS LIÉS À L'UI ---
@@ -2204,6 +2211,7 @@ function setupAudioListeners(playerElement) {
     }, 1000); // Relance après 1 seconde
   });
 }
+    
 // Initialisation des écouteurs sur les deux lecteurs
 setupAudioListeners(audioA);
 setupAudioListeners(audioB);
