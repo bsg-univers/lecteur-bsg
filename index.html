@@ -1311,47 +1311,47 @@ function formatTime(t) {
     return `${m}:${s}`;
 }
 
+
 function switchPlayers() {
-    // On inverse uniquement les rôles des variables de pointage
+    // Échange de pointeurs pur et simple sans aucune manipulation HTML
     const temp = activePlayer;
     activePlayer = nextPlayer;
     nextPlayer = temp;
-
-    // ATTENTION : Ne faites PAS de "nextPlayer.removeAttribute('src')" ici ! 
-    // Toucher aux attributs HTML sur écran verrouillé casse la chaîne sur mobile.
 }
 
 function handleEpisodeEnded(e) {
-    if (e.target !== activePlayer) return; // Ignore les événements parasites
+    if (e.target !== activePlayer) return; // Évite les déclenchements fantômes
 
     const nextIndex = current + 1;
     if (nextIndex < episodes.length) {
-        switchPlayers(); // Le lecteur fantôme (qui a déjà l'épisode chargé depuis le début) passe actif
+        // 1. On intervertit les rôles (le joueur qui a préchargé le morceau passe devant)
+        switchPlayers(); 
         
-        // On met à jour l'index global
+        // 2. On met à jour l'index
         current = nextIndex;
         const nextEpisode = episodes[current];
 
-        // Lancement immédiat du morceau (déjà bufferisé en tâche de fond)
+        // 3. Lecture immédiate du morceau déjà présent dans le cache
         activePlayer.play().catch(err => {
-            console.error("Échec du redémarrage en tâche de fond :", err);
+            console.error("Échec de la lecture automatique en tâche de fond :", err);
         });
 
-        // Optionnel : Mettre à jour l'écran de verrouillage
+        // 4. Rafraîchissement des infos système (Media Session)
         if (typeof updateMediaSession === 'function') {
             updateMediaSession(nextEpisode);
         }
         
-        // On met à jour visuellement la liste (au cas où l'écran se rallume)
+        // Mise à jour visuelle (Utile si l'utilisateur déverrouille son écran)
         document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
         document.getElementById(`ep-${current}`)?.classList.add('current');
 
-        // Préparation silencieuse de l'épisode ENCORE APRÈS (current + 1)
-        // Note : Cela peut échouer sur écran verrouillé, mais ce n'est pas grave car 
-        // dès que l'utilisateur déverrouillera, la fonction play() globale stabilisera le tout.
+        // 5. ANTICIPATION DE L'ÉPISODE SUIVANT (current + 1)
+        // Maintenant que les rôles ont changé, `nextPlayer` est devenu le lecteur libre.
+        // On y injecte le morceau d'après. Même sur écran verrouillé, le flux reste ouvert.
         const futureIndex = current + 1;
         if (futureIndex < episodes.length && nextPlayer) {
-            nextPlayer.src = episodes[futureIndex].audio;
+            const futureEpisode = episodes[futureIndex];
+            nextPlayer.src = futureEpisode.audio;
             nextPlayer.preload = "auto";
             nextPlayer.load();
         }
@@ -1409,6 +1409,7 @@ async function play(i) {
     if (!episode) return;
     const pImg = document.getElementById('player-img');
 
+    // Réinitialisation de l'affichage du temps pour le confort visuel
     if (currentTimeEl) currentTimeEl.textContent = "0:00";
     if (durationEl) durationEl.textContent = "...";
     if (waveProgress) waveProgress.style.strokeDashoffset = pathLength;
@@ -1427,7 +1428,7 @@ async function play(i) {
         }
     }
 
-    // Assignation et réveil du lecteur ACTIF
+    // On assigne et force le chargement sur le lecteur ACTIF
     const cleanSrc = new URL(episode.audio, window.location.href).href;
     if (activePlayer.src !== cleanSrc) {
         activePlayer.src = episode.audio;
@@ -1439,7 +1440,7 @@ async function play(i) {
     try {
         await activePlayer.play();
     } catch (err) {
-        console.warn("Autoplay bloqué, attente clic.");
+        console.warn("Autoplay en attente d'interaction.");
         const forcePlay = () => {
             activePlayer.play().catch(e => console.log(e));
             window.removeEventListener('click', forcePlay);
@@ -1447,18 +1448,17 @@ async function play(i) {
         window.addEventListener('click', forcePlay);
     }
 
-    // --- STRATÉGIE ÉCRAN VERROUILLÉ : ANTICIPATION IMMÉDIATE ---
+    // --- PRÉPARATION AGRESSIVE POUR L'ÉCRAN VERROUILLÉ ---
+    // On prépare TOUJOURS l'épisode i + 1 sur le lecteur secondaire dès qu'un morceau commence
     const nextIndex = i + 1;
-    if (nextIndex < episodes.length) {
+    if (nextIndex < episodes.length && nextPlayer) {
         const nextEpisode = episodes[nextIndex];
         const cleanNextSrc = new URL(nextEpisode.audio, window.location.href).href;
         
         if (nextPlayer.src !== cleanNextSrc) {
             nextPlayer.src = nextEpisode.audio;
             nextPlayer.preload = "auto";
-            // IMPORTANT : On fait un load() pour que le mobile télécharge le morceau 
-            // MAINTENANT, pendant que l'écran est allumé !
-            nextPlayer.load(); 
+            nextPlayer.load(); // Téléchargement immédiat dans la mémoire tampon
         }
     }
 }
