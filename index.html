@@ -1313,13 +1313,14 @@ function formatTime(t) {
 
 // --- ÉCOUTEURS D'ÉVÉNEMENTS AUDIO CENTRALISÉS ---
 function handleEpisodeEnded(e) {
-    if (e.target !== activePlayer) return; // Sécurité : ignore le lecteur fantôme
+    // Supprimez ou commentez la ligne de sécurité si elle bloque :
+    // if (e.target !== activePlayer) return; 
 
     if (current + 1 < episodes.length) {
-        switchPlayers();   // Étape 1 : Le lecteur de secours passe devant avec le morceau prêt
-        play(current + 1);  // Étape 2 : Lancement immédiat + mise en cache de l'épisode d'après
+        switchPlayers();   // Le lecteur de secours passe devant avec le morceau prêt
+        play(current + 1);  // Lancement immédiat + mise en cache de l'épisode d'après
     } else {
-        uiPlayer.classList.remove('is-playing');
+        if (uiPlayer) uiPlayer.classList.remove('is-playing');
     }
 }
 
@@ -1374,9 +1375,9 @@ function setupAudioListeners(playerElement) {
     });
 }
 
-// Initialisation des écouteurs sur les deux éléments HTML physiques
+// Initialisation propre et directe des écouteurs sur les deux éléments HTML physiques
 setupAudioListeners(audioA);
-setupAudioListeners(setupAudioListeners ? audioB : audioB);
+setupAudioListeners(audioB);
 
 // --- TACTIQUE DE PRECHARGEMENT SANS COUPURE ---
 async function play(i) {
