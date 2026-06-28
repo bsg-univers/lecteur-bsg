@@ -1327,14 +1327,16 @@ function handleEpisodeEnded(e) {
 function switchPlayers() {
     activePlayer.pause();
     
-    // Inversion des rôles des pointeurs
+    // On inverse les rôles
     const temp = activePlayer;
     activePlayer = nextPlayer;
     nextPlayer = temp;
 
-    // Libère la mémoire de l'ancien lecteur devenu fantôme
+    // NETTOYAGE ABSOLU DE L'ANCIEN LECTEUR ACTIF (devenu lecteur fantôme)
+    // Cela empêche ses anciens événements de parasiter la barre de progression
+    nextPlayer.pause();
     nextPlayer.removeAttribute('src');
-    nextPlayer.load();
+    nextPlayer.load(); 
 }
 
 function setupAudioListeners(playerElement) {
@@ -1386,6 +1388,11 @@ async function play(i) {
     if (!episode) return;
     const pImg = document.getElementById('player-img');
 
+    // --- CORRECTION : Réinitialisation immédiate de l'affichage du temps ---
+    if (currentTimeEl) currentTimeEl.textContent = "0:00";
+    if (durationEl) durationEl.textContent = "...";
+    if (waveProgress) waveProgress.style.strokeDashoffset = pathLength; // Remet la barre à zéro
+
     // Mise à jour visuelle de la liste
     document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
     document.getElementById(`ep-${i}`)?.classList.add('current');
@@ -1402,39 +1409,46 @@ async function play(i) {
         }
     }
 
-    // Assigne la source au lecteur actif s'il a changé
+    // Assignation de la source
     const cleanSrc = new URL(episode.audio, window.location.href).href;
     if (activePlayer.src !== cleanSrc) {
         activePlayer.src = episode.audio;
-        activePlayer.load();
     }
+    
+    // TRÈS IMPORTANT : On force le rechargement pour réveiller l'élément HTML5
+    activePlayer.load();
 
-    if (typeof updateMediaSession === 'function') {
-        updateMediaSession(episode);
-    }
+    updateMediaSession(episode);
 
+    // --- CORRECTION : Forcer la lecture de manière agressive ---
     try {
         await activePlayer.play();
     } catch (err) {
-        console.warn("Autoplay bloqué, attente d'un clic.");
-        const retryPlay = () => {
-            activePlayer.play().catch(e => console.log(e));
-            window.removeEventListener('click', retryPlay);
+        console.warn("Autoplay bloqué par le navigateur sur le switch, tentative de déblocage...");
+        
+        // Si le play automatique échoue, on attache un gestionnaire temporaire sur toute la page
+        // pour que dès que l'utilisateur touche l'écran, le morceau démarre immédiatement.
+        const forcePlay = () => {
+            activePlayer.play()
+                .then(() => console.log("Lecture débloquée avec succès"))
+                .catch(e => console.error("Échec persistant :", e));
+            window.removeEventListener('pointerdown', forcePlay);
+            window.removeEventListener('click', forcePlay);
         };
-        window.addEventListener('click', retryPlay);
+        window.addEventListener('pointerdown', forcePlay);
+        window.addEventListener('click', forcePlay);
     }
 
-    // --- ANTICIPATION DU PROCHAIN ÉPISODE (i + 1) ---
+    // --- PRÉCHARGEMENT DE L'ÉPISODE SUIVANT (i + 1) ---
     const nextIndex = i + 1;
     if (nextIndex < episodes.length) {
         const nextEpisode = episodes[nextIndex];
         const cleanNextSrc = new URL(nextEpisode.audio, window.location.href).href;
         
-        // Sécurité : On ne recharge la source dans le lecteur fantôme QUE s'il ne l'a pas déjà
         if (nextPlayer.src !== cleanNextSrc) {
             nextPlayer.src = nextEpisode.audio;
             nextPlayer.preload = "auto";
-            nextPlayer.load(); // Téléchargement silencieux en tâche de fond
+            nextPlayer.load(); 
         }
 
         if (nextEpisode.image && nextEpisode.image.trim() !== "") {
