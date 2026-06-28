@@ -1311,19 +1311,19 @@ function formatTime(t) {
     return `${m}:${s}`;
 }
 
-// --- ÉCOUTEURS D'ÉVÉNEMENTS AUDIO CENTRALISÉS ---
 function handleEpisodeEnded(e) {
-    // Supprimez ou commentez la ligne de sécurité si elle bloque :
-    // if (e.target !== activePlayer) return; 
+    // Évite les déclenchements parasites si la source est vide
+    if (e.target && !e.target.src) return;
 
-    if (current + 1 < episodes.length) {
-        switchPlayers();   // Le lecteur de secours passe devant avec le morceau prêt
-        play(current + 1);  // Lancement immédiat + mise en cache de l'épisode d'après
+    const nextIndex = current + 1;
+    if (nextIndex < episodes.length) {
+        switchPlayers();   // Étape 1 : Le lecteur fantôme (qui a l'épisode nextIndex prêt) devient actif
+        play(nextIndex);   // Étape 2 : Lance la lecture et prépare l'épisode encore après (nextIndex + 1)
     } else {
         if (uiPlayer) uiPlayer.classList.remove('is-playing');
     }
 }
-
+    
 function switchPlayers() {
     activePlayer.pause();
     
@@ -1409,12 +1409,14 @@ async function play(i) {
         activePlayer.load();
     }
 
-    updateMediaSession(episode);
+    if (typeof updateMediaSession === 'function') {
+        updateMediaSession(episode);
+    }
 
     try {
         await activePlayer.play();
     } catch (err) {
-        console.warn("Autoplay bloqué par le mobile, attente d'un clic.");
+        console.warn("Autoplay bloqué, attente d'un clic.");
         const retryPlay = () => {
             activePlayer.play().catch(e => console.log(e));
             window.removeEventListener('click', retryPlay);
@@ -1422,13 +1424,18 @@ async function play(i) {
         window.addEventListener('click', retryPlay);
     }
 
-    // ANTICIPATION / TELECHARGEMENT DE L'EPISODE SUIVANT (i + 1)
+    // --- ANTICIPATION DU PROCHAIN ÉPISODE (i + 1) ---
     const nextIndex = i + 1;
     if (nextIndex < episodes.length) {
         const nextEpisode = episodes[nextIndex];
-        nextPlayer.src = nextEpisode.audio;
-        nextPlayer.preload = "auto";
-        nextPlayer.load(); // Téléchargement silencieux en tâche de fond
+        const cleanNextSrc = new URL(nextEpisode.audio, window.location.href).href;
+        
+        // Sécurité : On ne recharge la source dans le lecteur fantôme QUE s'il ne l'a pas déjà
+        if (nextPlayer.src !== cleanNextSrc) {
+            nextPlayer.src = nextEpisode.audio;
+            nextPlayer.preload = "auto";
+            nextPlayer.load(); // Téléchargement silencieux en tâche de fond
+        }
 
         if (nextEpisode.image && nextEpisode.image.trim() !== "") {
             const imgCache = new Image();
