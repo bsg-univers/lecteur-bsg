@@ -1249,6 +1249,12 @@ let allPlaylists = [];
 const audioA = document.getElementById('player-a');
 const audioB = document.getElementById('player-b');
 
+// Pointeurs dynamiques : au départ, A est actif, B est le suivant
+let activePlayer = audioA;
+let nextPlayer = audioB;
+
+const titleDisplay = document.getElementById('now-playing-title');
+
 let audio = audioA;       // Devient le lecteur actif
 let nextAudio = audioB;   // Devient le lecteur de secours
 const titleDisplay = document.getElementById('now-playing-title');
@@ -1995,77 +2001,134 @@ async function loadEpisodes(pid, encoded = false) {
     }
 }
 
+// Fonction pour gérer la fin d'un épisode sur n'importe quel lecteur
+function handleEpisodeEnded() {
+  if (current + 1 < episodes.length) {
+    // 1. On bascule les rôles des lecteurs A et B
+    switchPlayers();
+    // 2. On lance l'épisode suivant (qui est déjà préchargé dans le nouvel activePlayer)
+    play(current + 1);
+  } else {
+    uiPlayer.classList.remove('is-playing');
+  }
+}
 
+// On attache l'événement de fin sur les deux lecteurs physiques
+audioA.addEventListener('ended', handleEpisodeEnded);
+audioB.addEventListener('ended', handleEpisodeEnded);
+
+
+// --- GESTION DU TEMPS ET DE LA BARRE DE PROGRESSION ---
+// Ces événements vérifient si le lecteur qui émet l'alerte est bien le lecteur actif
+
+function handleTimeUpdate(e) {
+  if (e.target !== activePlayer || isScrubbing || !activePlayer.duration) return;
+  updateProgress(activePlayer.currentTime / activePlayer.duration);
+}
+
+function handleLoadedMetadata(e) {
+  if (e.target !== activePlayer) return;
+  durationEl.textContent = formatTime(activePlayer.duration);
+}
+
+audioA.addEventListener('timeupdate', handleTimeUpdate);
+audioB.addEventListener('timeupdate', handleTimeUpdate);
+audioA.addEventListener('loadedmetadata', handleLoadedMetadata);
+audioB.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+
+// --- ÉTATS PLAY / PAUSE POUR L'INTERFACE ---
+const handlePlayState = (e) => {
+  if (e.target !== activePlayer) return;
+  uiPlayer.classList.add('is-playing');
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
+};
+
+const handlePauseState = (e) => {
+  if (e.target !== activePlayer) return;
+  uiPlayer.classList.remove('is-playing');
+  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "paused";
+};
+
+audioA.addEventListener('play', handlePlayState);
+audioB.addEventListener('play', handlePlayState);
+audioA.addEventListener('pause', handlePauseState);
+audioB.addEventListener('pause', handlePauseState);
+    
 // --- Fonction pour basculer les lecteurs ---
 function switchPlayers() {
-  const temp = audio;
-  audio = nextAudio;
-  nextAudio = temp;
+  // On stoppe proprement l'ancien lecteur actif
+  activePlayer.pause();
+  
+  // Pivotement des variables : le suivant devient l'actif, et vice-versa
+  const temp = activePlayer;
+  activePlayer = nextPlayer;
+  nextPlayer = temp;
+
+  // On nettoie l'ancien morceau du nouveau lecteur fantôme pour libérer de la mémoire
+  nextPlayer.removeAttribute('src');
+  nextPlayer.load();
 }
 
 // --- TA NOUVELLE FONCTION PLAY ---
 async function play(i) {
-    current = i;
-    const episode = episodes[i];
-    const pImg = document.getElementById('player-img');
+  current = i;
+  const episode = episodes[i];
+  const pImg = document.getElementById('player-img');
 
-    // 1. UI : Sélection dans la liste
-    document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
-    document.getElementById(`ep-${i}`)?.classList.add('current');
+  // 1. Mise à jour de l'UI de la liste
+  document.querySelectorAll('.episode-item').forEach(el => el.classList.remove('current'));
+  document.getElementById(`ep-${i}`)?.classList.add('current');
 
-    // 2. Gestion de l'image de l'épisode actuel
-    if (pImg) {
-        pImg.classList.remove('zoomed');
-        if (episode.image && episode.image.trim() !== "") {
-            pImg.src = episode.image;
-            pImg.classList.replace('is-logo', 'is-episode');
-        } else {
-            pImg.src = "https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/media/logo-BSG.png";
-            pImg.classList.replace('is-episode', 'is-logo');
-        }
+  // 2. Gestion de l'image de l'épisode actuel
+  if (pImg) {
+    pImg.classList.remove('zoomed');
+    if (episode.image && episode.image.trim() !== "") {
+      pImg.src = episode.image;
+      pImg.classList.replace('is-logo', 'is-episode');
+    } else {
+      pImg.src = "https://raw.githubusercontent.com/bsg-univers/lecteur-bsg/refs/heads/main/media/logo-BSG.png";
+      pImg.classList.replace('is-episode', 'is-logo');
     }
+  }
 
-    // 3. Assigner la source au lecteur ACTIF et lancer immédiatement
-    if (audio.src !== episode.audio) {
-        audio.src = episode.audio;
-        audio.load();
+  // 3. Forcer la source sur le lecteur ACTIF s'il a changé (ex: clic direct dans la liste)
+  const cleanSrc = new URL(episode.audio, window.location.href).href;
+  if (activePlayer.src !== cleanSrc) {
+    activePlayer.src = episode.audio;
+    activePlayer.load();
+  }
+
+  // Mettre à jour l'écran de verrouillage
+  updateMediaSession(episode);
+
+  // 4. Lancement de la lecture sur le lecteur actif
+  try {
+    await activePlayer.play();
+  } catch (err) {
+    console.warn("Échec autoplay mobile, attente interaction...", err);
+    const retryPlay = () => {
+      activePlayer.play().catch(e => console.log(e));
+      window.removeEventListener('click', retryPlay);
+    };
+    window.addEventListener('click', retryPlay);
+  }
+
+  // 5. ANTICIPATION / PRÉCHARGEMENT DE L'ÉPISODE SUIVANT (i + 1)
+  const nextIndex = i + 1;
+  if (nextIndex < episodes.length) {
+    const nextEpisode = episodes[nextIndex];
+    // On injecte le flux dans le lecteur FANTÔME en mode 'auto' pour qu'il le télécharge en tâche de fond
+    nextPlayer.src = nextEpisode.audio;
+    nextPlayer.preload = "auto";
+    nextPlayer.load(); 
+
+    // Préchargement de l'image suivante en cache
+    if (nextEpisode.image && nextEpisode.image.trim() !== "") {
+      const imgCache = new Image();
+      imgCache.src = nextEpisode.image;
     }
-
-    // Mise à jour immédiate de l'écran verrouillé
-    updateMediaSession(episode);
-
-    try {
-        await audio.play();
-    } catch (err) {
-        console.error("Échec initial de la lecture, tentative de rechargement...", err);
-        setTimeout(async () => {
-            try {
-                audio.load();
-                await audio.play();
-            } catch (retryErr) {
-                console.error("Échec définitif de la lecture automatique:", retryErr);
-            }
-        }, 1000);
-    }
-
-    // 4. L'ASTUCE CORRIGÉE : Anticiper et précharger l'audio ET l'image de l'épisode SUIVANT
-    const nextIndex = i + 1;
-    if (nextIndex < episodes.length) {
-        const nextEpisode = episodes[nextIndex];
-        
-        // Préchargement de l'audio (déjà présent dans ton code)
-        nextAudio.src = nextEpisode.audio;
-        nextAudio.load(); 
-
-        // CRUCIAL : Préchargement de l'image de l'épisode suivant dans le cache du navigateur
-        if (nextEpisode.image && nextEpisode.image.trim() !== "") {
-            const imgCache = new Image();
-            imgCache.src = nextEpisode.image; 
-            // En faisant ça, le téléphone télécharge l'image en tâche de fond immédiatement.
-            // Quand l'écran sera verrouillé et qu'on passera à l'épisode suivant, 
-            // l'image sera déjà dans le téléphone et s'affichera instantanément !
-        }
-    }
+  }
 }
 
 // --- ÉCOUTEURS D'ÉVÉNEMENTS LIÉS À L'UI ---
