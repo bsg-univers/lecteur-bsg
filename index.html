@@ -515,9 +515,9 @@ h2,h3{
         inset 10px 15px 35px rgba(255, 255, 255, 0.04) !important;
 
     will-change: transform;
-    animation: float-organic infinite alternate ease-in-out;
-    animation-duration: calc(4s + var(--i, 0) * 0.5s);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* 1. Suppression de l'animation pulse-border  animation: float-organic infinite alternate ease-in-out; */ 
+  /*  animation-duration: calc(4s + var(--i, 0) * 0.5s); */ 
+  /*  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); */ 
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
 }
@@ -649,7 +649,7 @@ h2,h3{
     border-radius: 50%; /* On peut même le mettre en rond */
     border: 1px solid rgba(243, 195, 0, 0.4);
     box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    animation: playerSubtleWave 12s infinite ease-in-out;
+    /* animation: playerSubtleWave 12s infinite ease-in-out; */
     pointer-events: auto; 
     cursor: pointer;
 }
@@ -664,7 +664,7 @@ h2,h3{
     pointer-events: auto;
     cursor: zoom-in;
     box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-    animation: playerSubtleWave 12s infinite ease-in-out;
+    /* animation: playerSubtleWave 12s infinite ease-in-out; */
 }
         
 /* Désactive le lien complètement dès que l'image n'est plus un logo */
@@ -961,7 +961,7 @@ h2,h3{
     /* On garde du padding sur les côtés, mais ZERO en bas pour coller la barre */
     padding: 0px 0px 0px; 
     box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
-    animation: playerSubtleWave 15s ease-in-out infinite;
+    /* animation: playerSubtleWave 15s ease-in-out infinite; */
 }
 /* --- LE TITRE (Espace rétabli) --- */
 .now-playing {
