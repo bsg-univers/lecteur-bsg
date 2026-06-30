@@ -2739,37 +2739,37 @@
     "episodeId": "2",
     "playlistId": "Trésors d'Europe",
     "title": "S05E04 Trésors d'Europe 2/2 : Le Protée, à l'origine de la légende des dragons ! (Olivier Marquis, herpétologue)",
-    "audio": "https://audio.ausha.co/oK5agsaRlP7b.mp3?t=1689250881",
+    "audio": "https://audio.ausha.co/oK5agsaRlP7b.mp3?t=1782755455",
     "order": 2,
     "guid": "c5182188350eb107c456ad7997e9667bd9c5ec33",
-    "image": "https://image.ausha.co/vZLf4eQUgLen73Fwv6bDavrZSlxx832s6Qp9xnkx_1400x1400.jpeg?t=1689250738"
+    "image": "https://image.ausha.co/FviaBMLmpykSs8Dtk9C3rnwajZLInLkB2nulKMCX_1400x1400.jpeg?t=1782755429"
   },
   {
     "episodeId": "1",
     "playlistId": "Trésors d'Europe",
     "title": "S05E03 Trésors d'Europe 1/2 : Amphibiens et Reptiles (Olivier Marquis, herpétologue)",
-    "audio": "https://audio.ausha.co/bzZW3s1K0aQL.mp3?t=1689250392",
+    "audio": "https://audio.ausha.co/bzZW3s1K0aQL.mp3?t=1782753842",
     "order": 1,
     "guid": "81cbf95413d56239dd470c2d22bc0a3534ed2813",
-    "image": "https://image.ausha.co/e4T2MzNkhQWVfj5u42vDgB33sTyaUOvOHw8jmTlP_1400x1400.jpeg?t=1689250112"
+    "image": "https://image.ausha.co/QU2ut7G9JczuN8DAqF68kNRaxOthM86wdywHSrmJ_1400x1400.jpeg?t=1782754067"
   },
   {
     "episodeId": "2",
     "playlistId": "Trésors de Madagascar",
     "title": "S05E02 Trésors de Madagascar 2/2 : Caméléons et Mantelle dorée (Olivier Marquis, herpétologue)",
-    "audio": "https://audio.ausha.co/oRjOKsLW6OVx.mp3?t=1689250485",
+    "audio": "https://audio.ausha.co/oRjOKsLW6OVx.mp3?t=1782753255",
     "order": 2,
     "guid": "120ed4c2fd58172f43e72a57211c58858fc15e49",
-    "image": "https://image.ausha.co/6UwRtQ8umws3s8CGPUxCttfPt0a0AYFcWsuwKUKZ_1400x1400.jpeg?t=1689249804"
+    "image": "https://image.ausha.co/bZJbmnhvuXKWUy30lkYVafvxrnSqndgJhjgh7fBa_1400x1400.jpeg?t=1782753251"
   },
   {
     "episodeId": "1",
     "playlistId": "Trésors de Madagascar",
     "title": "S05E01 Trésors de Madagascar 1/2 : Tortues étoilées et Geckos ... sataniques (Olivier Marquis, herpétologue)",
-    "audio": "https://audio.ausha.co/B6epXf6Xmwrl.mp3?t=1689250597",
+    "audio": "https://audio.ausha.co/B6epXf6Xmwrl.mp3?t=1782751273",
     "order": 1,
     "guid": "e118eb98562b36e2fbaee23c98c234de1b00099a",
-    "image": "https://image.ausha.co/edebHeL271mw9DbG3X0Q8w8hIOX0sRBKqNbYr0uo_1400x1400.jpeg?t=1689249257"
+    "image": "https://image.ausha.co/P4Z5vDcDJtjHZfe4vOe6Vl374i43fdikCZRQ25bG_1400x1400.jpeg?t=1782752058"
   },
   {
     "episodeId": "1",
@@ -7972,5 +7972,68 @@
     "order": 1,
     "guid": "9fdb5fe526c5bb8362a3c20160099ffcdd63d397",
     "image": "https://image.ausha.co/6MDB3KNdl3tFhhfwmMTWA2ivsBxbkTvtxs87hUCi_1400x1400.jpeg?t=1780687234"
+  },
+  {
+    "episodeId": "4",
+    "playlistId": "Apprivoiser, domestiquer",
+    "title": "S07E173 Apprivoiser, domestiquer 4/4 : Après l'exploitation, quels liens pour l'avenir ?",
+    "audio": "https://audio.ausha.co/oK5ags6wwgXl.mp3?t=1781980961",
+    "order": 4,
+    "guid": "055454383666919f0849c9628c60205b1afe529f",
+    "image": "https://image.ausha.co/XXoJ384eHNJ5yVn14B8EGP3Oz69ukBnWFVioKBwj_1400x1400.jpeg?t=1781980934"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "Apprivoiser, domestiquer",
+    "title": "S07E171 Apprivoiser, domestiquer 3/4 : Ceux qui s'invitent à notre table...",
+    "audio": "https://audio.ausha.co/bVP6wuW7mXVZ.mp3?t=1781980917",
+    "order": 3,
+    "guid": "61a5858845dfb0dce95b09547cd5a789fde77b52",
+    "image": "https://image.ausha.co/dw0gtdtkMidKMwlcJOdxeWh02BHR2WKw9O3RB9Vw_1400x1400.jpeg?t=1781980897"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "Apprivoiser, domestiquer",
+    "title": "S07E170 Apprivoiser, domestiquer 2/4 : De la chasse à l'élevage",
+    "audio": "https://audio.ausha.co/oK5ags7vA9qr.mp3?t=1781980862",
+    "order": 2,
+    "guid": "65166dd3dcb577e0ffda53dc3ecaf7152915cd3a",
+    "image": "https://image.ausha.co/D2ujMkC2gXh0cLI6rufFBk6jUfNP55a8rXHJ2Id2_1400x1400.jpeg?t=1781980861"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "Apprivoiser, domestiquer",
+    "title": "S07E169 Apprivoiser, domestiquer 1/4 : La première alliance",
+    "audio": "https://audio.ausha.co/BQ9OzIEKMPPD.mp3?t=1782312763",
+    "order": 1,
+    "guid": "7070b5fea560928f03c8556ed6a87691c5719dda",
+    "image": "https://image.ausha.co/8GKFqVUvbz09tuX02GHrgfqBm18CnPQfJNYwNpHg_1400x1400.jpeg?t=1781980816"
+  },
+  {
+    "episodeId": "3",
+    "playlistId": "HORS-SÉRIE Les Grands Récits",
+    "title": "HORS-SÉRIE Les Grands Récits 3/3 : Les fripouilles des océans (Bill François/Marc Mortelmans)",
+    "audio": "https://audio.ausha.co/bVP6wul9rnvK.mp3?t=1780939592",
+    "order": 3,
+    "guid": "6a3a763691170e4db2aedc880715e4d073fcf225",
+    "image": "https://image.ausha.co/ZX0Rv3spPQ5fwVrhJBkYRdm3ifNcfr3FBShgWKaL_1400x1400.jpeg?t=1780940342"
+  },
+  {
+    "episodeId": "2",
+    "playlistId": "HORS-SÉRIE Les Grands Récits",
+    "title": "HORS-SÉRIE Les Grands Récits 2/3 : Les métamorphoses du Saumon (Bill François/Marc Mortelmans)",
+    "audio": "https://audio.ausha.co/bjLNDumerX08.mp3?t=1780939562",
+    "order": 2,
+    "guid": "40ec928785bf647249fa7e41e7a860576337691b",
+    "image": "https://image.ausha.co/NcA2BcdlEdE0QuVhiMLArVhTnNf4d8cWoDz5RvU9_1400x1400.jpeg?t=1780940276"
+  },
+  {
+    "episodeId": "1",
+    "playlistId": "HORS-SÉRIE Les Grands Récits",
+    "title": "HORS-SÉRIE Les Grands Récits 1/3 : Le Thon ne nage pas... il vole ! (Bill François/Marc Mortelmans)",
+    "audio": "https://audio.ausha.co/yvzq7H8zN6G0.mp3?t=1780939466",
+    "order": 1,
+    "guid": "f30a272544f59520a592bd3bacfb345b744ccf7a",
+    "image": "https://image.ausha.co/8scEvgXDHH2K7dXIUZZuw6VRwpjO0CGjB7DIVR1e_1400x1400.jpeg?t=1780940182"
   }
 ]
